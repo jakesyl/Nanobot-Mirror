@@ -13,7 +13,7 @@ sub new {
 		_attention	=> "!",						# Character prefix for commands
 
 		#_server		=> "irc.insomnia247.nl",	# IPv4 address
-		_server		=> "127.0.0.1",	# IPv4 address
+		_server		=> "127.0.0.1",				# IPv4 address
 		_server6	=> "irc6.insomnia247.nl",	# IPv6 address
 		_port		=> 6667,					# Normal port
 		_sslport	=> 6697,					# SSL port
@@ -109,6 +109,11 @@ sub port {
 sub connect_timeout {
 	my( $self ) = @_;
 	return $self->{_conn_time};
+}
+
+sub ping_timeout {
+	my( $self ) = @_;
+	return $self->{_timeout};
 }
 
 sub ssl {

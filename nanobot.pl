@@ -9,6 +9,7 @@ require "config.pl";
 require "startup.pl";
 require "irc.pl";
 require "timer.pl";
+require "parser.pl";
 
 # Create support objects
 $status	= new nanobot::status;
@@ -34,9 +35,6 @@ $irc	= new nanobot::irc($config, $output, $sock);
 # Create timer object
 $timer	= new nanobot::timer($config, $output, $irc);
 
-$irc->userinfo;
-$irc->msg("#channel", "bot har har");
-
-$timer->action(4, "TIMER event");
-
-sleep(10);
+# Create & start parser object
+$parser	= new nanobot::parser($config, $output, $status, $irc, $timer);
+$parser->startup;

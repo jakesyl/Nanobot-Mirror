@@ -6,7 +6,8 @@ sub new {
 	my $self = {
 		_output		=> 1,
 		_colour		=> 1,
-		_debug		=> 0
+		_debug		=> 2,
+		_login		=> 0
 	};
 
 	bless $self;
@@ -28,6 +29,11 @@ sub getdebug {
 	return $self->{_debug};
 }
 
+sub getlogin {
+	my( $self ) = @_;
+	return $self->{_login};
+}
+
 sub setoutput {
 	my( $self, $output ) = @_;
 	$self->{_output} = $output;
@@ -41,5 +47,10 @@ sub setcolour {
 sub setdebug {
 	my( $self, $debug ) = @_;
 	$self->{_debug} = $debug;
+}
+
+sub setlogin {
+	my( $self, $login ) = @_;
+	$self->{_login} = $login;
 }
 1;

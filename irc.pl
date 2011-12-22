@@ -82,4 +82,9 @@ sub disconnect {
 	$sock = $self->{_sock}; 
 	close($sock);
 }
+
+sub getsock {
+	my( $self ) = @_;
+	return $self->{_sock};
+}
 1;

@@ -16,7 +16,7 @@ sub new {
 
 sub action {
 	my( $self, $timeout, $action ) = @_;
-	threads->create(\&subthread, $self,$timeout, $action)->detach;
+	threads->create(\&subthread, $self, $timeout, $action)->detach;
 }
 
 sub subthread {
