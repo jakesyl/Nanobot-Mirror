@@ -87,5 +87,4 @@ sub detect_ssl {
 		$output->bad("[NO]\n");
 	}
 }
-
 1;

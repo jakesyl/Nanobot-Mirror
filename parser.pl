@@ -48,11 +48,43 @@ sub parser {
 	$output->extradebug("==> " . $line . "\n");
 
 	# (Raw data hook)
+
 	# PING
+	if( $line =~ /^PING \:(.+)/) {
+		$output->debug("Received ping\n");
+	}
+
 	# KICK
+	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) KICK (.+?) (.+?) \:(.+?)/ ) {
+		$output->debug("Received kick\n");
+	}
+
 	# NOTICE
+	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) NOTICE (.+?) \:(.+)/ ) {
+		$output->debug("Received notice\n");
+	}
+
 	# JOIN
+	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) JOIN \:(.+)/ ) {
+		$output->debug("Received join\n");
+	}
+
 	# PART
+	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) PART \:(.+)/ ) {
+		$output->debug("Received part\n");
+	}
+
+	# QUIT
+	elsif( $line =~ /^QUIT \:(.+)/ ) {
+		$output->debug("Received quit\n");
+	}
+
 	# PRIVMSG
+	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) PRIVMSG (.+?) \:(.+)/ ) {
+		$output->debug("Received message\n");
+	}
+
+	# Other stuff
+	else {}
 }
 1;
