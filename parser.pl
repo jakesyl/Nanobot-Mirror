@@ -27,7 +27,10 @@ sub startup {
 	while( <$sock> ) {
 		eval {
 			alarm 0;
-			threads->create(\&parser, $self, $_ )->detach;
+#			threads->create(\&parser, $self, $_ )->detach;
+#			&parser( $self, $_ );
+			threads->create(\&parser, $self, $_ )->join;
+
 			alarm $self->{_config}->ping_timeout;
 		};
 	}

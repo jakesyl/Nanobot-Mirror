@@ -4,9 +4,9 @@ package nanobot::status;
 
 sub new {
 	my $self = {
-		_output		=> 1,
+		_output		=> 0,
 		_colour		=> 1,
-		_debug		=> 2,
+		_debug		=> 0,
 		_login		=> 0,
 		_startup	=> time
 	};
