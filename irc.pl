@@ -21,12 +21,12 @@ sub raw {
 	$self->{_output}->extradebug("<== $data\n");
 }
 
-sub msg {
+sub message {
 	my( $self, $to, $message ) = @_;
 	raw($self, "PRIVMSG $to :$message");
 }
 
-sub ntc {
+sub notice {
 	my( $self, $to, $message ) = @_;
 	raw($self, "NOTICE $to :$message");
 }

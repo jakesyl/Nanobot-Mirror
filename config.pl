@@ -10,7 +10,7 @@ sub new {
 		_pass		=> "",						# NickServ password
 		_version	=> "Nanobot 4.0 beta",		# Version
 
-		_attention	=> "!",						# Character prefix for commands
+		_attention	=> "?",						# Character prefix for commands (one char)
 
 		_server		=> "irc.insomnia247.nl",	# IPv4 address
 #		_server		=> "127.0.0.1",	# IPv4 address
@@ -75,6 +75,11 @@ sub pass {
 sub version {
 	my( $self ) = @_;
 	return $self->{_version};
+}
+
+sub command_char {
+	my( $self ) = @_;
+	return $self->{_attention};
 }
 
 sub server {

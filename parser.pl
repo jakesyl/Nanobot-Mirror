@@ -90,7 +90,7 @@ sub parser {
 	# PRIVMSG
 	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) PRIVMSG (.+?) \:(.+)/ ) {
 		$output->debug("Received message\n");
-		notice( $self, $1, $2, $3, $4, $5 );
+		privmsg( $self, $1, $2, $3, $4, $5 );
 	}
 
 	# Other stuff

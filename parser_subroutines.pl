@@ -2,6 +2,8 @@
 
 package nanobot::parser;
 
+require "commands.pl";
+
 sub kick {
 	my( $self, $nick, $user, $host, $channel, $kicked, $reason ) = @_;
 
@@ -29,6 +31,15 @@ sub userquit {
 
 sub privmsg {
 	my( $self, $nick, $user, $host, $from, $message ) = @_;
+	my @forward = @_;
+
+	# See if message is a command
+	my $cmd = $self->{_config}->command_char;
+	if( $message =~ /^$cmd/ ) {
+		parse_command(@forward);
+	} else {
+		# Message hook
+	}
 }
 
 sub misc {

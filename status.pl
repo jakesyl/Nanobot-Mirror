@@ -7,7 +7,8 @@ sub new {
 		_output		=> 1,
 		_colour		=> 1,
 		_debug		=> 2,
-		_login		=> 0
+		_login		=> 0,
+		_startup	=> time
 	};
 
 	bless $self;
@@ -32,6 +33,11 @@ sub getdebug {
 sub getlogin {
 	my( $self ) = @_;
 	return $self->{_login};
+}
+
+sub getstartup {
+	my( $self ) = @_;
+	return $self->{_startup};
 }
 
 sub setoutput {
