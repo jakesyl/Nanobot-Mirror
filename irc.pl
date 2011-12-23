@@ -18,6 +18,7 @@ sub raw {
 	my( $self, $data ) = @_;
 	my $sock = $self->{_sock};
 	print $sock "$data\n";
+	$self->{_output}->extradebug("<== $data\n");
 }
 
 sub msg {

@@ -2,6 +2,8 @@
 
 package nanobot::parser;
 
+require "parser_subroutines.pl";
+
 sub new {
 	my $class = shift;
 	my $self = {
@@ -52,39 +54,48 @@ sub parser {
 	# PING
 	if( $line =~ /^PING \:(.+)/) {
 		$output->debug("Received ping\n");
+		$irc->pong($1);
 	}
 
 	# KICK
 	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) KICK (.+?) (.+?) \:(.+?)/ ) {
 		$output->debug("Received kick\n");
+		kick( $self, $1, $2, $3, $4, $5, $6 );
 	}
 
 	# NOTICE
 	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) NOTICE (.+?) \:(.+)/ ) {
 		$output->debug("Received notice\n");
+		notice( $self, $1, $2, $3, $4, $5 );
 	}
 
 	# JOIN
 	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) JOIN \:(.+)/ ) {
 		$output->debug("Received join\n");
+		userjoin( $self, $1, $2, $3, $4 );
 	}
 
 	# PART
 	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) PART \:(.+)/ ) {
 		$output->debug("Received part\n");
+		userpart( $self, $1, $2, $3, $4 );
 	}
 
 	# QUIT
-	elsif( $line =~ /^QUIT \:(.+)/ ) {
+	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) QUIT \:(.+)/ ) {
 		$output->debug("Received quit\n");
+		userquit( $self, $1, $2, $3, $4 );
 	}
 
 	# PRIVMSG
 	elsif( $line =~ /^\:(.+?)!(.+?)@(.+?) PRIVMSG (.+?) \:(.+)/ ) {
 		$output->debug("Received message\n");
+		notice( $self, $1, $2, $3, $4, $5 );
 	}
 
 	# Other stuff
-	else {}
+	else {
+		misc( $self, $1 );
+	}
 }
 1;

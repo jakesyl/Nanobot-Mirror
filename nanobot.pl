@@ -34,6 +34,6 @@ $irc	= new nanobot::irc($config, $output, $sock);
 $irc->userinfo; # Debug line.
 # Create timer object
 $timer	= new nanobot::timer($config, $output, $irc);
-
+$timer->action(5, "JOIN #bot"); # Debug line.
 # Create & start parser object
 $parser	= new nanobot::parser($config, $output, $status, $irc, $timer)->startup;

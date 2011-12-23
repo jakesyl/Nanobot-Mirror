@@ -13,7 +13,7 @@ sub new {
 		_attention	=> "!",						# Character prefix for commands
 
 		_server		=> "irc.insomnia247.nl",	# IPv4 address
-		#_server		=> "127.0.0.1",				# IPv4 address
+#		_server		=> "127.0.0.1",	# IPv4 address
 		_server6	=> "irc6.insomnia247.nl",	# IPv6 address
 		_port		=> 6667,					# Normal port
 		_sslport	=> 6697,					# SSL port
@@ -25,6 +25,9 @@ sub new {
 		_data		=> "data",					# Data directory
 		_plugins	=> "plugins",				# Plugin directory
 		_autoload	=> (),						# Plugin autoload list
+
+		_autorejoin	=> 1,						# Rejoin on kick
+		_rejointime	=> 3,						# Time to wait before rejoin (seconds)
 
 		_pingwait	=> 0,						# Wait for server's first PING
 		_conn_time	=> 20,						# Connect timeout
@@ -104,6 +107,16 @@ sub port {
 	} else {								# No SSL, and no fallback
 		die("SSL not available, and fallback not allowed.\n");
 	}
+}
+
+sub auto_rejoin {
+	my( $self ) = @_;
+	return $self->{_autorejoin};
+}
+
+sub rejoin_time {
+	my( $self ) = @_;
+	return $self->{_rejointime};
 }
 
 sub connect_timeout {
