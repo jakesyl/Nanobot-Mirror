@@ -1,20 +1,30 @@
 #!/usr/bin/ruby
 
 # Load support files
-require 'socket'
-require 'openssl'
 require 'config.rb'
+require 'output.rb'
 require 'startup.rb'
+require 'status.rb'
 
-begin
-	require 'something'
-rescue LoadError
-	$stderr.print "" + $! + "\n"
-end
+# Create support objects
+status	= Status.new
+config	= Config.new
+output	= Output.new( status )
+startup	= Startup.new( output, config, status )
 
-config = Config.new
+# Display banner
+output.special( "Starting " + config.version + "\n\n" );
 
-sock = TCPSocket.open( config.host, config.port )
+# Check for libraries
+startup.checksocket
+startup.checkopenssl
+startup.checkthreads
+
+# Mark startup object for garbage collection
+startup = nil
+
+# Testing stuff, non-permanent code
+sock = TCPSocket.open( config.server, config.port )
 
 while line = sock.gets
 	puts line.chop

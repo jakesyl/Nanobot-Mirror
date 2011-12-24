@@ -15,13 +15,13 @@ class Config
 		@port		= 6667						# Normal port
 		@sslport	= 6697						# SSL port
 
-		@channels	= ("#bot", "#test")			# Autojoin channel list
+		@channels	= ["#bot", "#test"]			# Autojoin channel list
 
-		@opers		= ("insomnia247.nl")		# Opers list
+		@opers		= ["insomnia247.nl"]		# Opers list
 
 		@data		= "data"					# Data directory
 		@plugins	= "plugins"					# Plugin directory
-		@autoload	= (),						# Plugin autoload list
+		@autoload	= [],						# Plugin autoload list
 
 		@autorejoin	= 1							# Rejoin on kick
 		@rejointime	= 3							# Time to wait before rejoin (seconds)
@@ -59,6 +59,10 @@ class Config
 		end
 
 		return @port
+	end
+
+	def version
+		return @version
 	end
 
 end
