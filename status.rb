@@ -1,11 +1,16 @@
 #!/usr/bin/ruby
 
+# Class bot uses to store it's status
+# Do not modify variables manually
 class Status
 	def initialize
 		@output		= 1
 		@colour		= 1
 		@debug		= 0
 		@login		= 0
+		@threads	= 0
+		@ssl		= 0
+		@showconf	= 0
 		@startup	= Time.new
 	end
 
@@ -13,7 +18,6 @@ class Status
 		if( output != "" )
 			@output = output
 		end
-		
 		return @output
 	end
 
@@ -21,7 +25,6 @@ class Status
 		if( colour != "" )
 			@colour = colour
 		end
-		
 		return @colour
 	end
 
@@ -29,7 +32,38 @@ class Status
 		if( debug != "" )
 			@debug = debug
 		end
-		
 		return @debug
+	end
+
+	def login( login = "" )
+		if( login != "" )
+			@login = login
+		end
+		return @login
+	end
+
+	def threads( threads = "" )
+		if( threads != "" )
+			@threads = threads
+		end
+		return @threads
+	end
+
+	def ssl( ssl = "" )
+		if( ssl != "" )
+			@ssl = ssl
+		end
+		return @ssl
+	end
+
+	def showconfig( show = "" )
+		if( show != "" )
+			@showconf = show
+		end
+		return @showconf
+	end
+
+	def startup
+		return @startup
 	end
 end

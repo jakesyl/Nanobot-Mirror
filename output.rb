@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 
+# Class used to send output to terminal
 class Output
 	def initialize( status )
 		@status		= status

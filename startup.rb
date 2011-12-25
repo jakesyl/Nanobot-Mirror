@@ -1,10 +1,11 @@
 #!/usr/bin/ruby
 
+# Class to do inital checks and load available libraries
 class Startup
-	def initialize( output, config, status )
-		@output	= output
-		@config	= config
+	def initialize( status, config, output )
 		@status	= status
+		@config	= config
+		@output	= output
 	end
 
 	def checksocket
@@ -24,8 +25,10 @@ class Startup
 		begin
 			require 'openssl'
 			@output.good( "[OK]\n" )
+			@status.ssl( 1 )
 		rescue LoadError
 			@output.bad( "[NO]\n" )
+			@status.ssl( 0 )
 		end
 	end
 
@@ -33,11 +36,11 @@ class Startup
 		@output.std( "Checking for threading support ... " )
 		begin
 			require 'thread'
+			@status.threads( 1 )
 			@output.good( "[OK]\n" )
 		rescue LoadError
+			@status.threads( 0 )
 			@output.bad( "[NO]\n" )
-			@output.info( "Ruby thread library needs to be installed.\n" )
-			Process.exit
 		end
 	end
 end
