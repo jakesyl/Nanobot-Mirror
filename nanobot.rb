@@ -6,6 +6,8 @@ require 'output.rb'
 require 'startup.rb'
 require 'status.rb'
 require 'commandline.rb'
+require 'connect.rb'
+require 'irc.rb'
 
 # Create support objects
 status	= Status.new
@@ -32,10 +34,8 @@ startup = nil
 # Show configuration, if desired.
 config.show
 
-# Testing stuff, non-permanent code
+# Start connection
+socket = Connection.new( status, config, output ).start
 
-#sock = TCPSocket.open( config.server, config.port )
-#while line = sock.gets
-#	puts line.chop
-#end
-#sock.close
+# Process IRC input
+irc = IRCParser.new( status, config, output, socket ).start

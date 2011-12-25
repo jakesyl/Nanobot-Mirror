@@ -41,6 +41,11 @@ class Startup
 		rescue LoadError
 			@status.threads( 0 )
 			@output.bad( "[NO]\n" )
+
+			if( @config.threadingfallback == 0 )
+				@output.info( "No threading support, and fallback is disabled.\n" )
+				Process.exit
+			end
 		end
 	end
 end

@@ -11,8 +11,8 @@ class Config
 
 		@command	= "?"						# Character prefix for commands (one char)
 
-#		@server		= "irc.insomnia247.nl"		# IPv4 address
-		@server		= "127.0.0.1"				# IPv4 address
+		@server		= "irc.insomnia247.nl"		# IPv4 address
+#		@server		= "127.0.0.1"				# IPv4 address
 		@server6	= "irc6.insomnia247.nl"		# IPv6 address
 		@port		= 6667						# Normal port
 		@sslport	= 6697						# SSL port
@@ -35,14 +35,10 @@ class Config
 		@use_thread	= 1							# Prefer threading
 		@use_ipv6	= 0							# Prefer IPv6
 		@use_ssl	= 0							# Prefer SSL
-		@ssl_verif	= 0x00						# Verification process to be performed on peer certificate.
-												# This can be a combination of
-												#	0x00 (don't verify)
-												#	0x01 (verify peer)
-												#	0x02 (fail verification if there's no peer certificate)
-												#	0x04 (verify client once)
+		@verif_ssl	= 0							# Verify SSL certificate
+		@rootcert	= "/etc/ssl/certs/ca-certificates.crt"		# Path to openssl root ca certs
 
-		@theadfback	= 1							# Allow fallback to sequential processing when threads aren't available
+		@threadfb	= 1							# Allow fallback to sequential processing when threads aren't available
 		@sslfback	= 0							# Allow fallback to insecure connect when SSL isn't available
 
 		@status		= status					# System object, do not modify
@@ -104,6 +100,17 @@ class Config
 		return @use_ssl
 	end
 
+	def verifyssl( ssl = "" )
+		if( ssl != "" )
+			@verif_ssl = ssl
+		end
+		return @verif_ssl
+	end
+
+	def rootcert
+		return @rootcert
+	end
+
 	def ipv6( ipv6 = "" )
 		if( ipv6 != "" )
 			@use_ipv6 = ipv6
@@ -116,6 +123,10 @@ class Config
 			@use_thread = threads
 		end
 		return @use_thread
+	end
+
+	def threadingfallback
+		return @threadfb
 	end
 
 	def show
@@ -138,6 +149,8 @@ class Config
 			@output.std( "\tPort:\t\t\t" + @port.to_s + "\n" )
 			@output.std( "\tSSL port:\t\t" + @sslport.to_s + "\n" )
 			@output.std( "\tSSL Available:\t\t" + yn(@status.ssl) + "\n" )
+			@output.std( "\tVerify SSL cert:\t" + yn(@verif_ssl) + "\n" )
+			@output.std( "\tPath to root cert:\t" + @rootcert + "\n" )
 			@output.std( "\tPrefer SSL:\t\t" + yn(@use_ssl) + "\n" )
 			@output.std( "\tFallback if no SSL:\t" + yn(@sslfback) + "\n" )
 			@output.std( "\tConnect timeout:\t" + @conn_time.to_s + " seconds\n" )
@@ -185,6 +198,7 @@ class Config
 			@output.info( "\n\tThreading settings:\n" )
 			@output.std( "\tThreading available:\t" + yn(@status.threads) + "\n" )
 			@output.std( "\tUse threading:\t\t" + yn(@use_thread) + "\n" )
+			@output.std( "\tAllow thread fallback:\t" + yn(@threadfb) + "\n" )
 
 			# Output settings
 			@output.info( "\n\tOutput settings:\n" )
