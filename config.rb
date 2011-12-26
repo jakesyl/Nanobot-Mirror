@@ -12,7 +12,6 @@ class Config
 		@command	= '\?'						# Character prefix for commands (escape special chars)
 
 		@server		= "irc.insomnia247.nl"		# IPv4 address
-#		@server		= "127.0.0.1"				# IPv4 address
 		@server6	= "irc6.insomnia247.nl"		# IPv6 address
 		@port		= 6667						# Normal port
 		@sslport	= 6697						# SSL port

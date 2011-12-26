@@ -33,7 +33,7 @@ class Console
 		while true do
 			print( @config.nick + "# " )
 			STDOUT.flush
-			@cmd.process( nil, nil, nil, nil, STDIN.gets.chomp )
+			@cmd.process( "", "", "", "", STDIN.gets.chomp )
 		end
 	end
 end
