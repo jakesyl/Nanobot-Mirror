@@ -15,31 +15,42 @@ class Commands
 	def con
 		return( @console == 1 )
 	end
+
 	def cmc
 		return @config.command
 	end
 
+	# Check for authorized users
+	def auth( host )
+		admin = 0
+		if( con ) # No auth needed
+			admin = 1
+		else
+			@config.opers.each { |adminhost|
+				if( adminhost == host )
+					admin = 1
+				end				
+			}
+		end
+		
+		if( admin == 1 )
+			return
+		else
+			Thread.kill
+		end
+	end
+
 	# Inital command parsing
 	def process( nick, user, host, from, msg )
-		if( msg =~ /^help/ )
-			help( nick, user, host, from, msg )
-		elsif( msg =~ /^message/ )
-			message( nick, user, host, from, msg )
-		elsif( msg =~ /^action/ )
-			action( nick, user, host, from, msg )
-		elsif( msg =~ /^notice/ )
-			notice( nick, user, host, from, msg )
-		elsif( msg =~ /^nick/ )
-			nick( nick, user, host, from, msg )
-		elsif( msg =~ /^quit/ || msg =~ /^exit/ )
-			quit( nick, user, host, from, msg )
-		elsif( msg =~ /^\w/ )
-			plugin( nick, user, host, from, msg )
-		else
-			if( con )
-				@output.cbad( "Command not found\n" )
-			end
+
+		cmd, rest = msg.split(' ', 2)
+		cmd = cmd.gsub( /[^a-zA-Z0-9 -]/, "" )
+		begin
+			eval( "self.#{cmd}( nick, user, host, from, msg )" )
+		rescue NoMethodError
+			# Plugin stuff
 		end
+
 	end
 
 	def help( nick, user, host, from, msg )
@@ -48,6 +59,7 @@ class Commands
 	end
 
 	def message( nick, user, host, from, msg )
+		auth( host )
 		cmd, to, message = msg.split( ' ', 3 )
 		if( to != nil && message != nil )
 			@irc.message( to, message )
@@ -61,36 +73,77 @@ class Commands
 	end
 
 	def action( nick, user, host, from, msg )
+		auth( host )
 		cmd, to, action = msg.split( ' ', 3 )
 		if( to != nil && action != nil )
 			@irc.action( to, action )
 		else
-			@output.cinfo( "Usage: action send_to message to send" )
+			if( con )
+				@output.cinfo( "Usage: action send_to message to send" )
+			else
+				@irc.notice( nick, "Usage: " + cmc + "action send_to message to send" )
+			end
 		end
 	end
 
 	def notice( nick, user, host, from, msg )
+		auth( host )
 		cmd, to, message = msg.split( ' ', 3 )
 		if( to != nil && message != nil )
 			@irc.notice( to, message )
 		else
-			@output.cinfo( "Usage: notice send_to message to send" )
+			if( con )
+				@output.cinfo( "Usage: notice send_to message to send" )
+			else
+				@irc.notice( nick, "Usage: " + cmc + "notice send_to message to send" )
+			end
+		end
+	end
+
+	def join( nick, user, host, from, msg )
+		auth( host )
+		cmd, chan = msg.split( ' ', 2 )
+		if( to != nil && message != nil )
+			@irc.join( chan )
+		else
+			if( con )
+				@output.cinfo( "Usage: join #channel" )
+			else
+				@irc.notice( nick, "Usage: " + cmc + "join #channel" )
+			end
+		end
+	end
+
+	def part( nick, user, host, from, msg )
+		auth( host )
+		cmd, chan = msg.split( ' ', 2 )
+		if( to != nil && message != nil )
+			@irc.part( chan )
+		else
+			if( con )
+				@output.cinfo( "Usage: part #channel" )
+			else
+				@irc.notice( nick, "Usage: " + cmc + "part #channel" )
+			end
 		end
 	end
 
 	def nick( nick, user, host, from, msg )
-		config( "config " + msg )
+		auth( host )
 	end
 
 	def quit( nick, user, host, from, msg )
-		@output.cbad( "This will also stop the bot, are you sure? [y/N]: " )
-		STDOUT.flush
-		ans = STDIN.gets.chomp
-		if( ans =~ /^y$/i )
+		auth( host )
+		if( con )		
+			@output.cbad( "This will also stop the bot, are you sure? [y/N]: " )
+			STDOUT.flush
+			ans = STDIN.gets.chomp
+		end
+		if( ans =~ /^y$/i || !con )
 			cmd, message = msg.split( ' ', 2 )
 
 			if( message == nil )
-				@irc.quit( "Stopped from console." )
+				@irc.quit( @config.nick + " was instructed to quit." )
 			else
 				@irc.quit( message )
 			end
@@ -98,10 +151,15 @@ class Commands
 			@irc.disconnect
 			Process.exit
 		else
-			@output.cinfo( "Continuing" )
+			if( con )
+				@output.cinfo( "Continuing" )
+			end
 		end
 	end
 
 	def plugin( nick, user, host, from, msg )
+		# Check for public function
+		auth( host )
+		# Check for admin function
 	end
 end

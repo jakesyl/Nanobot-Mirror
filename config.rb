@@ -148,6 +148,13 @@ class Config
 		return @rejointime
 	end
 
+	def opers( opers = "" )
+		if( opers != "" )
+			@opers = opers
+		end
+		return @opers
+	end
+
 	def show
 		if( @status.showconfig == 1 )
 			@output.info( "\nConfiguration:\n" )
