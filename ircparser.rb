@@ -2,6 +2,7 @@
 
 # Class to make and manage connection
 
+require 'ircparser_suroutines.rb'
 class IRCParser
 	def initialize( status, config, output, irc, timer )
 		@status		= status
@@ -67,33 +68,6 @@ class IRCParser
 		else
 			misc( $1 )
 		end
-	end
-
-	def kick( nick, user, host, channel, kicked, reason )
-		@output.std( nick + " kicked " + kicked + " from " + channel + ". (" + reason + ")\n" )
-
-		# Check if we need to rejoin
-		if( @config.nick == kicked && @config.rejoin == 1 )
-			@timer.action( @config.rejointime, "JOIN " + channel )
-		end
-	end
-
-	def notice( nick,  user,  host,  to,  message )
-	end
-
-	def userjoin( nick, user, host, channel )
-	end
-
-	def userpart( nick, user, host, channel )
-	end
-
-	def userquit( nick, user, host, message )
-	end
-
-	def privmsg( nick, user, host, from, message )
-	end
-
-	def misc( unknown )
 	end
 end
 		

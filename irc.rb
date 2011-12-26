@@ -31,6 +31,10 @@ class IRC
 		raw( "PRIVMSG " + to + " :" + message )
 	end
 
+	def action( to, action )
+		raw( "PRIVMSG " + to + " :ACTION " + action + "" )
+	end
+
 	def notice( to, message )
 		raw( "NOTICE " + to + " :" + message )
 	end

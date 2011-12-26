@@ -11,6 +11,7 @@ class Status
 		@threads	= 0
 		@ssl		= 0
 		@showconf	= 0
+		@console	= 1
 		@startup	= Time.new
 	end
 
@@ -54,6 +55,13 @@ class Status
 			@ssl = ssl
 		end
 		return @ssl
+	end
+
+	def console( console = "" )
+		if( console != "" )
+			@console = console
+		end
+		return @console
 	end
 
 	def showconfig( show = "" )

@@ -45,7 +45,9 @@ irc = IRC.new( status, config, output, socket )
 timer = Timer.new( status, config, output, irc )
 
 # Create user input parser
-UserInputParser.new( status, config, output, irc, timer ).start
+if( status.console == 1 )
+	UserInputParser.new( status, config, output, irc, timer ).start
+end
 
 timer.action( 3, "JOIN #bot" ) # Debug line
 

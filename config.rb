@@ -34,7 +34,7 @@ class Config
 
 		@use_thread	= 1							# Prefer threading
 		@use_ipv6	= 0							# Prefer IPv6
-		@use_ssl	= 0							# Prefer SSL
+		@use_ssl	= 1							# Prefer SSL
 		@verif_ssl	= 0							# Verify SSL certificate
 		@rootcert	= "/etc/ssl/certs/ca-certificates.crt"
 												# Path to openssl root certs (Needed if verify_ssl is enabled)

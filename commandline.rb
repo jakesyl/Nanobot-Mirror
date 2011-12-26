@@ -27,6 +27,8 @@ class CommandlineParser
 				@status.output( 0 )
 			elsif( arg == "-c" || arg == "--colour" || arg == "--color" )
 				@status.colour( 0 )
+			elsif( arg == "-n" || arg == "--no-console" )
+				@status.console( 0 )
 			elsif( arg == "-d" || arg == "--debug" )
 				@status.debug( @status.debug + 1 )
 			elsif( arg == "-p" || arg == "--printconfig" )
@@ -48,9 +50,9 @@ class CommandlineParser
 		@output.std( "\t-nt or --no-threads\tDisable threading.\n" )
 		@output.std( "\t-q  or --quiet\t\tDisable normal output.\n" )
 		@output.std( "\t-c  or --colour\t\tDisable coloured output.\n" )
+		@output.std( "\t-n  or --no-console\t\tDisable console.\n" )
 		@output.std( "\t-p  or --printconfig\tShow current configuration and quit.\n" )
 		@output.std( "\t-d  or --debug\t\tShow debug output. (Use twice for extra effect.)\n" )
 		Process.exit
 	end
-
 end
