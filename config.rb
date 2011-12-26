@@ -9,7 +9,7 @@ class Config
 		@pass		= ""						# NickServ password
 		@version	= "Nanobot 4.0 beta"		# Version
 
-		@command	= "?"						# Character prefix for commands (one char)
+		@command	= '\?'						# Character prefix for commands (escape special chars)
 
 		@server		= "irc.insomnia247.nl"		# IPv4 address
 #		@server		= "127.0.0.1"				# IPv4 address
@@ -65,8 +65,8 @@ class Config
 		return @version
 	end
 
-	def command( command = "" )
-		if( command != "" )
+	def command( command = '' )
+		if( command != '' )
 			@command = command
 		end
 		return @command

@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-# Class to make and manage connection
+# Class handle the sending of messages to IRC
 class IRC
 	def initialize( status, config, output, socket )
 		@status		= status

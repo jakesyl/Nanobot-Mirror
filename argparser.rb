@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 # Class to do parsing of commandline arguments
-class CommandlineParser
+class ArgumentParser
 	def initialize( status, config, output, name )
 		@status		= status
 		@config		= config

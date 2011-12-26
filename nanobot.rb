@@ -5,12 +5,12 @@ require 'config.rb'
 require 'output.rb'
 require 'startup.rb'
 require 'status.rb'
-require 'commandline.rb'
+require 'argparser.rb'
 require 'connect.rb'
 require 'timer.rb'
 require 'irc.rb'
 require 'ircparser.rb'
-require 'userinput.rb'
+require 'console.rb'
 
 # Create support objects
 status	= Status.new
@@ -18,7 +18,7 @@ output	= Output.new( status )
 config	= Config.new( status, output )
 
 # Process commandline options
-parser	= CommandlineParser.new( status, config, output, $0 )
+parser	= ArgumentParser.new( status, config, output, $0 )
 parser.parse( ARGV )
 parser = nil
 
@@ -46,7 +46,7 @@ timer = Timer.new( status, config, output, irc )
 
 # Create user input parser
 if( status.console == 1 )
-	UserInputParser.new( status, config, output, irc, timer ).start
+	Console.new( status, config, output, irc, timer ).start
 end
 
 timer.action( 3, "JOIN #bot" ) # Debug line

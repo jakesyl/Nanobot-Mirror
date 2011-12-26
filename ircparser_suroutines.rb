@@ -1,6 +1,19 @@
 #!/usr/bin/ruby
 
-# Methods to handle IRC commands
+# Class to handle IRC commands
+
+require 'commands.rb'
+class IRCSubs
+	def initialize( status, config, output, irc, timer )
+		@status		= status
+		@config		= config
+		@output		= output
+		@irc		= irc
+		@timer		= timer
+
+		@cmd		= Commands.new( status, config, output, irc, timer, 0 )
+	end
+
 	def kick( nick, user, host, channel, kicked, reason )
 		@output.std( nick + " kicked " + kicked + " from " + channel + ". (" + reason + ")\n" )
 
@@ -13,17 +26,24 @@
 	def notice( nick,  user,  host,  to,  message )
 	end
 
-	def userjoin( nick, user, host, channel )
+	def join( nick, user, host, channel )
 	end
 
-	def userpart( nick, user, host, channel )
+	def part( nick, user, host, channel )
 	end
 
-	def userquit( nick, user, host, message )
+	def quit( nick, user, host, message )
 	end
 
 	def privmsg( nick, user, host, from, message )
+		cmd = @config.command
+		if( message =~ /^#{cmd}/ )
+			@cmd.process( nick, user, host, from, message.gsub( /^#{cmd}/, "" ) )
+		else
+			# Hook for non-command messages
+		end
 	end
 
 	def misc( unknown )
 	end
+end

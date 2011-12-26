@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-# Class to make and manage connection
+# Class to parse IRC input
 
 require 'ircparser_suroutines.rb'
 class IRCParser
@@ -10,6 +10,8 @@ class IRCParser
 		@output		= output
 		@irc		= irc
 		@timer		= timer
+
+		@sub		= IRCSubs.new( status, config, output, irc, timer )
 	end
 
 	def start
@@ -18,6 +20,7 @@ class IRCParser
 		while line = @irc.socket.gets
 			if( @status.threads == 1 && @config.threads == 1 )
 				Thread.new{ parser( line.chomp ) }
+				#puts t.join # Debug line
 			else
 				parser( line.chomp )
 			end
@@ -37,36 +40,36 @@ class IRCParser
 		# KICK
 		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) KICK (.+?) (.+?) \:(.+?)/ )
 			@output.debug( "Received kick\n" )
-			kick( $1, $2, $3, $4, $5, $6 )
+			@sub.kick( $1, $2, $3, $4, $5, $6 )
 
 		# NOTICE
 		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) NOTICE (.+?) \:(.+)/ )
 			@output.debug( "Received notice\n" )
-			notice( $1, $2, $3, $4, $5 )
+			@sub.notice( $1, $2, $3, $4, $5 )
 
 		# JOIN
 		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) JOIN \:(.+)/ )
 			@output.debug( "Received join\n" )
-			userjoin( $1, $2, $3, $4 )
+			@sub.join( $1, $2, $3, $4 )
 
 		# PART
 		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) PART \:(.+)/ )
 			@output.debug( "Received part\n" )
-			userpart( $1, $2, $3, $4 )
+			@sub.part( $1, $2, $3, $4 )
 
 		# QUIT
 		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) QUIT \:(.+)/ )
 			@output.debug( "Received quit\n" )
-			userquit( $1, $2, $3, $4 )
+			@sub.quit( $1, $2, $3, $4 )
 
 		# PRIVMSG
 		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) PRIVMSG (.+?) \:(.+)/ )
 			@output.debug( "Received message\n" )
-			privmsg( $1, $2, $3, $4, $5 )
+			@sub.privmsg( $1, $2, $3, $4, $5 )
 
 		# Other stuff
 		else
-			misc( $1 )
+			@sub.misc( $1 )
 		end
 	end
 end
