@@ -7,7 +7,10 @@ require 'startup.rb'
 require 'status.rb'
 require 'commandline.rb'
 require 'connect.rb'
+require 'timer.rb'
 require 'irc.rb'
+require 'ircparser.rb'
+require 'userinput.rb'
 
 # Create support objects
 status	= Status.new
@@ -36,6 +39,15 @@ config.show
 
 # Start connection
 socket = Connection.new( status, config, output ).start
+irc = IRC.new( status, config, output, socket )
 
-# Process IRC input
-irc = IRCParser.new( status, config, output, socket ).start
+# Create timer object for later use
+timer = Timer.new( status, config, output, irc )
+
+# Create user input parser
+UserInputParser.new( status, config, output, irc, timer ).start
+
+timer.action( 3, "JOIN #bot" ) # Debug line
+
+# Start parsing IRC
+parser = IRCParser.new( status, config, output, irc, timer ).start

@@ -14,16 +14,16 @@ class Output
 
 	def std( string )
 		if( @status.output == 1 )
-			$stdout.print(string)
+			$stdout.print( string )
 		end
 	end
 
 	def info( string )
 		if( @status.output == 1 )
 			if( @status.colour == 1 )
-				$stdout.print(@YELLOW + string + @END)
+				$stdout.print( @YELLOW + string + @END )
 			else
-				$stdout.print(string)
+				$stdout.print( string )
 			end
 		end
 	end
@@ -31,9 +31,9 @@ class Output
 	def special( string )
 		if( @status.output == 1 )
 			if( @status.colour == 1 )
-				$stdout.print(@BLUE + string + @END)
+				$stdout.print( @BLUE + string + @END )
 			else
-				$stdout.print(string)
+				$stdout.print( string )
 			end
 		end
 	end
@@ -41,9 +41,9 @@ class Output
 	def good( string )
 		if( @status.output == 1 )
 			if( @status.colour == 1 )
-				$stdout.print(@GREEN + string + @END)
+				$stdout.print( @GREEN + string + @END )
 			else
-				$stdout.print(string)
+				$stdout.print( string )
 			end
 		end
 	end
@@ -51,23 +51,58 @@ class Output
 	def bad( string )
 		if( @status.output == 1 )
 			if( @status.colour == 1 )
-				$stdout.print(@RED + string + @END)
+				$stdout.print( @RED + string + @END )
 			else
-				$stdout.print(string)
+				$stdout.print( string )
 			end
 		end
 	end
 
 	def debug( string )
 		if( @status.debug >= 1 )
-			$stdout.print(string)
+			$stdout.print( string )
 		end
 	end
 
 	def debug_extra( string )
 		if( @status.debug == 2 )
-			$stdout.print(string)
+			$stdout.print( string )
 		end
 	end
 
+	def c( string )
+		puts(string)
+	end
+
+	def cinfo( string )
+		if( @status.colour == 1 )
+			puts( @YELLOW + string + @END )
+		else
+			puts( string )
+		end
+	end
+
+	def cbad( string )
+		if( @status.colour == 1 )
+			$stdout.print( @RED + string + @END )
+		else
+			$stdout.print( string )
+		end
+	end
+
+	def cgood( string )
+		if( @status.colour == 1 )
+			$stdout.print( @GREEN + string + @END )
+		else
+			$stdout.print( string )
+		end
+	end
+
+	def cspecial( string )
+		if( @status.colour == 1 )
+			puts( @BLUE + string + @END )
+		else
+			puts( string )
+		end
+	end
 end

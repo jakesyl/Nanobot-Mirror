@@ -36,7 +36,8 @@ class Config
 		@use_ipv6	= 0							# Prefer IPv6
 		@use_ssl	= 0							# Prefer SSL
 		@verif_ssl	= 0							# Verify SSL certificate
-		@rootcert	= "/etc/ssl/certs/ca-certificates.crt"		# Path to openssl root ca certs
+		@rootcert	= "/etc/ssl/certs/ca-certificates.crt"
+												# Path to openssl root certs (Needed if verify_ssl is enabled)
 
 		@threadfb	= 1							# Allow fallback to sequential processing when threads aren't available
 		@sslfback	= 0							# Allow fallback to insecure connect when SSL isn't available
@@ -127,6 +128,24 @@ class Config
 
 	def threadingfallback
 		return @threadfb
+	end
+
+	def connecttimeout
+		return @conn_time
+	end
+
+	def rejoin( rejoin = "" )
+		if( rejoin != "" )
+			@autorejoin = rejoin
+		end
+		return @autorejoin
+	end
+
+	def rejointime( rejointime = "" )
+		if( rejointime != "" )
+			@rejointime = rejointime
+		end
+		return @rejointime
 	end
 
 	def show

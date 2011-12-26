@@ -1,6 +1,9 @@
 #!/usr/bin/ruby
 
 # Class to make and manage connection
+
+require 'timeout'
+
 class Connection
 	def initialize( status, config, output )
 		@status		= status
@@ -9,18 +12,26 @@ class Connection
 	end
 
 	def start
-		@output.std("Connecting ....................... ");
+		@output.std( "Connecting ....................... " )
 
+		sock = TCPSocket
 		begin
-			sock = TCPSocket.open( @config.server, @config.port )
+			timeout( @config.connecttimeout ) do
+				sock = TCPSocket.open( @config.server, @config.port )
+			end
+		rescue Timeout::Error
+			@output.bad( "[NO]\n" )
+			@output.debug( "Connection timeout.\n" )
+			Process.exit
 		rescue
 			@output.bad( "[NO]\n" )
+			@output.debug( "Error: " + $! + "\n" )
 			Process.exit
 		end
 		@output.good( "[OK]\n" )
 
 		if( @config.ssl == 1 && @status.ssl == 1 )
-			@output.std("Starting SSL ..................... ");
+			@output.std( "Starting SSL ..................... " )
 
 			begin
 				ssl_context = OpenSSL::SSL::SSLContext.new
