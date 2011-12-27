@@ -137,7 +137,7 @@ class Commands
 		if( auth( host ) )
 			if( @config.threads == 1 && @status.threads == 1 )
 				cmd, chan, host, timeout = msg.split( ' ', 4 )
-				if( chan != nil )
+				if( chan != nil  && host != nil ) # Add pararmeter overloading when channel is omitted
 					@irc.mode( chan, "+b", host )
 					@timer.action( timeout.to_i, "@irc.mode( \"#{chan}\", \"-b\", \"#{host}\" )" )
 
