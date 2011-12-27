@@ -16,7 +16,7 @@ class Config
 		@port		= 6667						# Normal port
 		@sslport	= 6697						# SSL port
 
-		@channels	= ["#bot", "#test"]			# Autojoin channel list
+		@channels	= ["#bot"]					# Autojoin channel list
 
 		@opers		= ["insomnia247.nl"]		# Opers list
 
@@ -50,6 +50,13 @@ class Config
 			@nick = nick
 		end
 		return @nick
+	end
+
+	def pass( pass = "" )
+		if( pass != "" )
+			@pass = pass
+		end
+		return @pass
 	end
 
 	def user
@@ -147,11 +154,25 @@ class Config
 		return @rejointime
 	end
 
+	def waitforping( wait = "" )
+		if( wait != "" )
+			@pingwait = wait
+		end
+		return @pingwait
+	end
+
 	def opers( opers = "" )
 		if( opers != "" )
 			@opers = opers
 		end
 		return @opers
+	end
+
+	def channels( channels = "" )
+		if( channels != "" )
+			@channels = channels
+		end
+		return @channels
 	end
 
 	def show

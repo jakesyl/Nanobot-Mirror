@@ -17,6 +17,10 @@ class IRCParser
 	def start
 		@irc.sendinit
 
+		if( @config.waitforping == 0 && @status.login == 0 )
+			@irc.login
+		end
+
 		while line = @irc.socket.gets
 			if( @status.threads == 1 && @config.threads == 1 )
 				Thread.new{ parser( line.chomp ) }
@@ -36,6 +40,10 @@ class IRCParser
 		if( line =~ /^PING \:(.+)/ )
 			@output.debug( "Received ping\n" )
 			@irc.pong( $1 )
+
+			if( @config.waitforping == 1 && @status.login == 0 )
+				@irc.login
+			end
 
 		# KICK
 		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) KICK (.+?) (.+?) \:(.+?)/ )

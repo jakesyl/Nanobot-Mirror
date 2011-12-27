@@ -13,7 +13,7 @@ class Timer
 		@output.debug( "Set action '" + action + "' to be executed in " + timeout.to_s + " seconds.\n" )
 
 		if( @config.threads == 1 && @status.threads == 1 )
-			Thread.new{ sleep( timeout ); @irc.raw( action ) }
+			Thread.new{ sleep( timeout ); eval( action ) }
 		else
 			@output.debug( "Not executing, threading disabled.\n" )
 		end

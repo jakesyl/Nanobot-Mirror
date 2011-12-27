@@ -49,7 +49,5 @@ if( status.console == 1 )
 	Console.new( status, config, output, irc, timer ).start
 end
 
-timer.action( 3, "JOIN #bot" ) # Debug line
-
 # Start parsing IRC
 parser = IRCParser.new( status, config, output, irc, timer ).start

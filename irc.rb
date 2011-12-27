@@ -18,9 +18,22 @@ class IRC
 		@socket.puts( line )
 	end
 
+	# Send initial connect data
 	def sendinit
 		raw( "NICK " + @config.nick )
 		raw( "USER " + @config.user + " 8 *  :" + @config.version )
+	end
+
+	def login
+		# Do nickserv login
+		if( @config.pass != "" )
+			message( "NickServ", "IDENTIFY " + @config.pass )
+		end
+
+		# Join channels
+		@config.channels.each do |channel|
+			join( channel )
+		end
 	end
 
 	def pong( line )
@@ -60,8 +73,8 @@ class IRC
 		raw( "KICK " + channel + " " + user + " " + reason )
 	end
 
-	def mode( channel, mode, user )
-		raw( "MODE " + channel + " " + mode + " " + user )
+	def mode( channel, mode, subject )
+		raw( "MODE " + channel + " " + mode + " " + subject )
 	end
 
 	def quit( message )

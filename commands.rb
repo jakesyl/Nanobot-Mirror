@@ -27,11 +27,11 @@ class Commands
 		if( con ) # No auth needed for console
 			admin = 1
 		else
-			@config.opers.each { |adminhost|
+			@config.opers.each do |adminhost|
 				if( adminhost == host )
 					admin = 1
 				end				
-			}
+			end
 		end
 
 		return( admin == 1 )
@@ -129,6 +129,33 @@ class Commands
 				else
 					@irc.notice( nick, "Usage: " + cmc + "part #channel" )
 				end
+			end
+		end
+	end
+
+	def timeban( nick, user, host, from, msg )
+		if( auth( host ) )
+			if( @config.threads == 1 && @status.threads == 1 )
+				cmd, chan, host, timeout = msg.split( ' ', 4 )
+				if( chan != nil )
+					@irc.mode( chan, "+b", host )
+					@timer.action( timeout.to_i, "@irc.mode( \"#{chan}\", \"-b\", \"#{host}\" )" )
+
+					if( con )
+						@output.cinfo( "Unban set for " + timeout.to_s + " seconds from now." )
+						@irc.message( chan, "Unban set for " + timeout.to_s + " seconds from now." )
+					else
+						@irc.message( from, "Unban set for " + timeout.to_s + " seconds from now." )
+					end
+				else
+					if( con )
+						@output.cinfo( "Usage: timeban #channel host seconds" )
+					else
+						@irc.notice( nick, "Usage: " + cmc + "timeban #channel host seconds" )
+					end
+				end
+			else
+				@irc.notice( nick, "Timeban not availble when threading is disabled." )
 			end
 		end
 	end
