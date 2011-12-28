@@ -71,7 +71,7 @@ class Output
 	end
 
 	def c( string )
-		puts(string)
+		$stdout.print(string)
 	end
 
 	def cinfo( string )

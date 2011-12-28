@@ -20,6 +20,13 @@ class Commands
 		return @config.command
 	end
 
+	def sanitize( input, downcase = 0 )
+		input.gsub!( /[^a-zA-Z0-9 -]/, "" )
+		if( downcase == 1 )
+			input.downcase!
+		end
+	end
+
 	# Check for authorized users
 	def auth( host )
 		admin = 0
@@ -43,7 +50,7 @@ class Commands
 		cmd, rest = msg.split(' ', 2)
 
 		if( cmd != nil )
-			cmd = cmd.gsub( /[^a-zA-Z0-9 -]/, "" )
+			sanitize( cmd, 1 )
 			begin
 				eval( "self.#{cmd}( nick, user, host, from, msg )" )
 			rescue NoMethodError
@@ -191,6 +198,132 @@ class Commands
 		end
 	end
 
+	def load( nick, user, host, from, msg )
+		if( auth( host ) )
+			cmd, plugin = msg.split( ' ', 2 )
+			if( plugin != nil )
+				# Clean variable
+				sanitize( plugin, 1 )
+
+				# Check if plugin isn't loaded already
+				if( !@status.checkplugin( plugin ) )
+					# Check file exists
+					if( FileTest.file?( @config.plugindir + "/" + plugin + ".rb" ) )
+
+						# Check syntax & load
+						begin
+							# Try to include the plugin
+							eval( "require '#{@config.plugindir}/#{plugin}.rb'" )
+							@output.debug( "Require was successful.\n" )
+
+							# Try to create an object
+							eval( "object = #{plugin.capitalize}.new( @status, @config, @output, @irc, @timer, @console )" )
+							@output.debug( "Object was created.\n" )
+
+							# Push to @plugins
+							eval( "@status.addplugin( plugin, object )" )
+							@output.debug( "Object was pushed to plugin hash.\n" )
+
+							if( con )
+								@output.cgood( "Plugin " + plugin + " loaded.\n" )
+							else
+								@irc.notice( nick, "Plugin " + plugin + " loaded." )
+							end
+						rescue Exception => e
+							if( con )
+								@output.cbad( "Failed to load plugin:\n" )
+								@output.cinfo( e.to_s + "\n" )
+							else
+								@irc.notice( nick, "Failed to load plugin: " + e.to_s )
+							end
+						end
+					else
+						# Not found
+						if( con )
+							@output.cbad( "File not found.\n" )
+						else
+							@irc.notice( nick, "File not found." )
+						end
+					end
+				else
+					if( con )
+						@output.cbad( "Plugin " + plugin + " is already loaded.\n" )
+					else
+						@irc.notice( nick, "Plugin " + plugin + " is already loaded." )
+					end
+				end
+			else
+				if( con )
+					@output.info( "Usage: " + @config.command + "load plugin" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "load plugin" )
+				end				
+			end
+		end
+	end
+
+	def unload( nick, user, host, from, msg )
+		if( auth( host ) )
+			cmd, plugin = msg.split( ' ', 2 )
+			if( plugin != nil )
+				# Clean variable
+				sanitize( plugin, 1 )
+
+				# Check if plugin is loaded
+				if( @status.checkplugin( plugin ) )
+					begin
+						# Remove @plugins
+						eval( "@status.delplugin( plugin )" )
+						@output.debug( "Object was removed from plugin hash.\n" )
+
+						if( con )
+							@output.cgood( "Plugin " + plugin + " unloaded.\n" )
+						else
+							@irc.notice( nick, "Plugin " + plugin + " unloaded." )
+						end
+					rescue Exception => e
+						if( con )
+							@output.cbad( "Failed to unload plugin:\n" )
+							@output.cinfo( e.to_s + "\n" )
+						else
+							@irc.notice( nick, "Failed to unload plugin: " + e.to_s )
+						end
+					end
+				else
+					if( con )
+						@output.cbad( "Plugin " + plugin + " is not loaded.\n" )
+					else
+						@irc.notice( nick, "Plugin " + plugin + " is not loaded." )
+					end
+				end
+			else
+				if( con )
+					@output.info( "Usage: " + @config.command + "unload plugin" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "unload plugin" )
+				end				
+			end
+		end
+	end
+
+	def loaded( nick, user, host, from, msg )
+		if( con )
+			@output.c( "Loaded plugins: " )
+			@status.plugins.each_key do |plugin_name|
+				@output.c( plugin_name + " " )
+			end
+			@output.c( "\n" )
+		else
+			tmp_list = ""
+			@status.plugins.each_key do |plugin_name|
+				tmp_list = tmp_list +  plugin_name + " "
+			end
+
+			@irc.notice( nick, "Loaded plugins: " + tmp_list )
+			tmp_list = nil
+		end
+	end
+	
 	def plugin( nick, user, host, from, msg )
 		# Check for public function
 		if( auth( host ) )

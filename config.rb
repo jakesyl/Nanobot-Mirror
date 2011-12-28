@@ -175,6 +175,20 @@ class Config
 		return @channels
 	end
 
+	def datadir( data = "" )
+		if( data != "" )
+			@data = data
+		end
+		return @data
+	end
+
+	def plugindir( plugins = "" )
+		if( plugins != "" )
+			@plugins = plugins
+		end
+		return @plugins
+	end
+
 	def show
 		if( @status.showconfig == 1 )
 			@output.info( "\nConfiguration:\n" )

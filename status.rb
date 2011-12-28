@@ -12,6 +12,7 @@ class Status
 		@ssl		= 0
 		@showconf	= 0
 		@console	= 1
+		@plugins	= {}
 		@startup	= Time.new
 	end
 
@@ -69,6 +70,30 @@ class Status
 			@showconf = show
 		end
 		return @showconf
+	end
+
+	def plugins( plugins = "" )
+		if( plugins != "" )
+			@plugins = plugins
+		end
+		return @plugins
+	end
+
+	def addplugin( name, plugin )
+		@plugins[ name ] = plugin
+	end
+
+	def delplugin( name )
+		@plugins[ name ] = nil
+		@plugins.delete( name )
+	end
+
+	def checkplugin( name )
+		return( @plugins.has_key?( name ) )
+	end
+
+	def getplugin( name )
+		return( @plugins.fetch( name ) )
 	end
 
 	def startup
