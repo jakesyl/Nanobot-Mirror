@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 # Class to handle console input
-require 'commands.rb'
+require './commands.rb'
 class Console
 	def initialize( status, config, output, irc, timer )
 		@status		= status

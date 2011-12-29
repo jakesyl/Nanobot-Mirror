@@ -38,6 +38,10 @@ class IRC
 
 	def pong( line )
 		raw( "PONG " + line )
+		if( @config.waitforping == 1 && @status.login == 0 )
+			login
+			@status.login( 1 )
+		end
 	end
 
 	def message( to, message )

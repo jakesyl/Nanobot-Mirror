@@ -25,7 +25,7 @@ class Connection
 			Process.exit
 		rescue
 			@output.bad( "[NO]\n" )
-			@output.debug( "Error: " + $! + "\n" )
+			@output.debug( "Error: " + $!.to_s + "\n" )
 			Process.exit
 		end
 		@output.good( "[OK]\n" )

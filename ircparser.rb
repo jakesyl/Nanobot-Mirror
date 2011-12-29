@@ -2,7 +2,7 @@
 
 # Class to parse IRC input
 
-require 'ircparser_suroutines.rb'
+require './ircparser_suroutines.rb'
 class IRCParser
 	def initialize( status, config, output, irc, timer )
 		@status		= status
@@ -19,6 +19,7 @@ class IRCParser
 
 		if( @config.waitforping == 0 && @status.login == 0 )
 			@irc.login
+			@status.login( 1 )
 		end
 
 		while line = @irc.socket.gets

@@ -2,7 +2,7 @@
 
 # Class used for initial bot configuration
 # Modify the following variables to your liking
-class Config
+class Configuration
 	def initialize( status, output )
 		@nick		= "nanodev"					# Bot nickname
 		@user		= "nanobot"					# IRC username

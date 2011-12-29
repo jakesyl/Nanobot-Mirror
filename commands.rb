@@ -66,8 +66,10 @@ class Commands
 						end
 					end
 				else
-					# Try to call as command from core plugin
-					process(nick, user, host, from, "core " + msg)
+					if( cmd != "core" )
+						# Try to call as command from core plugin
+						process(nick, user, host, from, "core " + msg)
+					end
 				end
 			end
 		end

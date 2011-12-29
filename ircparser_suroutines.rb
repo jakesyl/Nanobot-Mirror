@@ -2,7 +2,7 @@
 
 # Class to handle IRC commands
 
-require 'commands.rb'
+require './commands.rb'
 class IRCSubs
 	def initialize( status, config, output, irc, timer )
 		@status		= status

@@ -1,21 +1,21 @@
 #!/usr/bin/ruby
 
 # Load support files
-require 'config.rb'
-require 'output.rb'
-require 'startup.rb'
-require 'status.rb'
-require 'argparser.rb'
-require 'connect.rb'
-require 'timer.rb'
-require 'irc.rb'
-require 'ircparser.rb'
-require 'console.rb'
+require './config.rb'
+require './output.rb'
+require './startup.rb'
+require './status.rb'
+require './argparser.rb'
+require './connect.rb'
+require './timer.rb'
+require './irc.rb'
+require './ircparser.rb'
+require './console.rb'
 
 # Create support objects
 status	= Status.new
 output	= Output.new( status )
-config	= Config.new( status, output )
+config	= Configuration.new( status, output )
 
 # Process commandline options
 parser	= ArgumentParser.new( status, config, output, $0 )
