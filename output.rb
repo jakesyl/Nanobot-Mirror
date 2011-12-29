@@ -12,6 +12,7 @@ class Output
 		@END		= "\033[0m";
 	end
 
+	# Standard output
 	def std( string )
 		if( @status.output )
 				$stdout.print( string )
@@ -58,6 +59,7 @@ class Output
 		end
 	end
 
+	# Debug output
 	def debug( string )
 		if( @status.debug >= 1 )
 			std( string )
@@ -65,11 +67,12 @@ class Output
 	end
 
 	def debug_extra( string )
-		if( @status.debug == 2 )
+		if( @status.debug >= 2 )
 			std( string )
 		end
 	end
 
+	# Interactive console output
 	def c( string )
 		$stdout.print(string)
 	end

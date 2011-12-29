@@ -19,14 +19,13 @@ class IRCParser
 
 		if( !@config.waitforping && !@status.login )
 			@irc.login
+			autoload
 			@status.login( 1 )
 		end
 
 		while line = @irc.socket.gets
 			if( @status.threads && @config.threads )
-					spawn_parser( line.chomp )
-					#Thread.new{ parser( line.chomp ) }
-					#puts t.join # Debug line
+				spawn_parser( line.chomp )
 			else
 				parser( line.chomp )
 			end
@@ -34,9 +33,11 @@ class IRCParser
 	end
 
 	def spawn_parser( line )
-		Thread.new {
-			parser( line )
-		}
+		if(@status.debug == 3)
+			puts Thread.new { parser( line ) }.join
+		else
+			Thread.new { parser( line )	}
+		end
 	end
 
 	def parser( line )
@@ -51,6 +52,7 @@ class IRCParser
 
 			if( @config.waitforping && !@status.login )
 				@irc.login
+				autoload
 			end
 
 		# KICK
@@ -85,7 +87,16 @@ class IRCParser
 
 		# Other stuff
 		else
-			@sub.misc( $1 )
+			@sub.misc( line )
+		end
+	end
+	
+	# Function to start module autoloading
+	def autoload
+		if( @status.threads && @config.threads )
+			spawn_parser( "autoload" )
+		else
+			parser( "autoload" )
 		end
 	end
 end

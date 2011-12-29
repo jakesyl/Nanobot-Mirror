@@ -9,6 +9,7 @@ class ArgumentParser
 		@name		= name
 	end
 
+	# Main parser function
 	def parse( args )
 		args.each do |arg|
 			if( arg == "-h" || arg == "--help" )
@@ -37,6 +38,7 @@ class ArgumentParser
 		end
 	end
 
+	# Commandline help
 	def printhelp
 		@output.info( "Usage:\n" )
 		@output.std( "\truby " + @name + " [options]\n\n" )
@@ -52,7 +54,7 @@ class ArgumentParser
 		@output.std( "\t-c  or --colour\t\tDisable coloured output.\n" )
 		@output.std( "\t-n  or --no-console\t\tDisable console.\n" )
 		@output.std( "\t-p  or --printconfig\tShow current configuration and quit.\n" )
-		@output.std( "\t-d  or --debug\t\tShow debug output. (Use twice for extra effect.)\n" )
+		@output.std( "\t-d  or --debug\t\tShow debug output. (Use 2 or 3 times for extra effect.)\n" )
 		Process.exit
 	end
 end

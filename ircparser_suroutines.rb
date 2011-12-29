@@ -45,5 +45,11 @@ class IRCSubs
 	end
 
 	def misc( unknown )
+		# Passing on the signal for module autoloading
+		if( unknown == "autoload" )
+			tmp = Commands.new( @status, @config, @output, @irc, @timer, 1 )
+			tmp.autoload
+			tmp = nil
+		end
 	end
 end

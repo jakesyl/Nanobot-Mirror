@@ -2,7 +2,7 @@
 
 # Class to handle user commands
 class Commands
-	alias_method :loadplugin, :load
+	alias_method :loadfile, :load
 	def initialize( status, config, output, irc, timer, console = 0 )
 		@status		= status
 		@config		= config
@@ -74,7 +74,8 @@ class Commands
 			end
 		end
 	end
-	
+
+	# Quit command
 	def quit( nick, user, host, from, msg )
 		if( @config.auth( host, con ) )
 			if( con )		
@@ -101,6 +102,7 @@ class Commands
 		end
 	end
 
+	# Load modules
 	def load( nick, user, host, from, msg )
 		if( @config.auth( host, con ) )
 			cmd, plugin = msg.split( ' ', 2 )
@@ -116,7 +118,7 @@ class Commands
 						# Check syntax & load
 						begin
 							# Try to load the plugin
-							eval( "loadplugin '#{@config.plugindir}/#{plugin}.rb'" )
+							eval( "loadfile './#{@config.plugindir}/#{plugin}.rb'" )
 							@output.debug( "Load was successful.\n" )
 
 							object = nil
@@ -166,6 +168,7 @@ class Commands
 		end
 	end
 
+	# Unload module
 	def unload( nick, user, host, from, msg )
 		if( @config.auth( host, con ) )
 			cmd, plugin = msg.split( ' ', 2 )
@@ -210,11 +213,21 @@ class Commands
 		end
 	end
 
+	# Meta function to reload modules
 	def reload( nick, user, host, from, msg )
 		unload( nick, user, host, from, msg )
 		load( nick, user, host, from, msg )
 	end
 
+	# Meta funcion to load autoload modules
+	def autoload( nick = nil, user = nil, host = nil, from = nil, msg = nil )
+		puts "In Autoload function"
+		@config.autoload.each do |mod|
+			load( nil, nil, nil, nil, "dummy " + mod )
+		end
+	end
+
+	# Function to get list of loaded modules
 	def loaded( nick, user, host, from, msg )
 		if( con )
 			@output.c( "Loaded plugins: " )
@@ -231,5 +244,34 @@ class Commands
 			@irc.notice( nick, "Loaded plugins: " + tmp_list )
 			tmp_list = nil
 		end
+	end
+
+	# Function to list available modules
+	def available( nick, user, host, from, msg )
+		contents = Dir.entries("./" + @config.plugindir + "/" )
+		plugs = Array.new
+		contents.entries.each do |file|
+			if( file =~ /\.rb$/i )
+				file.gsub!( /\.rb$/i, "" )
+				plugs.push( file )
+			end
+		end
+
+		if( con )
+			@output.c( "Available plugins: " )
+			plugs.each do |p|
+				@output.c( p + " " )
+			end
+			@output.c( "\n" )
+		else
+			output = "Available plugins: "
+			plugs.each do |p|
+				output = output + p + " "
+			end
+			@irc.notice( nick, output )
+			output = nil
+		end
+		contents = nil
+		plugins = nil
 	end
 end

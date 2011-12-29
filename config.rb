@@ -45,6 +45,7 @@ class Configuration
 		@output		= output					# System object, do not modify
 	end
 
+	# Get/set methods
 	def nick( nick = "" )
 		if( nick != "" )
 			@nick = nick
@@ -175,6 +176,13 @@ class Configuration
 		return @channels
 	end
 
+	def autoload( autoload = "" )
+		if( autoload != "" )
+			@autoload = autoload
+		end
+		return @autoload
+	end
+
 	def datadir( data = "" )
 		if( data != "" )
 			@data = data
@@ -206,6 +214,7 @@ class Configuration
 		return( admin == 1 )
 	end
 
+	# Function to print out current configuration
 	def show
 		if( @status.showconfig )
 			@output.info( "\nConfiguration:\n" )
@@ -225,7 +234,7 @@ class Configuration
 			@output.std( "\tPrefer IPv6:\t\t" + yn(@use_ipv6) + "\n" )
 			@output.std( "\tPort:\t\t\t" + @port.to_s + "\n" )
 			@output.std( "\tSSL port:\t\t" + @sslport.to_s + "\n" )
-			@output.std( "\tSSL Available:\t\t" + yn(@status.ssl) + "\n" )
+			@output.std( "\tSSL Available:\t\t" + ynb(@status.ssl) + "\n" )
 			@output.std( "\tVerify SSL cert:\t" + yn(@verif_ssl) + "\n" )
 			@output.std( "\tPath to root cert:\t" + @rootcert + "\n" )
 			@output.std( "\tPrefer SSL:\t\t" + yn(@use_ssl) + "\n" )
@@ -273,33 +282,44 @@ class Configuration
 
 			# Threading settings
 			@output.info( "\n\tThreading settings:\n" )
-			@output.std( "\tThreading available:\t" + yn(@status.threads) + "\n" )
+			@output.std( "\tThreading available:\t" + ynb(@status.threads) + "\n" )
 			@output.std( "\tUse threading:\t\t" + yn(@use_thread) + "\n" )
 			@output.std( "\tAllow thread fallback:\t" + yn(@threadfb) + "\n" )
 
 			# Output settings
 			@output.info( "\n\tOutput settings:\n" )
 			@output.std( "\tShow output:\t\tYes\n" )
-			@output.std( "\tUse colours:\t\t" + yn(@status.colour) + "\n" )
+			@output.std( "\tUse colours:\t\t" + ynb(@status.colour) + "\n" )
 			@output.std( "\tShow debug output:\t" + @status.debug.to_s + "\n" )
 			@output.std( "\tDebug level:\t\t" )
 			if( @status.debug == 0 )
 				@output.std( "None\n" )
 			elsif( @status.debug == 1 )
 				@output.std( "Normal\n" )
-			else
+			elsif( @status.debug == 2 )
 				@output.std( "Extra\n" )
+			else
+				@output.std( "Extra + IRC threads\n" )
 			end
 
 			Process.exit
 		end
 	end
 
+	# Support functions for config printing
 	def yn( var )
+		if( var == 1 )
+			return "Yes"
+		else
+			return "No"
+		end
+	end
+
+	def ynb( var )
 		if( var )
 			return "Yes"
 		else
 			return "No"
 		end
-	end	
+	end
 end

@@ -16,6 +16,7 @@ class Status
 		@startup	= Time.new
 	end
 
+	# Get/set functions
 	def output( output = "" )
 		if( output != "" )
 			@output = output
@@ -72,6 +73,7 @@ class Status
 		return( @showconf == 1 )
 	end
 
+	# Functions to deal with plugins
 	def plugins( plugins = "" )
 		if( plugins != "" )
 			@plugins = plugins
