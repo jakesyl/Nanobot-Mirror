@@ -45,7 +45,7 @@ irc = IRC.new( status, config, output, socket )
 timer = Timer.new( status, config, output, irc )
 
 # Create user input parser
-if( status.console == 1 )
+if( status.console )
 	Console.new( status, config, output, irc, timer ).start
 end
 

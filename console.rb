@@ -16,7 +16,7 @@ class Console
 	def start
 		@output.std( "Commandline input parsing ........ " )
 
-		if( @config.threads == 1 && @status.threads == 1 )
+		if( @config.threads && @status.threads )
 			@output.good( "[OK]\n" )
 
 			Thread.new{ parse }

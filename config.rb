@@ -87,12 +87,12 @@ class Configuration
 	end
 
 	def port
-		if( @use_ssl == 1 && @status.ssl == 1 )
+		if( @use_ssl == 1 && @status.ssl )
 			return @sslport
-		elsif( @use_ssl == 1 && @status.ssl == 0 && @sslfback == 1 )
+		elsif( @use_ssl == 1 && @status.ssl && @sslfback == 1 )
 			@output.bad( "Warning: SSL is not available, insecure connection!\n" )
 			return @port
-		elsif( @use_ssl == 1 && @status.ssl == 0 && @sslfback == 0 )
+		elsif( @use_ssl == 1 && @status.ssl && @sslfback == 0 )
 			@output.info( "\nSSL is not available, and fallback is disabled.\n" )
 			Process.exit
 		else
@@ -104,14 +104,14 @@ class Configuration
 		if( ssl != "" )
 			@use_ssl = ssl
 		end
-		return @use_ssl
+		return( @use_ssl == 1 )
 	end
 
 	def verifyssl( ssl = "" )
 		if( ssl != "" )
 			@verif_ssl = ssl
 		end
-		return @verif_ssl
+		return( @verif_ssl == 1 )
 	end
 
 	def rootcert
@@ -122,18 +122,18 @@ class Configuration
 		if( ipv6 != "" )
 			@use_ipv6 = ipv6
 		end
-		return @use_ipv6
+		return( @use_ipv6 == 1 )
 	end
 
 	def threads( threads = "" )
 		if( threads != "" )
 			@use_thread = threads
 		end
-		return @use_thread
+		return( @use_thread == 1 )
 	end
 
 	def threadingfallback
-		return @threadfb
+		return( @threadfb == 1 )
 	end
 
 	def connecttimeout
@@ -144,7 +144,7 @@ class Configuration
 		if( rejoin != "" )
 			@autorejoin = rejoin
 		end
-		return @autorejoin
+		return( @autorejoin == 1 )
 	end
 
 	def rejointime( rejointime = "" )
@@ -158,7 +158,7 @@ class Configuration
 		if( wait != "" )
 			@pingwait = wait
 		end
-		return @pingwait
+		return( @pingwait == 1 )
 	end
 
 	def opers( opers = "" )
@@ -207,7 +207,7 @@ class Configuration
 	end
 
 	def show
-		if( @status.showconfig == 1 )
+		if( @status.showconfig )
 			@output.info( "\nConfiguration:\n" )
 
 			# General bot info
@@ -281,7 +281,7 @@ class Configuration
 			@output.info( "\n\tOutput settings:\n" )
 			@output.std( "\tShow output:\t\tYes\n" )
 			@output.std( "\tUse colours:\t\t" + yn(@status.colour) + "\n" )
-			@output.std( "\tShow debug output:\t" + yn(@status.debug) + "\n" )
+			@output.std( "\tShow debug output:\t" + @status.debug.to_s + "\n" )
 			@output.std( "\tDebug level:\t\t" )
 			if( @status.debug == 0 )
 				@output.std( "None\n" )
@@ -296,7 +296,7 @@ class Configuration
 	end
 
 	def yn( var )
-		if( var > 0 )
+		if( var )
 			return "Yes"
 		else
 			return "No"

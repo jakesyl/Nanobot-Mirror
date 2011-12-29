@@ -42,7 +42,7 @@ class Startup
 			@status.threads( 0 )
 			@output.bad( "[NO]\n" )
 
-			if( @config.threadingfallback == 0 )
+			if( !@config.threadingfallback )
 				@output.info( "No threading support, and fallback is disabled.\n" )
 				Process.exit
 			end

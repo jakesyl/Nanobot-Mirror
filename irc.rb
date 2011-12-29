@@ -15,7 +15,7 @@ class IRC
 
 	def raw( line )
 		@output.debug_extra( "<== " + line + "\n")
-		@socket.puts( line )
+			@socket.puts( line )
 	end
 
 	# Send initial connect data
@@ -38,7 +38,7 @@ class IRC
 
 	def pong( line )
 		raw( "PONG " + line )
-		if( @config.waitforping == 1 && @status.login == 0 )
+		if( @config.waitforping && !@status.login )
 			login
 			@status.login( 1 )
 		end

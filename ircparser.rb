@@ -1,8 +1,8 @@
 #!/usr/bin/ruby
 
 # Class to parse IRC input
-
 require './ircparser_suroutines.rb'
+
 class IRCParser
 	def initialize( status, config, output, irc, timer )
 		@status		= status
@@ -17,19 +17,26 @@ class IRCParser
 	def start
 		@irc.sendinit
 
-		if( @config.waitforping == 0 && @status.login == 0 )
+		if( !@config.waitforping && !@status.login )
 			@irc.login
 			@status.login( 1 )
 		end
 
 		while line = @irc.socket.gets
-			if( @status.threads == 1 && @config.threads == 1 )
-				Thread.new{ parser( line.chomp ) }
-				#puts t.join # Debug line
+			if( @status.threads && @config.threads )
+					spawn_parser( line.chomp )
+					#Thread.new{ parser( line.chomp ) }
+					#puts t.join # Debug line
 			else
 				parser( line.chomp )
 			end
 		end
+	end
+
+	def spawn_parser( line )
+		Thread.new {
+			parser( line )
+		}
 	end
 
 	def parser( line )
@@ -42,7 +49,7 @@ class IRCParser
 			@output.debug( "Received ping\n" )
 			@irc.pong( $1 )
 
-			if( @config.waitforping == 1 && @status.login == 0 )
+			if( @config.waitforping && !@status.login )
 				@irc.login
 			end
 

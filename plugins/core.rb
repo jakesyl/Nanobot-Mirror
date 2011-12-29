@@ -91,7 +91,7 @@ class Core
 
 	def timeban( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			if( @config.threads == 1 && @status.threads == 1 )
+			if( @config.threads && @status.threads )
 				if( arguments != nil )
 					chan, host, timeout = arguments.split( ' ', 3 )
 				end

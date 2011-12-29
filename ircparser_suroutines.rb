@@ -18,7 +18,7 @@ class IRCSubs
 		@output.std( nick + " kicked " + kicked + " from " + channel + ". (" + reason + ")\n" )
 
 		# Check if we need to rejoin
-		if( @config.nick == kicked && @config.rejoin == 1 )
+		if( @config.nick == kicked && @config.rejoin )
 			@timer.action( @config.rejointime, "JOIN " + channel )
 		end
 	end

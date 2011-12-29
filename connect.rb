@@ -30,13 +30,13 @@ class Connection
 		end
 		@output.good( "[OK]\n" )
 
-		if( @config.ssl == 1 && @status.ssl == 1 )
+		if( @config.ssl && @status.ssl )
 			@output.std( "Starting SSL ..................... " )
 
 			begin
 				ssl_context = OpenSSL::SSL::SSLContext.new
 
-				if( @config.verifyssl == 1 )				
+				if( @config.verifyssl )				
 					ssl_context.verify_mode = OpenSSL::SSL::VERIFY_PEER
 					ssl_context.ca_file = @config.rootcert
 				else
@@ -46,7 +46,7 @@ class Connection
 					ssl_sock.sync_close = true
 					ssl_sock.connect
 
-					if( ssl_sock.verify_result != 0 && @config.verifyssl == 1 )
+					if( ssl_sock.verify_result != 0 && @config.verifyssl )
 						@output.bad( "[NO]\n" )
 						@output.debug( getSSLerror( ssl_sock.verify_result ) + "\n" )
 						Process.exit

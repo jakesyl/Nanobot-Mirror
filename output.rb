@@ -13,60 +13,60 @@ class Output
 	end
 
 	def std( string )
-		if( @status.output == 1 )
-			$stdout.print( string )
+		if( @status.output )
+				$stdout.print( string )
 		end
 	end
 
 	def info( string )
-		if( @status.output == 1 )
-			if( @status.colour == 1 )
-				$stdout.print( @YELLOW + string + @END )
+		if( @status.output )
+			if( @status.colour )
+				std( @YELLOW + string + @END )
 			else
-				$stdout.print( string )
+				std( string )
 			end
 		end
 	end
 
 	def special( string )
-		if( @status.output == 1 )
-			if( @status.colour == 1 )
-				$stdout.print( @BLUE + string + @END )
+		if( @status.output )
+			if( @status.colour )
+				std( @BLUE + string + @END )
 			else
-				$stdout.print( string )
+				std( string )
 			end
 		end
 	end
 
 	def good( string )
-		if( @status.output == 1 )
-			if( @status.colour == 1 )
-				$stdout.print( @GREEN + string + @END )
+		if( @status.output )
+			if( @status.colour )
+				std( @GREEN + string + @END )
 			else
-				$stdout.print( string )
+				std( string )
 			end
 		end
 	end
 
 	def bad( string )
-		if( @status.output == 1 )
-			if( @status.colour == 1 )
-				$stdout.print( @RED + string + @END )
+		if( @status.output )
+			if( @status.colour )
+				std( @RED + string + @END )
 			else
-				$stdout.print( string )
+				std( string )
 			end
 		end
 	end
 
 	def debug( string )
 		if( @status.debug >= 1 )
-			$stdout.print( string )
+			std( string )
 		end
 	end
 
 	def debug_extra( string )
 		if( @status.debug == 2 )
-			$stdout.print( string )
+			std( string )
 		end
 	end
 
@@ -75,7 +75,7 @@ class Output
 	end
 
 	def cinfo( string )
-		if( @status.colour == 1 )
+		if( @status.colour )
 			puts( @YELLOW + string + @END )
 		else
 			puts( string )
@@ -83,7 +83,7 @@ class Output
 	end
 
 	def cbad( string )
-		if( @status.colour == 1 )
+		if( @status.colour )
 			$stdout.print( @RED + string + @END )
 		else
 			$stdout.print( string )
@@ -91,7 +91,7 @@ class Output
 	end
 
 	def cgood( string )
-		if( @status.colour == 1 )
+		if( @status.colour )
 			$stdout.print( @GREEN + string + @END )
 		else
 			$stdout.print( string )
@@ -99,7 +99,7 @@ class Output
 	end
 
 	def cspecial( string )
-		if( @status.colour == 1 )
+		if( @status.colour )
 			puts( @BLUE + string + @END )
 		else
 			puts( string )

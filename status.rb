@@ -20,14 +20,14 @@ class Status
 		if( output != "" )
 			@output = output
 		end
-		return @output
+		return( @output == 1 )
 	end
 
 	def colour( colour = "" )
 		if( colour != "" )
 			@colour = colour
 		end
-		return @colour
+		return( @colour == 1 )
 	end
 
 	def debug( debug = "" )
@@ -41,35 +41,35 @@ class Status
 		if( login != "" )
 			@login = login
 		end
-		return @login
+		return( @login == 1 )
 	end
 
 	def threads( threads = "" )
 		if( threads != "" )
 			@threads = threads
 		end
-		return @threads
+		return( @threads == 1 )
 	end
 
 	def ssl( ssl = "" )
 		if( ssl != "" )
 			@ssl = ssl
 		end
-		return @ssl
+		return( @ssl == 1 )
 	end
 
 	def console( console = "" )
 		if( console != "" )
 			@console = console
 		end
-		return @console
+		return( @console == 1 )
 	end
 
 	def showconfig( show = "" )
 		if( show != "" )
 			@showconf = show
 		end
-		return @showconf
+		return( @showconf == 1 )
 	end
 
 	def plugins( plugins = "" )
