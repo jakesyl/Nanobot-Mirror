@@ -22,7 +22,7 @@ class Config
 
 		@data		= "data"					# Data directory
 		@plugins	= "plugins"					# Plugin directory
-		@autoload	= []						# Plugin autoload list
+		@autoload	= ["core", "help"]			# Plugin autoload list
 
 		@autorejoin	= 1							# Rejoin on kick
 		@rejointime	= 3							# Time to wait before rejoin (seconds)
@@ -93,7 +93,7 @@ class Config
 			@output.bad( "Warning: SSL is not available, insecure connection!\n" )
 			return @port
 		elsif( @use_ssl == 1 && @status.ssl == 0 && @sslfback == 0 )
-			@output.info( "SSL is not available, and fallback is disabled.\n" )
+			@output.info( "\nSSL is not available, and fallback is disabled.\n" )
 			Process.exit
 		else
 			return @port
@@ -187,6 +187,23 @@ class Config
 			@plugins = plugins
 		end
 		return @plugins
+	end
+
+	# Check for authorized users
+	def auth( host, console )
+		admin = 0
+
+		if( console ) # No auth needed for console
+			admin = 1
+		else
+			@opers.each do |adminhost|
+				if( adminhost == host )
+					admin = 1
+				end				
+			end
+		end
+
+		return( admin == 1 )
 	end
 
 	def show

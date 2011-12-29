@@ -2,6 +2,7 @@
 
 # Class to handle user commands
 class Commands
+	alias_method :loadplugin, :load
 	def initialize( status, config, output, irc, timer, console = 0 )
 		@status		= status
 		@config		= config
@@ -27,153 +28,53 @@ class Commands
 		end
 	end
 
-	# Check for authorized users
-	def auth( host )
-		admin = 0
-
-		if( con ) # No auth needed for console
-			admin = 1
-		else
-			@config.opers.each do |adminhost|
-				if( adminhost == host )
-					admin = 1
-				end				
-			end
-		end
-
-		return( admin == 1 )
-	end
-
-	# Inital command parsing
+	# Inital command parsing & function calling
 	def process( nick, user, host, from, msg )
 
 		cmd, rest = msg.split(' ', 2)
 
 		if( cmd != nil )
 			sanitize( cmd, 1 )
+
 			begin
+				# Calls to local methods
 				eval( "self.#{cmd}( nick, user, host, from, msg )" )
 			rescue NoMethodError
-				# Plugin stuff
-				# else -> unknow command
-			end
-		end
-	end
+				# See if we have a plugin loaded by this name.
+				if( @status.checkplugin( cmd ) )
+					# Get plugin
+					plugin = @status.getplugin( cmd )
 
-	def help( nick, user, host, from, msg )
-		cmd, topic = msg.split(' ', 2)
-		
-	end
+					# Parse function call
+					if( rest != nil )
+							function, arguments = rest.split(' ', 2)
+							sanitize( function )
 
-	def message( nick, user, host, from, msg )
-		if( auth( host ) )
-			cmd, to, message = msg.split( ' ', 3 )
-			if( to != nil && message != nil )
-				@irc.message( to, message )
-			else
-				if( con )
-					@output.cinfo( "Usage: message send_to message to send" )
-				else
-					@irc.notice( nick, "Usage: " + cmc + "message send_to message to send" )
-				end
-			end
-		end
-	end
-
-	def action( nick, user, host, from, msg )
-		if( auth( host ) )
-			cmd, to, action = msg.split( ' ', 3 )
-			if( to != nil && action != nil )
-				@irc.action( to, action )
-			else
-				if( con )
-					@output.cinfo( "Usage: action send_to message to send" )
-				else
-					@irc.notice( nick, "Usage: " + cmc + "action send_to message to send" )
-				end
-			end
-		end
-	end
-
-	def notice( nick, user, host, from, msg )
-		if( auth( host ) )
-			cmd, to, message = msg.split( ' ', 3 )
-			if( to != nil && message != nil )
-				@irc.notice( to, message )
-			else
-				if( con )
-					@output.cinfo( "Usage: notice send_to message to send" )
-				else
-					@irc.notice( nick, "Usage: " + cmc + "notice send_to message to send" )
-				end
-			end
-		end
-	end
-
-	def join( nick, user, host, from, msg )
-		if( auth( host ) )
-			cmd, chan = msg.split( ' ', 2 )
-			if( chan != nil )
-				@irc.join( chan )
-			else
-				if( con )
-					@output.cinfo( "Usage: join #channel" )
-				else
-					@irc.notice( nick, "Usage: " + cmc + "join #channel" )
-				end
-			end
-		end
-	end
-
-	def part( nick, user, host, from, msg )
-		if( auth( host ) )
-			cmd, chan = msg.split( ' ', 2 )
-			if( chan != nil )
-				@irc.part( chan )
-			else
-				if( con )
-					@output.cinfo( "Usage: part #channel" )
-				else
-					@irc.notice( nick, "Usage: " + cmc + "part #channel" )
-				end
-			end
-		end
-	end
-
-	def timeban( nick, user, host, from, msg )
-		if( auth( host ) )
-			if( @config.threads == 1 && @status.threads == 1 )
-				cmd, chan, host, timeout = msg.split( ' ', 4 )
-				if( chan != nil  && host != nil ) # Add pararmeter overloading when channel is omitted
-					@irc.mode( chan, "+b", host )
-					@timer.action( timeout.to_i, "@irc.mode( \"#{chan}\", \"-b\", \"#{host}\" )" )
-
-					if( con )
-						@output.cinfo( "Unban set for " + timeout.to_s + " seconds from now." )
-						@irc.message( chan, "Unban set for " + timeout.to_s + " seconds from now." )
+						# See if such a method exists in this plugin, if so, call it
+						if( plugin.respond_to?( function ) )
+							eval( "plugin.#{function}( nick, user, host, from, msg, arguments, con )" )
+						else
+							# Call default method with the function as argument
+							if( plugin.respond_to?( "main" ) )
+								plugin.main( nick, user, host, from, msg, rest, con )
+							end
+						end
 					else
-						@irc.message( from, "Unban set for " + timeout.to_s + " seconds from now." )
+						# Call default method
+						if( plugin.respond_to?( "main" ) )
+							plugin.main( nick, user, host, from, msg, rest, con )
+						end
 					end
 				else
-					if( con )
-						@output.cinfo( "Usage: timeban #channel host seconds" )
-					else
-						@irc.notice( nick, "Usage: " + cmc + "timeban #channel host seconds" )
-					end
+					# Try to call as command from core plugin
+					process(nick, user, host, from, "core " + msg)
 				end
-			else
-				@irc.notice( nick, "Timeban not availble when threading is disabled." )
 			end
 		end
 	end
-
-	def nick( nick, user, host, from, msg )
-		if( auth( host ) )
-		end
-	end
-
+	
 	def quit( nick, user, host, from, msg )
-		if( auth( host ) )
+		if( @config.auth( host, con ) )
 			if( con )		
 				@output.cbad( "This will also stop the bot, are you sure? [y/N]: " )
 				STDOUT.flush
@@ -199,7 +100,7 @@ class Commands
 	end
 
 	def load( nick, user, host, from, msg )
-		if( auth( host ) )
+		if( @config.auth( host, con ) )
 			cmd, plugin = msg.split( ' ', 2 )
 			if( plugin != nil )
 				# Clean variable
@@ -212,12 +113,13 @@ class Commands
 
 						# Check syntax & load
 						begin
-							# Try to include the plugin
-							eval( "require '#{@config.plugindir}/#{plugin}.rb'" )
-							@output.debug( "Require was successful.\n" )
+							# Try to load the plugin
+							eval( "loadplugin '#{@config.plugindir}/#{plugin}.rb'" )
+							@output.debug( "Load was successful.\n" )
 
+							object = nil
 							# Try to create an object
-							eval( "object = #{plugin.capitalize}.new( @status, @config, @output, @irc, @timer, @console )" )
+							eval( "object = #{plugin.capitalize}.new( @status, @config, @output, @irc, @timer )" )
 							@output.debug( "Object was created.\n" )
 
 							# Push to @plugins
@@ -254,16 +156,16 @@ class Commands
 				end
 			else
 				if( con )
-					@output.info( "Usage: " + @config.command + "load plugin" )
+					@output.info( "Usage: " + cmc + "load plugin" )
 				else
-					@irc.notice( nick, "Usage: " + @config.command + "load plugin" )
+					@irc.notice( nick, "Usage: " + cmc + "load plugin" )
 				end				
 			end
 		end
 	end
 
 	def unload( nick, user, host, from, msg )
-		if( auth( host ) )
+		if( @config.auth( host, con ) )
 			cmd, plugin = msg.split( ' ', 2 )
 			if( plugin != nil )
 				# Clean variable
@@ -298,12 +200,17 @@ class Commands
 				end
 			else
 				if( con )
-					@output.info( "Usage: " + @config.command + "unload plugin" )
+					@output.info( "Usage: " + cmc + "unload plugin" )
 				else
-					@irc.notice( nick, "Usage: " + @config.command + "unload plugin" )
+					@irc.notice( nick, "Usage: " + cmc + "unload plugin" )
 				end				
 			end
 		end
+	end
+
+	def reload( nick, user, host, from, msg )
+		unload( nick, user, host, from, msg )
+		load( nick, user, host, from, msg )
 	end
 
 	def loaded( nick, user, host, from, msg )
@@ -321,13 +228,6 @@ class Commands
 
 			@irc.notice( nick, "Loaded plugins: " + tmp_list )
 			tmp_list = nil
-		end
-	end
-	
-	def plugin( nick, user, host, from, msg )
-		# Check for public function
-		if( auth( host ) )
-			# Check for admin function
 		end
 	end
 end
