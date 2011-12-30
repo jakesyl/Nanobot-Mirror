@@ -4,10 +4,10 @@
 # Modify the following variables to your liking
 class Configuration
 	def initialize( status, output )
-		@nick		= "nanodev"					# Bot nickname
+		@nick		= "nanobeta"				# Bot nickname
 		@user		= "nanobot"					# IRC username
 		@pass		= ""						# NickServ password
-		@version	= "Nanobot 4.0 beta"		# Version
+		@version	= "Nanobot 4 beta"			# Version
 
 		@command	= '\?'						# Character prefix for commands (escape special chars)
 
@@ -39,7 +39,7 @@ class Configuration
 												# Path to openssl root certs (Needed if verify_ssl is enabled)
 
 		@threadfb	= 1							# Allow fallback to sequential processing when threads aren't available
-		@sslfback	= 0							# Allow fallback to insecure connect when SSL isn't available
+		@sslfback	= 0							# Allow fallback to insecure connect when OpenSSL library isn't available
 
 		@status		= status					# System object, do not modify
 		@output		= output					# System object, do not modify

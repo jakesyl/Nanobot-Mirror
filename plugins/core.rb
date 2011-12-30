@@ -89,6 +89,136 @@ class Core
 		end
 	end
 
+	# Oper commands
+	def op( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( arguments != nil )
+				chan, user = arguments.split( ' ', 2 )
+				if( user == nil && !con )
+					user = chan
+					chan = from
+				end
+				if( user != nil )
+					@irc.mode( chan, "+o", user )
+				end
+			else
+				if( con )
+					@output.cinfo( "Usage: op #channel user" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "op #channel user" )
+				end
+			end
+		end
+	end
+
+	def deop( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( arguments != nil )
+				chan, user = arguments.split( ' ', 2 )
+				if( user == nil && !con )
+					user = chan
+					chan = from
+				end
+				if( user != nil )
+					@irc.mode( chan, "-o", user )
+				end
+			else
+				if( con )
+					@output.cinfo( "Usage: deop #channel user" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "deop #channel user" )
+				end
+			end
+		end
+	end
+
+	# Half-oper commands
+	def hop( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( arguments != nil )
+				chan, user = arguments.split( ' ', 2 )
+				if( user == nil && !con )
+					user = chan
+					chan = from
+				end
+				if( user != nil )
+					@irc.mode( chan, "+h", user )
+				end
+			else
+				if( con )
+					@output.cinfo( "Usage: hop #channel user" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "hop #channel user" )
+				end
+			end
+		end
+	end
+
+	def dehop( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( arguments != nil )
+				chan, user = arguments.split( ' ', 2 )
+				if( user == nil && !con )
+					user = chan
+					chan = from
+				end
+				if( user != nil )
+					@irc.mode( chan, "-h", user )
+				end
+			else
+				if( con )
+					@output.cinfo( "Usage: dehop #channel user" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "dehop #channel user" )
+				end
+			end
+		end
+	end
+
+	# Voice commands
+	def voice( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( arguments != nil )
+				chan, user = arguments.split( ' ', 2 )
+				if( user == nil && !con )
+					user = chan
+					chan = from
+				end
+				if( user != nil )
+					@irc.mode( chan, "+v", user )
+				end
+			else
+				if( con )
+					@output.cinfo( "Usage: voice #channel user" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "voice #channel user" )
+				end
+			end
+		end
+	end
+
+	def devoice( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( arguments != nil )
+				chan, user = arguments.split( ' ', 2 )
+				if( user == nil && !con )
+					user = chan
+					chan = from
+				end
+				if( user != nil )
+					@irc.mode( chan, "-v", user )
+				end
+			else
+				if( con )
+					@output.cinfo( "Usage: devoice #channel user" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "devoice #channel user" )
+				end
+			end
+		end
+	end
+
+	# Banning commands
 	def timeban( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
 			if( @config.threads && @status.threads )
@@ -123,6 +253,21 @@ class Core
 				@irc.notice( nick, "Timeban not availble when threading is disabled." )
 			end
 		end
+	end
+
+	# Echo version to the user
+	def version( nick, user, host, from, msg, arguments, con )
+		output = "Running version: " + @config.version + " on Ruby " + RUBY_VERSION
+		uptime = "Uptime: " + @status.uptime
+		if( con )
+			@output.info( output + "\n" )
+			@output.info( uptime + "\n" )
+		else
+			@irc.notice( nick, output )
+			@irc.notice( nick, uptime )
+		end
+		output = nil
+		uptime = nil
 	end
 
 	def nick( nick, user, host, from, msg, arguments, con )

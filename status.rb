@@ -101,4 +101,56 @@ class Status
 	def startup
 		return @startup
 	end
+
+	def uptime
+		output = ""
+		diff = Time.now - @startup
+
+		weeks	= ( diff/604800 ).to_i
+		days	= ( diff/86400 - ( weeks * 7 ) ).to_i
+		hours	= ( diff/3600 - ( days * 24 + weeks * 168 ) ).to_i
+		minutes = ( diff/60 - ( hours * 60 + days * 1440 + weeks * 10080 ) ).to_i
+		seconds = ( diff - ( minutes * 60 + hours * 3600 + days * 86400 + weeks * 604800 ) ).to_i
+		
+		if( weeks > 0 )
+			output + weeks.to_s + " week"
+			if( weeks != 1 )
+				output = output + "s"
+			end
+			output = output + ", "
+		end
+
+		if( days > 0 )
+			output = output + days.to_s + " day"
+			if( day != 1 )
+				output = output + "s"
+			end
+			output = output + ", "
+		end
+
+		if( hours > 0 )
+			output = output + hours.to_s + " hour"
+			if( hours != 1 )
+				output = output + "s"
+			end
+			output = output + ", "
+		end
+
+		if( minutes > 0 )
+			output = output + minutes.to_s + " minute"
+			if( minutes != 1 )
+				output = output + "s"
+			end
+			output = output + ", "
+		end
+
+		if( seconds > 0 )
+			output = output + seconds.to_s + " second"
+			if( seconds != 1 )
+				output = output + "s"
+			end
+		end
+
+		return output
+	end
 end
