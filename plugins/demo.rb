@@ -24,7 +24,9 @@ class Demo
 
 	# Method that receives a notification when a message is received, that is not a command (optional)
 	def messaged( nick, user, host, from, message )
-		@irc.message( from, "Received message from: " + nick + ": " + message )
+		if( @config.nick != nick )
+			@irc.message( from, "Received message from: " + nick + ": " + message )
+		end
 	end
 
 	# Method that receives a notification when a user joins (optional)

@@ -31,10 +31,8 @@ class IRCSubs
 
 	def notice( nick,  user,  host,  to,  message )
 		@status.plugins.each_key do |key|
-			if( key != "core" )
-				if( @status.getplugin( key ).respond_to?( "noticed" ) )
-					@status.getplugin( key ).noticed( nick,  user,  host,  to,  message )
-				end
+			if( @status.getplugin( key ).respond_to?( "noticed" ) )
+				@status.getplugin( key ).noticed( nick,  user,  host,  to,  message )
 			end
 		end
 	end
@@ -70,10 +68,8 @@ class IRCSubs
 			@cmd.process( nick, user, host, from, message.gsub( /^#{cmd}/, "" ) )
 		else
 			@status.plugins.each_key do |key|
-			if( key != "core" )
-				if( @status.getplugin( key ).respond_to?( "messaged" ) )
-					@status.getplugin( key ).messaged( nick, user, host, from, message )
-				end
+			if( @status.getplugin( key ).respond_to?( "messaged" ) )
+				@status.getplugin( key ).messaged( nick, user, host, from, message )
 			end
 		end
 

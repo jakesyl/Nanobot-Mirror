@@ -8,6 +8,7 @@ class Startup
 		@output	= output
 	end
 
+	# Check socket library
 	def checksocket
 		@output.std( "Checking for socket libs ......... " )
 		begin
@@ -20,6 +21,7 @@ class Startup
 		end
 	end
 
+	# Check for OpenSSL
 	def checkopenssl
 		@output.std( "Checking for openssl support ..... " )
 		begin
@@ -32,6 +34,7 @@ class Startup
 		end
 	end
 
+	# Check for threading
 	def checkthreads
 		@output.std( "Checking for threading support ... " )
 		begin
@@ -45,6 +48,35 @@ class Startup
 			if( !@config.threadingfallback )
 				@output.info( "No threading support, and fallback is disabled.\n" )
 				Process.exit
+			end
+		end
+	end
+
+	# Check if directories exist
+	def checkdirectorydata
+		@output.std( "Checking for data directory ...... " )
+		if( File.directory? @config.datadir )
+			@output.good( "[OK]\n" )
+		else
+			begin
+				Dir::mkdir( @config.datadir )
+				@output.info( "[CREATED]\n" )
+			rescue
+				@output.bad( "[NO]\n" )
+			end
+		end
+	end
+
+	def checkdirectoryplugins
+		@output.std( "Checking for plugin directory .... " )
+		if( File.directory? @config.plugindir )
+			@output.good( "[OK]\n" )
+		else
+			begin
+				Dir::mkdir( @config.plugindir )
+				@output.info( "[CREATED]\n" )
+			rescue
+				@output.bad( "[NO]\n" )
 			end
 		end
 	end

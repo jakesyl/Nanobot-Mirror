@@ -31,6 +31,8 @@ startup	= Startup.new( status, config, output )
 startup.checksocket
 startup.checkopenssl
 startup.checkthreads
+startup.checkdirectoryplugins
+startup.checkdirectorydata
 
 startup = nil
 
