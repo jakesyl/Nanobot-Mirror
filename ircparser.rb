@@ -56,7 +56,7 @@ class IRCParser
 			end
 
 		# KICK
-		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) KICK (.+?) (.+?) \:(.+?)/ )
+		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) KICK (.+?) (.+?) \:(.+)/ )
 			@output.debug( "Received kick\n" )
 			@sub.kick( $1, $2, $3, $4, $5, $6 )
 
@@ -71,7 +71,7 @@ class IRCParser
 			@sub.join( $1, $2, $3, $4 )
 
 		# PART
-		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) PART \:(.+)/ )
+		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) PART (.+)/ )
 			@output.debug( "Received part\n" )
 			@sub.part( $1, $2, $3, $4 )
 

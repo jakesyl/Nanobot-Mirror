@@ -10,6 +10,8 @@ class Commands
 		@irc		= irc
 		@timer		= timer
 		@console	= console
+
+		@protected	= [ "kicked", "noticed", "messaged", "joined", "parted", "quited" ]
 	end
 
 	# Shorthands
@@ -50,8 +52,8 @@ class Commands
 							function, arguments = rest.split(' ', 2)
 							sanitize( function )
 
-						# See if such a method exists in this plugin, if so, call it
-						if( plugin.respond_to?( function ) )
+						# See if such a method exists in this plugin and isn't protected, if so, call it
+						if( plugin.respond_to?( function ) && !@protected.include?( function ) )
 							eval( "plugin.#{function}( nick, user, host, from, msg, arguments, con )" )
 						else
 							# Call default method with the function as argument
@@ -146,9 +148,9 @@ class Commands
 					else
 						# Not found
 						if( con )
-							@output.cbad( "File not found.\n" )
+							@output.cbad( "Plugin " + plugin + " not found.\n" )
 						else
-							@irc.notice( nick, "File not found." )
+							@irc.notice( nick, "Plugin " + plugin + " not found." )
 						end
 					end
 				else
@@ -221,7 +223,6 @@ class Commands
 
 	# Meta funcion to load autoload modules
 	def autoload( nick = nil, user = nil, host = nil, from = nil, msg = nil )
-		puts "In Autoload function"
 		@config.autoload.each do |mod|
 			load( nil, nil, nil, nil, "dummy " + mod )
 		end
