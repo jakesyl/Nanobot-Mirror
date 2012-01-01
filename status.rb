@@ -113,7 +113,7 @@ class Status
 		seconds = ( diff - ( minutes * 60 + hours * 3600 + days * 86400 + weeks * 604800 ) ).to_i
 		
 		if( weeks > 0 )
-			output + weeks.to_s + " week"
+			output = weeks.to_s + " week"
 			if( weeks != 1 )
 				output = output + "s"
 			end
@@ -122,7 +122,7 @@ class Status
 
 		if( days > 0 )
 			output = output + days.to_s + " day"
-			if( day != 1 )
+			if( days != 1 )
 				output = output + "s"
 			end
 			output = output + ", "
@@ -141,7 +141,7 @@ class Status
 			if( minutes != 1 )
 				output = output + "s"
 			end
-			output = output + ", "
+			output = output + " and "
 		end
 
 		if( seconds > 0 )
@@ -149,6 +149,7 @@ class Status
 			if( seconds != 1 )
 				output = output + "s"
 			end
+			output = output + "."
 		end
 
 		return output

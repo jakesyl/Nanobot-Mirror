@@ -23,6 +23,13 @@ class Help
 			case arguments
 			when "commands"
 			when "core"
+				tmp = "Available commands: version, uptime, op, deop, hop, dehop, voice, devoice, timeban, message, action, notice, join, part"
+				if( con )
+					@output.c( tmp + "\n" )
+				else
+					@irc.notice( nick, tmp )
+				end
+				tmp = nil
 			when "plugins"
 			when "topic"
 				if( con )

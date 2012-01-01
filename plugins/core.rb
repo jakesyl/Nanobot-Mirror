@@ -219,6 +219,27 @@ class Core
 	end
 
 	# Banning commands
+	def ban( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( arguments != nil )
+				chan, host = arguments.split( ' ', 2 )
+			end
+
+			if( host == nil ) # Overload parameters when no channel is given
+				host	= chan
+				chan	= from
+			end
+
+			@irc.mode( chan, "+b", host )
+		else
+			if( con )
+				@output.cinfo( "Usage: ban #channel host" )
+			else
+				@irc.notice( nick, "Usage: " + @config.command + "ban #channel host" )
+			end
+		end
+	end
+
 	def timeban( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
 			if( @config.threads && @status.threads )
@@ -257,16 +278,24 @@ class Core
 
 	# Echo version to the user
 	def version( nick, user, host, from, msg, arguments, con )
-		output = "Running version: " + @config.version + " on Ruby " + RUBY_VERSION
-		uptime = "Uptime: " + @status.uptime
+		output = "Running: " + @config.version + " on Ruby " + RUBY_VERSION
 		if( con )
 			@output.info( output + "\n" )
-			@output.info( uptime + "\n" )
 		else
 			@irc.notice( nick, output )
-			@irc.notice( nick, uptime )
 		end
 		output = nil
+		uptime( nick, user, host, from, msg, arguments, con )
+	end
+
+	# Echo uptime to the user
+	def uptime( nick, user, host, from, msg, arguments, con )
+		uptime = "Uptime: " + @status.uptime
+		if( con )
+			@output.info( uptime + "\n" )
+		else
+			@irc.notice( nick, uptime )
+		end
 		uptime = nil
 	end
 
