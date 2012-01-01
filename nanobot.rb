@@ -43,6 +43,13 @@ config.show
 socket = Connection.new( status, config, output ).start
 irc = IRC.new( status, config, output, socket )
 
+# Catch Ctrl-C
+Signal.trap( 'INT' ) do
+	Signal.trap( 'INT', 'DEFAULT' )
+	irc.quit( "Caught interrupt, quiting." )
+	output.std( "Caught interrupt, quiting.\n" )
+	Process.exit
+end
 # Create timer object for later use
 timer = Timer.new( status, config, output, irc )
 

@@ -87,7 +87,8 @@ class IRC
 	end
 
 	def disconnect
-		@sock.close 
+		@status.login( 0 )
+		@socket.close 
 	end
 end
 		

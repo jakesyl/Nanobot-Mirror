@@ -23,12 +23,22 @@ class IRCParser
 			@status.login( 1 )
 		end
 
-		while line = @irc.socket.gets
-			if( @status.threads && @config.threads )
-				spawn_parser( line.chomp )
-			else
-				parser( line.chomp )
+		begin
+			while true
+				Timeout::timeout( @config.pingtimeout ) do
+					line = @irc.socket.gets
+					if( @status.threads && @config.threads )
+						spawn_parser( line.chomp )
+					else
+						parser( line.chomp )
+					end
+				end
 			end
+		rescue Timeout::Error
+			@output.debug( "IRC timeout, trying to reconnect.\n" )
+			@irc.disconnect
+		rescue IOError
+			@output.debug( "Socket was closed.\n" )
 		end
 	end
 
