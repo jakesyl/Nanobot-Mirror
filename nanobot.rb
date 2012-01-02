@@ -39,24 +39,27 @@ startup = nil
 # Show configuration, if desired.
 config.show
 
-# Start connection
-socket = Connection.new( status, config, output ).start
-irc = IRC.new( status, config, output, socket )
+# Main connect-parse loop
+while true do
+	# Start connection
+	socket = Connection.new( status, config, output ).start
+	irc = IRC.new( status, config, output, socket )
 
-# Catch Ctrl-C
-Signal.trap( 'INT' ) do
-	Signal.trap( 'INT', 'DEFAULT' )
-	irc.quit( "Caught interrupt, quiting." )
-	output.std( "Caught interrupt, quiting.\n" )
-	Process.exit
+	# Catch Ctrl-C
+	Signal.trap( 'INT' ) do
+		Signal.trap( 'INT', 'DEFAULT' )
+		irc.quit( "Caught interrupt, quiting." )
+		output.std( "Caught interrupt, quiting.\n" )
+		Process.exit
+	end
+	# Create timer object for later use
+	timer = Timer.new( status, config, output, irc )
+
+	# Create user input parser
+	if( status.console )
+		Console.new( status, config, output, irc, timer ).start
+	end
+
+	# Start parsing IRC
+	parser = IRCParser.new( status, config, output, irc, timer ).start
 end
-# Create timer object for later use
-timer = Timer.new( status, config, output, irc )
-
-# Create user input parser
-if( status.console )
-	Console.new( status, config, output, irc, timer ).start
-end
-
-# Start parsing IRC
-parser = IRCParser.new( status, config, output, irc, timer ).start

@@ -13,17 +13,16 @@ class Help
 	def main( nick, user, host, from, msg, arguments, con )
 		if( arguments.nil? || arguments.empty? )
 			# General help
-			if( con )
-				@output.cinfo( "Use 'help topic' for help on a specific topic." )
-				@output.c( "Help topics: commands, core, plugins\n" )
-				@output.c( "Some plugins may also support help, in that case 'help pluginname'\n" )
-				@output.c( "will send you the plugins help.\n" )
-			else
-				@irc.notice( nick, "Use 'help topic' for help on a specific topic." )
-				@irc.notice( nick, "Help topics: commands, core, plugins" )
-				@irc.notice( nick, "Some plugins may also support help, in that case 'help pluginname'" )
-				@irc.notice( nick, "will send you the plugins help." )
-			end
+			tmp = [
+				"Use 'help topic' for help on a specific topic.",
+				"Topics:",
+				"  commands                            - Make bot quit IRC",
+				"  core                                - Load and unload plugins",
+				"  plugins                             - Reload plugin",
+				"",
+				"Some plugins may also support help, in that case 'help pluginname'",
+				"will send you the plugins help."
+			]
 		else
 			# Specific help
 			case arguments
@@ -90,16 +89,16 @@ class Help
 					tmp = [ "No help for #{arguments}." ]
 				end
 			end
-
-			# Print out help
-			tmp.each do |line|
-				if( con )
-					@output.c( line + "\n" )
-				else
-					@irc.notice( nick, line )
-				end
-			end
-			tmp = nil
 		end
+
+		# Print out help
+		tmp.each do |line|
+			if( con )
+				@output.c( line + "\n" )
+			else
+				@irc.notice( nick, line )
+			end
+		end
+		tmp = nil
 	end
 end
