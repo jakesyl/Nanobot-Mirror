@@ -43,6 +43,8 @@ class IRCParser
 			@irc.disconnect
 		rescue IOError
 			@output.debug( "Socket was closed.\n" )
+		rescue Exception => e
+			@output.debug( "Socket error: " + e.to_s + "\n" )
 		end
 	end
 

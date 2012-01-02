@@ -7,7 +7,7 @@ class Configuration
 		@nick		= "nanobeta"				# Bot nickname
 		@user		= "nanobot"					# IRC username
 		@pass		= ""						# NickServ password
-		@version	= "Nanobot 4 beta"			# Version
+		@version	= "Nanobot 4 beta 2"		# Version
 
 		@command	= '\?'						# Character prefix for commands (escape special chars)
 
@@ -80,7 +80,7 @@ class Configuration
 	end
 
 	def server
-		if( @use_ipv6 == 1 )
+		if( @use_ipv6 )
 			return @server6
 		else
 			return @server
@@ -88,12 +88,12 @@ class Configuration
 	end
 
 	def port
-		if( @use_ssl == 1 && @status.ssl )
+		if( @use_ssl && @status.ssl )
 			return @sslport
-		elsif( @use_ssl == 1 && @status.ssl && @sslfback == 1 )
+		elsif( @use_ssl && @status.ssl && @sslfback )
 			@output.bad( "Warning: SSL is not available, insecure connection!\n" )
 			return @port
-		elsif( @use_ssl == 1 && @status.ssl && @sslfback == 0 )
+		elsif( @use_ssl && @status.ssl && !@sslfback )
 			@output.info( "\nSSL is not available, and fallback is disabled.\n" )
 			Process.exit
 		else

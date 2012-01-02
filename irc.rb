@@ -103,7 +103,7 @@ class IRC
 	# Disconnect socket
 	def disconnect
 		@status.login( 0 )
-		@socket.close 
+		@socket.close
 	end
 end
 		

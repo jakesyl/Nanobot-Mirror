@@ -12,6 +12,7 @@ class Status
 		@ssl		= 0
 		@showconf	= 0
 		@console	= 1
+		@reconnect	= 1
 		@plugins	= {}
 		@startup	= Time.new
 	end
@@ -64,6 +65,13 @@ class Status
 			@console = console
 		end
 		return( @console == 1 )
+	end
+
+	def reconnect( reconnect = "" )
+		if( reconnect != "" )
+			@reconnect = reconnect
+		end
+		return( @reconnect == 1 )
 	end
 
 	def showconfig( show = "" )
@@ -145,13 +153,11 @@ class Status
 			output = output + " and "
 		end
 
-		if( seconds > 0 )
-			output = output + seconds.to_s + " second"
-			if( seconds != 1 )
-				output = output + "s"
-			end
-			output = output + "."
+		output = output + seconds.to_s + " second"
+		if( seconds != 1 )
+			output = output + "s"
 		end
+		output = output + "."
 
 		return output
 	end

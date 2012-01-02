@@ -40,7 +40,8 @@ startup = nil
 config.show
 
 # Main connect-parse loop
-while true do
+while status.reconnect do
+
 	# Start connection
 	socket = Connection.new( status, config, output ).start
 	irc = IRC.new( status, config, output, socket )

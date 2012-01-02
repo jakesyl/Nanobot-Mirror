@@ -94,6 +94,9 @@ class Commands
 					@irc.quit( message )
 				end
 
+				@output.std( "Received quit command.\n" )
+
+				@status.reconnect( 0 )
 				@irc.disconnect
 				Process.exit
 			else
