@@ -105,7 +105,7 @@ class Commands
 	end
 
 	# Load modules
-	def load( nick, user, host, from, msg )
+	def load( nick, user, host, from, msg, auto = false )
 		if( @config.auth( host, con ) )
 			cmd, plugin = msg.split( ' ', 2 )
 			if( plugin != nil )
@@ -133,7 +133,9 @@ class Commands
 							@output.debug( "Object was pushed to plugin hash.\n" )
 
 							if( con )
-								@output.cgood( "Plugin " + plugin + " loaded.\n" )
+								if( auto )
+									@output.cgood( "Plugin " + plugin + " loaded.\n" )
+								end
 							else
 								@irc.notice( nick, "Plugin " + plugin + " loaded." )
 							end
@@ -218,7 +220,7 @@ class Commands
 	# Meta function to reload modules
 	def reload( nick, user, host, from, msg )
 		unload( nick, user, host, from, msg )
-		load( nick, user, host, from, msg )
+		load( nick, user, host, from, msg, true )
 	end
 
 	# Meta funcion to load autoload modules

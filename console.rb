@@ -20,7 +20,6 @@ class Console
 			@output.good( "[OK]\n" )
 
 			Thread.new{ parse }
-			#puts t.join # For debugging
 		else
 			@output.bad( "[NO]\n" )
 			@output.debug( "Not parsing user input, threading disabled.\n" )

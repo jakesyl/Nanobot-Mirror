@@ -7,13 +7,14 @@ class Core
 		@timer		= timer
 	end
 
+	# Messaging commands
 	def message( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			if( arguments != nil )
+			if( !arguments.nil? && !arguments.empty? )
 				to, message = arguments.split( ' ', 2 )
 			end
 	
-			if( to != nil && message != nil )
+			if( !to.nil? && !to.empty? && !message.nil? && !message.empty? )
 				@irc.message( to, message )
 			else
 				if( con )
@@ -25,13 +26,27 @@ class Core
 		end
 	end
 
+	def raw( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( !arguments.nil? && !arguments.empty? )
+				@irc.raw( arguments )
+			else
+				if( con )
+					@output.cinfo( "Usage: raw line to send to IRC server" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "raw line to send to IRC server" )
+				end
+			end
+		end
+	end
+
 	def action( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			if( arguments != nil )
+			if( !arguments.nil? && !arguments.empty? )
 				to, action = arguments.split( ' ', 2 )
 			end
 
-			if( to != nil && action != nil )
+			if( !to.nil? && !to.empty? && !action.nil? && !action.empty? )
 				@irc.action( to, action )
 			else
 				if( con )
@@ -45,11 +60,11 @@ class Core
 
 	def notice( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			if( arguments != nil )
+			if( !arguments.nil? && !arguments.empty? )
 				to, message = arguments.split( ' ', 2 )
 			end
 
-			if( to != nil && message != nil )
+			if( !to.nil? && !message.nil? && !to.empty? && !message.empty? )
 				@irc.notice( to, message )
 			else
 				if( con )
@@ -61,9 +76,10 @@ class Core
 		end
 	end
 
+	# Join/part commands
 	def join( nick, user, host, from, msg, chan, con )
 		if( @config.auth( host, con ) )
-			if( chan != nil )
+			if( !chan.nil? && !chan.empty? )
 				@irc.join( chan )
 			else
 				if( con )
@@ -77,7 +93,7 @@ class Core
 
 	def part( nick, user, host, from, msg, chan, con )
 		if( @config.auth( host, con ) )
-			if( chan != nil )
+			if( !chan.nil? && !chan.empty? )
 				@irc.part( chan )
 			else
 				if( con )
@@ -89,18 +105,71 @@ class Core
 		end
 	end
 
+	# Topic command
+	def topic( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( !arguments.nil? && !arguments.empty? )
+				chan, topic = arguments.split( ' ', 2 )
+				if( chan !~ /^#/ && !con )
+					topic = arguments
+					chan = from
+				end
+				if( !chan.nil? && !chan.empty? )
+					@irc.topic( chan, topic )
+				end
+			else
+				if( con )
+					@output.cinfo( "Usage: topic #channel new topic" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "topic #channel new topic" )
+				end
+			end
+		end
+	end
+
+	# Mode command
+	def mode( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( arguments == nil )
+				arguments = ""
+			end
+
+			if( arguments.split.size >= 2 )
+				if( arguments.split.size >= 3 )
+					chan, mode, name = arguments.split( ' ', 3 )
+				elsif( arguments.split.size == 2 )
+					chan, mode = arguments.split( ' ', 2 )
+					name = ""
+				end
+				@irc.mode( chan, mode, name )
+			else
+				if( con )
+					@output.cinfo( "Usage: mode #channel +/-mode nick" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "Usage: mode #channel +/-mode nick" )
+				end
+			end
+		end
+	end
+
 	# Oper commands
 	def op( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			if( arguments != nil )
-				chan, user = arguments.split( ' ', 2 )
-				if( user == nil && !con )
-					user = chan
+			if( arguments == nil )
+				arguments = ""
+			end
+
+			if( ( con && arguments.split.size == 2 ) || ( !con ) )
+				if( con || arguments.split.size == 2 )
+					chan, name = arguments.split( ' ', 2 )
+				elsif( arguments.split.size == 1 )
 					chan = from
+					name = arguments
+				else
+					chan = from
+					name = nick
 				end
-				if( user != nil )
-					@irc.mode( chan, "+o", user )
-				end
+				@irc.mode( chan, "+o", name )
 			else
 				if( con )
 					@output.cinfo( "Usage: op #channel user" )
@@ -113,15 +182,21 @@ class Core
 
 	def deop( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			if( arguments != nil )
-				chan, user = arguments.split( ' ', 2 )
-				if( user == nil && !con )
-					user = chan
+			if( arguments == nil )
+				arguments = ""
+			end
+
+			if( ( con && arguments.split.size == 2 ) || ( !con ) )
+				if( con || arguments.split.size == 2 )
+					chan, name = arguments.split( ' ', 2 )
+				elsif( arguments.split.size == 1 )
 					chan = from
+					name = arguments
+				else
+					chan = from
+					name = nick
 				end
-				if( user != nil )
-					@irc.mode( chan, "-o", user )
-				end
+				@irc.mode( chan, "-o", name )
 			else
 				if( con )
 					@output.cinfo( "Usage: deop #channel user" )
@@ -135,15 +210,21 @@ class Core
 	# Half-oper commands
 	def hop( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			if( arguments != nil )
-				chan, user = arguments.split( ' ', 2 )
-				if( user == nil && !con )
-					user = chan
+			if( arguments == nil )
+				arguments = ""
+			end
+
+			if( ( con && arguments.split.size == 2 ) || ( !con ) )
+				if( con || arguments.split.size == 2 )
+					chan, name = arguments.split( ' ', 2 )
+				elsif( arguments.split.size == 1 )
 					chan = from
+					name = arguments
+				else
+					chan = from
+					name = nick
 				end
-				if( user != nil )
-					@irc.mode( chan, "+h", user )
-				end
+				@irc.mode( chan, "+h", name )
 			else
 				if( con )
 					@output.cinfo( "Usage: hop #channel user" )
@@ -156,15 +237,21 @@ class Core
 
 	def dehop( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			if( arguments != nil )
-				chan, user = arguments.split( ' ', 2 )
-				if( user == nil && !con )
-					user = chan
+			if( arguments == nil )
+				arguments = ""
+			end
+
+			if( ( con && arguments.split.size == 2 ) || ( !con ) )
+				if( con || arguments.split.size == 2 )
+					chan, name = arguments.split( ' ', 2 )
+				elsif( arguments.split.size == 1 )
 					chan = from
+					name = arguments
+				else
+					chan = from
+					name = nick
 				end
-				if( user != nil )
-					@irc.mode( chan, "-h", user )
-				end
+				@irc.mode( chan, "-h", name )
 			else
 				if( con )
 					@output.cinfo( "Usage: dehop #channel user" )
@@ -178,15 +265,21 @@ class Core
 	# Voice commands
 	def voice( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			if( arguments != nil )
-				chan, user = arguments.split( ' ', 2 )
-				if( user == nil && !con )
-					user = chan
+			if( arguments == nil )
+				arguments = ""
+			end
+
+			if( ( con && arguments.split.size == 2 ) || ( !con ) )
+				if( con || arguments.split.size == 2 )
+					chan, name = arguments.split( ' ', 2 )
+				elsif( arguments.split.size == 1 )
 					chan = from
+					name = arguments
+				else
+					chan = from
+					name = nick
 				end
-				if( user != nil )
-					@irc.mode( chan, "+v", user )
-				end
+				@irc.mode( chan, "+v", name )
 			else
 				if( con )
 					@output.cinfo( "Usage: voice #channel user" )
@@ -199,15 +292,21 @@ class Core
 
 	def devoice( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			if( arguments != nil )
-				chan, user = arguments.split( ' ', 2 )
-				if( user == nil && !con )
-					user = chan
+			if( arguments == nil )
+				arguments = ""
+			end
+
+			if( ( con && arguments.split.size == 2 ) || ( !con ) )
+				if( con || arguments.split.size == 2 )
+					chan, name = arguments.split( ' ', 2 )
+				elsif( arguments.split.size == 1 )
 					chan = from
+					name = arguments
+				else
+					chan = from
+					name = nick
 				end
-				if( user != nil )
-					@irc.mode( chan, "-v", user )
-				end
+				@irc.mode( chan, "-v", name )
 			else
 				if( con )
 					@output.cinfo( "Usage: devoice #channel user" )
@@ -218,14 +317,40 @@ class Core
 		end
 	end
 
+	# Kick commands
+	def kick( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( !arguments.nil? && !arguments.empty? )
+				if( arguments =~ /^#/ )
+					chan, name, reason = arguments.split( ' ', 3 )
+				else
+					name, reason = arguments.split( ' ', 2 )
+					chan = from
+				end
+
+				if( reason.nil? || reason.empty?)
+					reason = "Requested by " + nick + "."
+				end
+
+				@irc.kick( chan, name, reason )
+			else
+				if( con )
+					@output.cinfo( "Usage: kick #channel nick" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "kick #channel nick" )
+				end
+			end
+		end
+	end
+
 	# Banning commands
 	def ban( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			if( arguments != nil )
+			if( !arguments.nil? && !arguments.empty? )
 				chan, host = arguments.split( ' ', 2 )
 			end
 
-			if( host == nil ) # Overload parameters when no channel is given
+			if( host.nil? || host.empty? ) # Overload parameters when no channel is given
 				host	= chan
 				chan	= from
 			end
@@ -240,15 +365,36 @@ class Core
 		end
 	end
 
+	def unban( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( !arguments.nil? && !arguments.empty? )
+				chan, host = arguments.split( ' ', 2 )
+			end
+
+			if( host.nil? || host.empty? ) # Overload parameters when no channel is given
+				host	= chan
+				chan	= from
+			end
+
+			@irc.mode( chan, "-b", host )
+		else
+			if( con )
+				@output.cinfo( "Usage: unban #channel host" )
+			else
+				@irc.notice( nick, "Usage: " + @config.command + "unban #channel host" )
+			end
+		end
+	end
+
 	def timeban( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
 			if( @config.threads && @status.threads )
-				if( arguments != nil )
+				if( !arguments.nil? && !arguments.empty? )
 					chan, host, timeout = arguments.split( ' ', 3 )
 				end
 
-				if( chan != nil && host != nil && ( !con || timeout != nil ) )
-					if( timeout == nil ) # Overload parameters when no channel is given
+				if( !chan.nil? && !chan.empty? && !host.nil? && !host.empty? && ( !con || ( !timeout.nil? && !timeout.empty? ) ) )
+					if( timeout.nil? || timeout.empty? ) # Overload parameters when no channel is given
 						timeout	= host
 						host	= chan
 						chan	= from
@@ -280,7 +426,7 @@ class Core
 	def version( nick, user, host, from, msg, arguments, con )
 		output = "Running: " + @config.version + " on Ruby " + RUBY_VERSION
 		if( con )
-			@output.info( output + "\n" )
+			@output.cinfo( output )
 		else
 			@irc.notice( nick, output )
 		end
@@ -292,7 +438,7 @@ class Core
 	def uptime( nick, user, host, from, msg, arguments, con )
 		uptime = "Uptime: " + @status.uptime
 		if( con )
-			@output.info( uptime + "\n" )
+			@output.cinfo( uptime )
 		else
 			@irc.notice( nick, uptime )
 		end
