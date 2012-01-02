@@ -1,7 +1,8 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
+
+require './commands.rb'
 
 # Class to handle console input
-require './commands.rb'
 class Console
 	def initialize( status, config, output, irc, timer )
 		@status		= status
@@ -13,6 +14,7 @@ class Console
 		@cmd		= Commands.new( status, config, output, irc, timer, 1 )
 	end
 
+	# Start up console
 	def start
 		@output.std( "Commandline input parsing ........ " )
 
@@ -26,6 +28,7 @@ class Console
 		end
 	end
 
+	# Parser function
 	def parse
 		@output.cspecial( @config.version + " console" )
 

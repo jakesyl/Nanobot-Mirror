@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 # Class used for initial bot configuration
 # Modify the following variables to your liking
@@ -24,22 +24,22 @@ class Configuration
 		@plugins	= "plugins"					# Plugin directory
 		@autoload	= ["core", "help"]			# Plugin autoload list
 
-		@autorejoin	= 1							# Rejoin on kick
+		@autorejoin	= true						# Rejoin on kick
 		@rejointime	= 3							# Time to wait before rejoin (seconds)
 
-		@pingwait	= 0							# Wait for server's first PING
+		@pingwait	= false						# Wait for server's first PING
 		@conn_time	= 20						# Connect timeout
 		@timeout	= 300						# IRC timeout
 
-		@use_thread	= 1							# Prefer threading
-		@use_ipv6	= 0							# Prefer IPv6
-		@use_ssl	= 0							# Prefer SSL
-		@verif_ssl	= 0							# Verify SSL certificate
+		@use_thread	= true						# Prefer threading
+		@use_ipv6	= false						# Prefer IPv6
+		@use_ssl	= true						# Prefer SSL
+		@verif_ssl	= false						# Verify SSL certificate
 		@rootcert	= "/etc/ssl/certs/ca-certificates.crt"
 												# Path to openssl root certs (Needed if verify_ssl is enabled)
 
-		@threadfb	= 1							# Allow fallback to sequential processing when threads aren't available
-		@sslfback	= 0							# Allow fallback to insecure connect when OpenSSL library isn't available
+		@threadfb	= true						# Allow fallback to sequential processing when threads aren't available
+		@sslfback	= false						# Allow fallback to insecure connect when OpenSSL library isn't available
 
 		@status		= status					# System object, do not modify
 		@output		= output					# System object, do not modify
@@ -105,14 +105,14 @@ class Configuration
 		if( ssl != "" )
 			@use_ssl = ssl
 		end
-		return( @use_ssl == 1 )
+		return @use_ssl
 	end
 
 	def verifyssl( ssl = "" )
 		if( ssl != "" )
 			@verif_ssl = ssl
 		end
-		return( @verif_ssl == 1 )
+		return @verif_ssl
 	end
 
 	def rootcert
@@ -123,18 +123,18 @@ class Configuration
 		if( ipv6 != "" )
 			@use_ipv6 = ipv6
 		end
-		return( @use_ipv6 == 1 )
+		return @use_ipv6
 	end
 
 	def threads( threads = "" )
 		if( threads != "" )
 			@use_thread = threads
 		end
-		return( @use_thread == 1 )
+		return @use_thread
 	end
 
 	def threadingfallback
-		return( @threadfb == 1 )
+		return @threadfb
 	end
 
 	def connecttimeout
@@ -149,7 +149,7 @@ class Configuration
 		if( rejoin != "" )
 			@autorejoin = rejoin
 		end
-		return( @autorejoin == 1 )
+		return @autorejoin
 	end
 
 	def rejointime( rejointime = "" )
@@ -163,7 +163,7 @@ class Configuration
 		if( wait != "" )
 			@pingwait = wait
 		end
-		return( @pingwait == 1 )
+		return @pingwait
 	end
 
 	def opers( opers = "" )
@@ -238,7 +238,7 @@ class Configuration
 			@output.std( "\tPrefer IPv6:\t\t" + yn(@use_ipv6) + "\n" )
 			@output.std( "\tPort:\t\t\t" + @port.to_s + "\n" )
 			@output.std( "\tSSL port:\t\t" + @sslport.to_s + "\n" )
-			@output.std( "\tSSL Available:\t\t" + ynb(@status.ssl) + "\n" )
+			@output.std( "\tSSL Available:\t\t" + yn(@status.ssl) + "\n" )
 			@output.std( "\tVerify SSL cert:\t" + yn(@verif_ssl) + "\n" )
 			@output.std( "\tPath to root cert:\t" + @rootcert + "\n" )
 			@output.std( "\tPrefer SSL:\t\t" + yn(@use_ssl) + "\n" )
@@ -286,14 +286,14 @@ class Configuration
 
 			# Threading settings
 			@output.info( "\n\tThreading settings:\n" )
-			@output.std( "\tThreading available:\t" + ynb(@status.threads) + "\n" )
+			@output.std( "\tThreading available:\t" + yn(@status.threads) + "\n" )
 			@output.std( "\tUse threading:\t\t" + yn(@use_thread) + "\n" )
 			@output.std( "\tAllow thread fallback:\t" + yn(@threadfb) + "\n" )
 
 			# Output settings
 			@output.info( "\n\tOutput settings:\n" )
 			@output.std( "\tShow output:\t\tYes\n" )
-			@output.std( "\tUse colours:\t\t" + ynb(@status.colour) + "\n" )
+			@output.std( "\tUse colours:\t\t" + yn(@status.colour) + "\n" )
 			@output.std( "\tShow debug output:\t" + @status.debug.to_s + "\n" )
 			@output.std( "\tDebug level:\t\t" )
 			if( @status.debug == 0 )
@@ -312,14 +312,6 @@ class Configuration
 
 	# Support functions for config printing
 	def yn( var )
-		if( var == 1 )
-			return "Yes"
-		else
-			return "No"
-		end
-	end
-
-	def ynb( var )
 		if( var )
 			return "Yes"
 		else

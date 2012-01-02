@@ -1,9 +1,8 @@
-#!/usr/bin/ruby
-
-# Class to make and manage connection
+#!/usr/bin/env ruby
 
 require 'timeout'
 
+# Class to make and manage connection
 class Connection
 	def initialize( status, config, output )
 		@status		= status
@@ -11,6 +10,7 @@ class Connection
 		@output		= output
 	end
 
+	# Start connection
 	def start
 		@output.std( "Connecting ....................... " )
 
@@ -30,6 +30,7 @@ class Connection
 		end
 		@output.good( "[OK]\n" )
 
+		# Kick off SSL
 		if( @config.ssl && @status.ssl )
 			@output.std( "Starting SSL ..................... " )
 
@@ -64,6 +65,7 @@ class Connection
 		end
 	end
 
+	# Function to make SSL error codes human readable
 	def getSSLerror( errorcode )
 		case errorcode
 			when 0

@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 # Class bot uses to store it's status
 # Do not modify variables manually
@@ -102,9 +102,10 @@ class Status
 		return @startup
 	end
 
-	def uptime
+	# Function to calculate uptime string
+	def uptime( now = Time.now, start = @startup )
 		output = ""
-		diff = Time.now - @startup
+		diff = now - start
 
 		weeks	= ( diff/604800 ).to_i
 		days	= ( diff/86400 - ( weeks * 7 ) ).to_i

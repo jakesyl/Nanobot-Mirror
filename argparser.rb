@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 # Class to do parsing of commandline arguments
 class ArgumentParser
@@ -15,15 +15,15 @@ class ArgumentParser
 			if( arg == "-h" || arg == "--help" )
 				printhelp
 			elsif( arg == "-s" || arg == "--ssl" )
-				@config.ssl( 1 )
+				@config.ssl( true )
 			elsif( arg == "-4" || arg == "--ipv4" )
-				@config.ipv6( 0 )
+				@config.ipv6( false )
 			elsif( arg == "-6" || arg == "--ipv6" )
-				@config.ipv6( 1 )
+				@config.ipv6( true )
 			elsif( arg == "-t" || arg == "--thread" || arg == "--threads" || arg == "--threading" )
-				@config.threads( 1 )
+				@config.threads( true )
 			elsif( arg == "-nt" || arg == "--no-thread" || arg == "--no-threads" || arg == "--no-threading" )
-				@config.threads( 0 )
+				@config.threads( false )
 			elsif( arg == "-q" || arg == "--quiet" )
 				@status.output( 0 )
 			elsif( arg == "-c" || arg == "--colour" || arg == "--color" )

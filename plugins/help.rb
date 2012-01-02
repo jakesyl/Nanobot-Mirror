@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+
+# Plugin for online user help
 class Help
 	def initialize( status, config, output, irc, timer )
 		@status		= status
@@ -13,9 +16,13 @@ class Help
 			if( con )
 				@output.cinfo( "Use 'help topic' for help on a specific topic." )
 				@output.c( "Help topics: commands, core, plugins\n" )
+				@output.c( "Some plugins may also support help, in that case 'help pluginname'\n" )
+				@output.c( "will send you the plugins help.\n" )
 			else
 				@irc.notice( nick, "Use 'help topic' for help on a specific topic." )
 				@irc.notice( nick, "Help topics: commands, core, plugins" )
+				@irc.notice( nick, "Some plugins may also support help, in that case 'help pluginname'" )
+				@irc.notice( nick, "will send you the plugins help." )
 			end
 		else
 			# Specific help
@@ -59,17 +66,29 @@ class Help
 					"  function name as a command, separated by a space.",
 					"",
 					"Examples:",
-					"  help                                - Call 'help' plugins main function.",
-					"  help plugins                        - Call 'plugins' function from 'help' plugin.",
-					"  plugin function [arguments]         - Call 'function' from 'plugin' with 'arguments'."
+					"  help                        - Call 'help' plugins main function.",
+					"  help plugins                - Call 'plugins' function from 'help' plugin.",
+					"  plugin func [args]          - Call 'func' from 'plugin' with 'args' as input."
 				]
 			when "topic"
 				tmp = [ "Don't be a smartass." ]
 			else
-				tmp = [
-					"No help for #{arguments}.",
-					"If #{arguments} is a plugin, try it's help function."
-				]	
+				# See if there is a plugin by that name which supports help
+				pluginname = arguments.gsub( /[^a-zA-Z0-9 -]/, "" ).downcase
+				if( @status.checkplugin( pluginname ) )
+					# Get plugin
+					plugin = @status.getplugin( pluginname )
+
+					# See if the plugin support help.
+					if( plugin.respond_to?( "help" ) )
+						plugin.help( nick, user, host, from, msg, arguments, con )
+						tmp = [ "End for help from #{pluginname}." ]
+					else
+						tmp = [ "Plugin #{pluginname} is loaded, but doesn't support help." ]
+					end
+				else
+					tmp = [ "No help for #{arguments}." ]
+				end
 			end
 
 			# Print out help

@@ -1,4 +1,9 @@
+#!/usr/bin/env ruby
+
+# Plugin to demonstrate the working of plugins
 class Demo
+
+	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
 		@status		= status
 		@config		= config
@@ -44,6 +49,15 @@ class Demo
 		@output.std( nick + " quit: " + message )
 	end
 
+	# Function to send help about this plugin (Can also be called by the help plugin.)
+	def help( nick, user, host, from, msg, arguments, con )
+		if( con )
+			@output.c( "Help for demo plugin, help, function and functionadmin are available.\n" )
+		else
+			@irc.notice( nick, "Help for demo plugin, help, function and functionadmin are available." )
+		end
+	end
+		
 	# Generic function that can be called by any user
 	def function( nick, user, host, from, msg, arguments, con )
 		@irc.message( from, nick + " called \"function\" from " + from + "." )

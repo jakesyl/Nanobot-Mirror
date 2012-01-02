@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+
+# Plugin that handles all the core functionality for the bot
 class Core
 	def initialize( status, config, output, irc, timer )
 		@status		= status

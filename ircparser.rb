@@ -1,8 +1,8 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
-# Class to parse IRC input
 require './ircparser_suroutines.rb'
 
+# Class to parse IRC input
 class IRCParser
 	def initialize( status, config, output, irc, timer )
 		@status		= status
@@ -14,6 +14,7 @@ class IRCParser
 		@sub		= IRCSubs.new( status, config, output, irc, timer )
 	end
 
+	# Start parser
 	def start
 		@irc.sendinit
 
@@ -23,8 +24,11 @@ class IRCParser
 			@status.login( 1 )
 		end
 
+		# Main IRC parser loop
 		begin
 			while true
+
+				# Set IRC timeout
 				Timeout::timeout( @config.pingtimeout ) do
 					line = @irc.socket.gets
 					if( @status.threads && @config.threads )
@@ -42,7 +46,10 @@ class IRCParser
 		end
 	end
 
+	# Meta function for starting threads
 	def spawn_parser( line )
+
+		# Join threads an print results if at the highest debug level
 		if(@status.debug == 3)
 			puts Thread.new { parser( line ) }.join
 		else
@@ -50,10 +57,9 @@ class IRCParser
 		end
 	end
 
+	# Main parser subroutine
 	def parser( line )
 		@output.debug_extra( "==> " + line + "\n" )
-
-		# (Raw data hook)
 
 		# PING
 		if( line =~ /^PING \:(.+)/ )

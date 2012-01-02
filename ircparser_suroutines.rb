@@ -1,8 +1,8 @@
-#!/usr/bin/ruby
-
-# Class to handle IRC commands
+#!/usr/bin/env ruby
 
 require './commands.rb'
+
+# Class to handle IRC commands
 class IRCSubs
 	def initialize( status, config, output, irc, timer )
 		@status		= status
@@ -14,14 +14,16 @@ class IRCSubs
 		@cmd		= Commands.new( status, config, output, irc, timer, 0 )
 	end
 
+	# Functions that are called when actions are detected from IRC.
 	def kick( nick, user, host, channel, kicked, reason )
 		@output.std( nick + " kicked " + kicked + " from " + channel + ". (" + reason + ")\n" )
 
-		# Check if we need to rejoin
+		# Check if we need to resend join
 		if( @config.nick == kicked && @config.rejoin )
 			@timer.action( @config.rejointime, "@irc.join( '#{channel}' )" )
 		end
 
+		# Check for plugin hooks
 		@status.plugins.each_key do |key|
 			if( @status.getplugin( key ).respond_to?( "kicked" ) )
 				@status.getplugin( key ).kicked( nick, user, host, channel, kicked, reason )
@@ -63,19 +65,23 @@ class IRCSubs
 	end
 
 	def privmsg( nick, user, host, from, message )
+
+		# Check if the received message is a bot command
 		cmd = @config.command
 		if( message =~ /^#{cmd}/ )
 			@cmd.process( nick, user, host, from, message.gsub( /^#{cmd}/, "" ) )
 		else
-			@status.plugins.each_key do |key|
-			if( @status.getplugin( key ).respond_to?( "messaged" ) )
-				@status.getplugin( key ).messaged( nick, user, host, from, message )
-			end
-		end
 
+			# If not a command, check for plugins with message hook
+			@status.plugins.each_key do |key|
+				if( @status.getplugin( key ).respond_to?( "messaged" ) )
+					@status.getplugin( key ).messaged( nick, user, host, from, message )
+				end
+			end
 		end
 	end
 
+	# Function for unknow messages
 	def misc( unknown )
 		# Passing on the signal for module autoloading
 		if( unknown == "autoload" )
@@ -85,6 +91,7 @@ class IRCSubs
 		end
 	end
 
+	# Function to sanitize user input
 	def sanitize( input, downcase = 0 )
 		input.gsub!( /[^a-zA-Z0-9 -]/, "" )
 		if( downcase == 1 )

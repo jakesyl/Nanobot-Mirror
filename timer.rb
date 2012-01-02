@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 # Class to delay sending messages to IRC
 class Timer
@@ -9,6 +9,7 @@ class Timer
 		@irc		= irc
 	end
 
+	# Add action to be evaluated
 	def action( timeout, action )
 		@output.debug( "Set action '" + action + "' to be executed in " + timeout.to_s + " seconds.\n" )
 
