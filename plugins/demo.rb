@@ -73,4 +73,8 @@ class Demo
 		end
 	end
 
+	private
+	def something
+		# This is an internal function that cannot be called from outside this plugin.
+	end
 end

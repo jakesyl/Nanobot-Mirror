@@ -136,7 +136,7 @@ class Commands
 							@output.debug( "Object was pushed to plugin hash.\n" )
 
 							if( con )
-								if( auto )
+								if( !auto )
 									@output.cgood( "Plugin " + plugin + " loaded.\n" )
 								end
 							else
@@ -223,13 +223,13 @@ class Commands
 	# Meta function to reload modules
 	def reload( nick, user, host, from, msg )
 		unload( nick, user, host, from, msg )
-		load( nick, user, host, from, msg, true )
+		load( nick, user, host, from, msg )
 	end
 
 	# Meta funcion to load autoload modules
 	def autoload( nick = nil, user = nil, host = nil, from = nil, msg = nil )
 		@config.autoload.each do |mod|
-			load( nil, nil, nil, nil, "dummy " + mod )
+			load( nil, nil, nil, nil, "dummy " + mod, true )
 		end
 	end
 

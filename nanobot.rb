@@ -51,6 +51,7 @@ while status.reconnect do
 		Signal.trap( 'INT', 'DEFAULT' )
 		irc.quit( "Caught interrupt, quiting." )
 		output.std( "Caught interrupt, quiting.\n" )
+		status.reconnect( 0 )
 		Process.exit
 	end
 	# Create timer object for later use

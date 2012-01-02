@@ -29,11 +29,11 @@ class Help
 			when "commands"
 				tmp = [
 					"Built in commands:",
-					"  quit [message]                      - Make bot quit IRC",
-					"  load/unload [plugin]                - Load and unload plugins",
-					"  reload [plugin]                     - Reload plugin",
-					"  loaded                              - List loaded plugins",
-					"  available                           - List all available plugins"
+					"  quit [message]              - Make bot quit IRC",
+					"  load/unload [plugin]        - Load and unload plugins",
+					"  reload [plugin]             - Reload plugin",
+					"  loaded                      - List loaded plugins (public command)",
+					"  available                   - List all available plugins (public command)"
 				]
 			when "core"
 				tmp = [
@@ -52,8 +52,8 @@ class Help
 					"  kick [channel] [nick] [reason]      - Kick user from channel",
 					"  ban/unban [channel] [host]          - Ban/unban host",
 					"  timeban [channel] [host] [seconds]  - Set ban that's automatically removed",
-					"  version                             - Check bot version",
-					"  uptime                              - Check bot uptime",
+					"  version                             - Check bot version (public command)",
+					"  uptime                              - Check bot uptime (public command)",
 					"  nick [nickname]                     - Change bot nickname"
 				]
 
