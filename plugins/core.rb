@@ -447,6 +447,10 @@ class Core
 
 	def nick( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
+			if( !arguments.nil? && !arguments.empty? )
+				@config.nick( arguments )
+				@irc.nick( arguments )
+			end
 		end
 	end
 end

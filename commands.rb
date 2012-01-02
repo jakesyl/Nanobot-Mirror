@@ -35,7 +35,7 @@ class Commands
 
 		cmd, rest = msg.split(' ', 2)
 
-		if( cmd != nil )
+		if( !cmd.nil? && !cmd.empty? )
 			sanitize( cmd, 1 )
 
 			begin
@@ -48,7 +48,7 @@ class Commands
 					plugin = @status.getplugin( cmd )
 
 					# Parse function call
-					if( rest != nil )
+					if( !rest.nil? && !rest.empty? )
 							function, arguments = rest.split(' ', 2)
 							sanitize( function )
 
