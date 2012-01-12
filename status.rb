@@ -157,7 +157,6 @@ class Status
 		if( seconds != 1 )
 			output = output + "s"
 		end
-		output = output + "."
 
 		return output
 	end

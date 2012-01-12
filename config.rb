@@ -4,25 +4,28 @@
 # Modify the following variables to your liking
 class Configuration
 	def initialize( status, output )
-		@nick		= "nanobeta"				# Bot nickname
+		@nick		= "nanobot4"				# Bot nickname
 		@user		= "nanobot"					# IRC username
 		@pass		= ""						# NickServ password
 		@version	= "Nanobot 4 beta 2"		# Version
 
-		@command	= '\?'						# Character prefix for commands (escape special chars)
+		@command	= '\!'						# Character prefix for commands (escape special chars)
 
 		@server		= "irc.insomnia247.nl"		# IPv4 address
 		@server6	= "irc6.insomnia247.nl"		# IPv6 address
 		@port		= 6667						# Normal port
 		@sslport	= 6697						# SSL port
 
-		@channels	= ["#bot"]					# Autojoin channel list
+		@channels	= [ "#bot" ]
+												# Autojoin channel list
 
-		@opers		= ["insomnia247.nl"]		# Opers list
+		@opers		= [ "insomnia247.nl" ]
+												# Opers list
 
 		@data		= "data"					# Data directory
 		@plugins	= "plugins"					# Plugin directory
-		@autoload	= ["core", "help"]			# Plugin autoload list
+		@autoload	= [ "core", "help", "seen", "identified", "ddg" ]
+												# Plugin autoload list
 
 		@autorejoin	= true						# Rejoin on kick
 		@rejointime	= 3							# Time to wait before rejoin (seconds)

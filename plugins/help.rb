@@ -16,9 +16,9 @@ class Help
 			tmp = [
 				"Use 'help topic' for help on a specific topic.",
 				"Topics:",
-				"  commands                            - Make bot quit IRC",
-				"  core                                - Load and unload plugins",
-				"  plugins                             - Reload plugin",
+				"  commands                            - General bot commands",
+				"  core                                - Help for core plugin",
+				"  plugins                             - Help for plugins",
 				"",
 				"Some plugins may also support help, in that case 'help pluginname'",
 				"will send you the plugins help."

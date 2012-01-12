@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# Plugin to demonstrate the working of plugins
+# Plugin to keep track of when users were last seen.
 class Seen
 
 	# This method is called when the plugin is first loaded
@@ -33,6 +33,8 @@ class Seen
 
 		# Check if there is input
 		if( !arguments.nil? && !arguments.empty? )
+			arguments.gsub!( / /, "" )
+			arguments.downcase!
 
 			# Check for log data
 			if( !@seen2[ arguments ].nil? )
@@ -66,6 +68,8 @@ class Seen
 
 		# Check if there is input
 		if( !arguments.nil? && !arguments.empty? )
+			arguments.gsub!( / /, "" )
+			arguments.downcase!
 
 			# Check if we have a log for this user
 			if( !@seen[ arguments ].nil? )
@@ -97,6 +101,8 @@ class Seen
 
 		# Check if there is input
 		if( !arguments.nil? && !arguments.empty? )
+			arguments.gsub!( / /, "" )
+			arguments.downcase!
 
 			# Check if we have a log for this user
 			if( !@seen2[ arguments ].nil? )
