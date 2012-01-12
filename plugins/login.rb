@@ -13,7 +13,6 @@ class Login
 			raise LoadError, "Cannot load bcrypt library. Make sure the bcrypt-ruby gem is installed."
 		end
 
-
 		@status		= status
 		@config		= config
 		@output		= output
@@ -52,7 +51,7 @@ class Login
 	end
 
 	# Function to set password
-	def setpass( nick, user, host, from, msg, arguments, con )
+	def set( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
 			if( !arguments.nil? && !arguments.empty? )
 				@password = BCrypt::Password.create arguments

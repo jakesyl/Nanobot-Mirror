@@ -24,7 +24,7 @@ class Configuration
 
 		@data		= "data"					# Data directory
 		@plugins	= "plugins"					# Plugin directory
-		@autoload	= [ "core", "help", "seen", "identified", "ddg" ]
+		@autoload	= [ "core", "help", "seen", "identified", "ddg", "login" ]
 												# Plugin autoload list
 
 		@autorejoin	= true						# Rejoin on kick
