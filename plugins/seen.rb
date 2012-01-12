@@ -197,7 +197,7 @@ class Seen
 	# Load database from disk
 	def load_db
 		# Declare datastore
-		data = []
+		data = {}
 
 		# Check if a database is stored on disk
 		if File.exists?( @config.datadir + '/' + @filename )
