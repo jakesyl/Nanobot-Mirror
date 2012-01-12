@@ -130,30 +130,35 @@ class Seen
 	# Add regular message to seen database
 	def messaged( nick, user, host, from, message )
 		line = nick  + " on " + from + ": " + message
+		nick.downcase!
 		add( nick, line )
 	end
 
 	# Add kick to seen database
 	def kicked( nick, user, host, channel, kicked, reason )
 		line = kicked + " was kicked from " + channel + " by " + nick + " (" + reason + ")."
+		kicked.downcase!
 		add( kicked, line )
 	end
 
 	# Add join to seen database
 	def joined( nick, user, host, channel )
 		line = nick + " joined " + channel
+		nick.downcase!
 		add( nick, line )
 	end
 
 	# Add part to seen database
 	def parted( nick, user, host, channel )
 		line = nick + " parted " + channel
+		nick.downcase!
 		add( nick, line )
 	end
 
 	# Add quit to seen database
 	def quited( nick, user, host, message )
 		line = nick + " quited " + message
+		nick.downcase!
 		add( nick, line )
 	end
 
@@ -161,6 +166,12 @@ class Seen
 	def write( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
 			write_db
+
+			if( con )
+				@output.cinfo( "Wrote seen database to disk." )
+			else
+				@irc.notice( nick, "Wrote seen database to disk." )
+			end
 		end
 	end
 
