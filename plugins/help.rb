@@ -21,7 +21,8 @@ class Help
 				"  plugins                             - Help for plugins",
 				"",
 				"Some plugins may also support help, in that case 'help pluginname'",
-				"will send you the plugins help."
+				"will send you the plugins help.",
+				"A list of loaded plugins can be found with the 'loaded' command."
 			]
 		else
 			# Specific help

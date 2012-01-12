@@ -22,6 +22,8 @@ class Seen
 		@seen2		= {}
 		@time2		= {}
 
+		@first		= Time.new
+
 		# See if there is a database stored to disk we can load
 		load_db
 	end
@@ -44,7 +46,7 @@ class Seen
 			if( !@seen[ arguments ].nil? )
 				last( nick, user, host, from, msg, arguments, con )
 			else
-				line = "No log for " + arguments + "."
+				line = "No log for " + arguments + ". " + "Log goes back " + @status.uptime( Time.now, @first ) + "."
 			end
 		
 		else
@@ -78,7 +80,7 @@ class Seen
 					@seen[ arguments ]
 				]
 			else
-				line = [ "No log for " + arguments + "." ]
+				line = [ "No log for " + arguments + ". " + "Log goes back " + @status.uptime( Time.now, @first ) + "." ]
 			end
 		else
 			line = [ "Please specify a nickname." ]
@@ -111,7 +113,7 @@ class Seen
 					@seen2[ arguments ]
 				]
 			else
-				line = [ "No log for " + arguments + "." ]
+				line = [ "No log for " + arguments + ". " + "Log goes back " + @status.uptime( Time.now, @first ) + "." ]
 			end
 		else
 			line = [ "Please specify a nickname." ]
@@ -225,6 +227,7 @@ class Seen
 			end
 
 			# Load data into it's normal variables
+			@first	= data[ "first" ]
 			@seen	= data[ "seen" ]
 			@time	= data[ "time" ]
 			@seen2	= data[ "seen2" ]
@@ -239,6 +242,7 @@ class Seen
 	# Write database to disk
 	def write_db
 		data = {
+			"first"	=> @first,
 			"seen"	=> @seen,
 			"time"	=> @time,
 			"seen2"	=> @seen2,
