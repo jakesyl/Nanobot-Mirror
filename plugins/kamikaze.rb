@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# Plugin that allows people to kick random users, at the price of also being kicked, and banned for 1 minute
+# Plugin that allows people to kick random users, at the price of also being kicked, and banned for n seconds
 class Kamikaze
 
 	# This method is called when the plugin is first loaded

@@ -51,7 +51,20 @@ class Demo
 
 	# Function to send help about this plugin (Can also be called by the help plugin.)
 	def help( nick, user, host, from, msg, arguments, con )
-		if( con )
+		help = [
+			"This plugin demonstrates the working of plugins.",
+			"  demo function               - Public plugin function.",
+			"  demo adminfunction          - Admin only plugin function"
+		]
+
+		# Print out help
+		help.each do |line|
+			if( con )
+				@output.c( line + "\n" )
+			else
+				@irc.notice( nick, line )
+			end
+		end		if( con )
 			@output.c( "Help for demo plugin, help, function and functionadmin are available.\n" )
 		else
 			@irc.notice( nick, "Help for demo plugin, help, function and functionadmin are available." )

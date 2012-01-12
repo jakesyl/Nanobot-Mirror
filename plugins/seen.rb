@@ -159,7 +159,7 @@ class Seen
 
 	# Add quit to seen database
 	def quited( nick, user, host, message )
-		line = nick + " quited " + message
+		line = nick + " quit (" + message + ")"
 		nick.downcase!
 		add( nick, line )
 	end
@@ -180,7 +180,7 @@ class Seen
 	# Function to send help about this plugin (Can also be called by the help plugin.)
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
-			"This module provides data on the last seen times and actions of users.",
+			"This plugin provides data on the last seen times and actions of users.",
 			"  seen last [user]            - Provides the last seen action from a user.",
 			"  seen beforelast [user]      - Provides the second last seen action from a user.",
 			"  seen [user]                 - Meta function that calls both of the above functions.",
@@ -223,7 +223,7 @@ class Seen
 
 			# Read database from file
         	File.open( @config.datadir + '/' + @filename ) do |file|
-				data = Marshal.load(file)
+				data = Marshal.load( file )
 			end
 
 			# Load data into it's normal variables
@@ -250,7 +250,7 @@ class Seen
 		}
 
 		File.open( @config.datadir + '/' + @filename, 'w' ) do |file|
-			Marshal.dump(data, file)
+			Marshal.dump( data, file )
 		end
 	end
 
