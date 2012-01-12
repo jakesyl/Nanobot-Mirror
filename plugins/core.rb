@@ -439,7 +439,7 @@ class Core
 
 	# Echo uptime to the user
 	def uptime( nick, user, host, from, msg, arguments, con )
-		uptime = "Uptime: " + @status.uptime
+		uptime = "Uptime: " + @status.uptime + "."
 		if( con )
 			@output.cinfo( uptime )
 		else

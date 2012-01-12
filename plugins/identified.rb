@@ -32,4 +32,13 @@ class Identified
 			end
 		end
 	end
+
+	# Function to send help about this plugin (Can also be called by the help plugin.)
+	def help( nick, user, host, from, msg, arguments, con )
+		if( con )
+			@output.c( "Plugin to voice users that have identified with NickServ.\n" )
+		else
+			@irc.notice( nick, "Plugin to voice users that have identified with NickServ." )
+		end
+	end
 end

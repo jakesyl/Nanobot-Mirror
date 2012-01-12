@@ -81,7 +81,7 @@ class Help
 					# See if the plugin support help.
 					if( plugin.respond_to?( "help" ) )
 						plugin.help( nick, user, host, from, msg, arguments, con )
-						tmp = [ "End for help from #{pluginname}." ]
+						tmp = [ "End of help from #{pluginname}." ]
 					else
 						tmp = [ "Plugin #{pluginname} is loaded, but doesn't support help." ]
 					end
