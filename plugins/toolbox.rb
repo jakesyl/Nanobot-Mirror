@@ -255,7 +255,10 @@ class Toolbox
 	def hex( nick, user, host, from, msg, arguments, con )
 		output = ""
 		if( !arguments.nil? && !arguments.empty? )
-			output = arguments.unpack('U'*arguments.length).collect {|x| x.to_s( 16 )}.join
+			arguments.unpack('U'*arguments.length).each do |x|
+				output = output + x.to_s( 16 ) + " "
+			end
+
 		else
 			output = "Please provide string to convert."
 		end
@@ -291,7 +294,9 @@ class Toolbox
 	def dec( nick, user, host, from, msg, arguments, con )
 		output = ""
 		if( !arguments.nil? && !arguments.empty? )
-			output = arguments.unpack('U'*arguments.length).collect {|x| x.to_s( 10 )}.join
+			arguments.unpack('U'*arguments.length).each do |x|
+				output = output + x.to_s( 10 ) + " "
+			end
 		else
 			output = "Please provide string to convert."
 		end
