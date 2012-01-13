@@ -163,35 +163,163 @@ class Toolbox
 
 	# PING command
 	def ping( nick, user, host, from, msg, arguments, con )
+		output = ""
+		cmd = nil
+
+		# Check if host is given
 		if( !arguments.nil? && !arguments.empty? )
+
+			# Check for valid host types
+			case type( arguments )
+			when 1
+				cmd = "ping -c1 " + arguments
+			when 4
+				cmd = "ping -c1 " + arguments
+			when 6
+				cmd = "ping6 -c1 " + arguments
+			else
+				output = [ "" ,"Invalid host." ]
+			end
+
+			# Execute command
+			if( !cmd.nil? )
+				output = `#{cmd}`
+				output = output.split( "\n", 3 )
+			end
+
+			# Show output
+			if( con )
+				@output.c( output[1] + "\n" )
+			else
+				@irc.message( from, output[1] )
+			end
+		else
+			help( nick, user, host, from, msg, arguments, con )
 		end
 	end
 
 	# Webchat IP decoder
 	def webchat( nick, user, host, from, msg, arguments, con )
+		output = ""
 		if( !arguments.nil? && !arguments.empty? )
+			arguments.gsub!( /[^a-fA-F0-9]/, "" )
+			if( arguments.length == 8 )
+				output =	arguments[ 0, 2 ].to_i(16).to_s(10) + "." +
+							arguments[ 2, 2 ].to_i(16).to_s(10) + "." +
+							arguments[ 4, 2 ].to_i(16).to_s(10) + "." +
+							arguments[ 6, 2 ].to_i(16).to_s(10)
+
+
+			else
+				output = "Expecting 8 hex characters"
+			end
+		else
+			output = "Expecting 8 hex characters"
+		end
+
+		# Show output
+		if( con )
+			@output.c( output + "\n" )
+		else
+			@irc.message( from, output )
+		end
+	end
+
+	# Base change function
+	def base( nick, user, host, from, msg, arguments, con )
+		output = ""
+		if( !arguments.nil? && !arguments.empty? )
+			frombase, tobase, number = arguments.split( ' ', 3 )
+			if( !frombase.nil? && !frombase.empty? && !tobase.nil? && !tobase.empty? && !number.nil? && !number.empty? )
+				if( frombase.to_i < 2 || frombase.to_i > 36 || tobase.to_i < 2 || tobase.to_i > 36 )
+					output = "Base number must be between 2 and 36."
+				else
+					output = number.to_i( frombase.to_i ).to_s( tobase.to_i )
+				end
+			else
+				output = "Expecting 3 arguments."
+			end
+		else
+			output = "Expecting 3 arguments."
+		end
+
+		# Show output
+		if( con )
+			@output.c( output + "\n" )
+		else
+			@irc.message( from, output )
 		end
 	end
 
 	# (De-)HEX functions
 	def hex( nick, user, host, from, msg, arguments, con )
+		output = ""
 		if( !arguments.nil? && !arguments.empty? )
+			output = arguments.unpack('U'*arguments.length).collect {|x| x.to_s( 16 )}.join
+		else
+			output = "Please provide string to convert."
+		end
+
+		# Show output
+		if( con )
+			@output.c( output + "\n" )
+		else
+			@irc.message( from, output )
 		end
 	end
 
 	def dehex( nick, user, host, from, msg, arguments, con )
+		output = ""	
 		if( !arguments.nil? && !arguments.empty? )
+			arguments.gsub!( /[^a-fA-F0-9]/, "" )
+			arguments.scan(/../).each do |pair|
+				output = output + pair.hex.chr
+			end
+		else
+			output = "Please provide string to convert."
+		end
+
+		# Show output
+		if( con )
+			@output.c( output + "\n" )
+		else
+			@irc.message( from, output )
 		end
 	end
 
-	# (De-)ASCII functions
-	def ascii( nick, user, host, from, msg, arguments, con )
+	# (De-)decimal functions
+	def dec( nick, user, host, from, msg, arguments, con )
+		output = ""
 		if( !arguments.nil? && !arguments.empty? )
+			output = arguments.unpack('U'*arguments.length).collect {|x| x.to_s( 10 )}.join
+		else
+			output = "Please provide string to convert."
+		end
+
+		# Show output
+		if( con )
+			@output.c( output + "\n" )
+		else
+			@irc.message( from, output )
 		end
 	end
 
-	def deascii( nick, user, host, from, msg, arguments, con )
+	def dedec( nick, user, host, from, msg, arguments, con )
+		output = ""	
 		if( !arguments.nil? && !arguments.empty? )
+			arguments.gsub!( /[^0-9]/, " " )
+			arguments.split( ' ' ).each do |value|
+				output = output + value.to_i.chr
+			end
+		else
+			output = "Please provide string to convert."
+		end
+
+		# Show output
+		if( con )
+			@output.c( output + "\n" )
+		else
+			@irc.message( from, output )
 		end
 	end
 
@@ -199,17 +327,18 @@ class Toolbox
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
 			"This plugin demonstrates the working of plugins.",
-			"  toolbox md5 [phrase]          - Calculate md5 hash of given phrase.",
-			"  toolbox lmd5 [md5 hash]       - Do a database lookup for given md5 hash.",
-			"  toolbox sha1 [phrase]         - Calculate sha1 hash of given phrase.",
-			"  toolbox lsha1 [sha1 hash]     - Do a database lookup for given sha1 hash.",
-			"  toolbox dig [host]            - Do a (reverse) DNS lookup for a host.",
-			"  toolbox ping [host]           - Send a PING request to a host.",
-			"  toolbox webchat [hexmask]     - Reverse webchat hex encoded IP address.",
-			"  toolbox hex [string]          - Translate string to hex. (According to ASCII table)",
-			"  toolbox dehex [hex string]    - Translate string from hex. (According to ASCII table)",
-			"  toolbox ascii [string]        - Translate string to ascii values.",
-			"  toolbox deascii [string]      - Translate string from ascii values."
+			"  toolbox md5 [phrase]                 - Calculate md5 hash of given phrase.",
+			"  toolbox lmd5 [md5 hash]              - Do a database lookup for given md5 hash.",
+			"  toolbox sha1 [phrase]                - Calculate sha1 hash of given phrase.",
+			"  toolbox lsha1 [sha1 hash]            - Do a database lookup for given sha1 hash.",
+			"  toolbox dig [host]                   - Do a (reverse) DNS lookup for a host.",
+			"  toolbox ping [host]                  - Send a PING request to a host.",
+			"  toolbox webchat [hexmask]            - Reverse webchat hex encoded IP address.",
+			"  toolbox base [from] [to] [number]    - Convert base of number",
+			"  toolbox hex [string]                 - Translate string to hex. (UTF-8)",
+			"  toolbox dehex [hex string]           - Translate hex to string.",
+			"  toolbox dec [string]                 - Translate string to decimal values. (UTF-8)",
+			"  toolbox dedec [string]               - Translate decimal values to string. (Non-numeric characters are used as delimiters.)"
 		]
 
 		# Print out help
@@ -219,12 +348,6 @@ class Toolbox
 			else
 				@irc.notice( nick, line )
 			end
-		end
-
-		if( con )
-			@output.c( "Help for demo plugin, help, function and functionadmin are available.\n" )
-		else
-			@irc.notice( nick, "Help for demo plugin, help, function and functionadmin are available." )
 		end
 	end
 

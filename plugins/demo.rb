@@ -64,10 +64,6 @@ class Demo
 			else
 				@irc.notice( nick, line )
 			end
-		end		if( con )
-			@output.c( "Help for demo plugin, help, function and functionadmin are available.\n" )
-		else
-			@irc.notice( nick, "Help for demo plugin, help, function and functionadmin are available." )
 		end
 	end
 		
