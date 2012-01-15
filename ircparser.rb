@@ -51,7 +51,7 @@ class IRCParser
 	# Meta function for starting threads
 	def spawn_parser( line )
 
-		# Join threads an print results if at the highest debug level
+		# Join threads and print results if at the highest debug level
 		if(@status.debug == 3)
 			puts Thread.new { parser( line ) }.join
 		else

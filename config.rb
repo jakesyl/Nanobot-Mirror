@@ -16,7 +16,7 @@ class Configuration
 		@port		= 6667						# Normal port
 		@sslport	= 6697						# SSL port
 
-		@channels	= [ "#bot" ]
+		@channels	= [ "#bot", "#test" ]
 												# Autojoin channel list
 
 		@opers		= [ "insomnia247.nl" ]
@@ -24,8 +24,11 @@ class Configuration
 
 		@data		= "data"					# Data directory
 		@plugins	= "plugins"					# Plugin directory
-		@autoload	= [ "core", "help", "seen", "identified", "ddg", "login" ]
+		@autoload	= [ "core", "help", "seen", "identified", "ddg", "login", "toolbox" ]
 												# Plugin autoload list
+
+		@antiflood	= true						# Attempt to mitigate people flooding bot with command
+		@floodtime	= 5							# Command spread that triggers flood protect (seconds)
 
 		@autorejoin	= true						# Rejoin on kick
 		@rejointime	= 3							# Time to wait before rejoin (seconds)
@@ -146,6 +149,20 @@ class Configuration
 
 	def pingtimeout
 		return @timeout
+	end
+
+	def antiflood ( antiflood = "" )
+		if( antiflood != "" )
+			@antiflood = antiflood
+		end
+		return @antiflood
+	end
+
+	def floodtime ( floodtime = "" )
+		if( floodtime != "" )
+			@floodtime = floodtime
+		end
+		return @floodtime
 	end
 
 	def rejoin( rejoin = "" )
@@ -292,6 +309,11 @@ class Configuration
 			@output.std( "\tThreading available:\t" + yn(@status.threads) + "\n" )
 			@output.std( "\tUse threading:\t\t" + yn(@use_thread) + "\n" )
 			@output.std( "\tAllow thread fallback:\t" + yn(@threadfb) + "\n" )
+
+			# Antiflood
+			@output.info( "\n\tAnti flood settings:\n" )
+			@output.std( "\tFlood protect:\t\t" + yn(@antiflood) + "\n" )
+			@output.std( "\tTime between triggers:\t" + @floodtime.to_s + " seconds\n" )
 
 			# Output settings
 			@output.info( "\n\tOutput settings:\n" )

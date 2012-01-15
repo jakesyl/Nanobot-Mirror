@@ -18,7 +18,12 @@ class Toolbox
 
 	# Redirect random nothing requests to help
 	def main( nick, user, host, from, msg, arguments, con )
-		help( nick, user, host, from, msg, arguments, con )
+		line = "Not valid input. Please see the help function for valid commands."
+		if( con )
+			@output.c( line + "\n" )
+		else
+			@irc.notice( nick, line )
+		end
 	end
 
 	# MD5 functions
@@ -103,7 +108,7 @@ class Toolbox
 					end
 
 				# Check for reverse lookup
-				elsif( arg =~ /^x$/i )
+				elsif( arg =~ /^x$/i || arg =~ /^reverse$/i )
 					type = "x"
 					validtype = true
 
@@ -331,7 +336,7 @@ class Toolbox
 	# Function to send help about this plugin (Can also be called by the help plugin.)
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
-			"This plugin demonstrates the working of plugins.",
+			"This plugin provides a series of simple tools.",
 			"  toolbox md5 [phrase]                 - Calculate md5 hash of given phrase.",
 			"  toolbox lmd5 [md5 hash]              - Do a database lookup for given md5 hash.",
 			"  toolbox sha1 [phrase]                - Calculate sha1 hash of given phrase.",
@@ -339,7 +344,7 @@ class Toolbox
 			"  toolbox dig [host]                   - Do a (reverse) DNS lookup for a host.",
 			"  toolbox ping [host]                  - Send a PING request to a host.",
 			"  toolbox webchat [hexmask]            - Reverse webchat hex encoded IP address.",
-			"  toolbox base [from] [to] [number]    - Convert base of number",
+			"  toolbox base [from] [to] [number]    - Convert base of number.",
 			"  toolbox hex [string]                 - Translate string to hex. (UTF-8)",
 			"  toolbox dehex [hex string]           - Translate hex to string.",
 			"  toolbox dec [string]                 - Translate string to decimal values. (UTF-8)",

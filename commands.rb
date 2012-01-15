@@ -11,7 +11,12 @@ class Commands
 		@timer		= timer
 		@console	= console
 
+		# List of protected commands for plugins
 		@protected	= [ "kicked", "noticed", "messaged", "joined", "parted", "quited" ]
+
+		# Hashtables to keep flood statistics
+		@floodlevel	= {}
+		@lastcmd	= {}
 	end
 
 	# Shorthands
@@ -31,7 +36,45 @@ class Commands
 	end
 
 	# Inital command parsing & function calling
-	def process( nick, user, host, from, msg )
+	def process( nick, user, host, from, msg, skipflood = false )
+
+		# Do command throttling if desireable and threading allows it
+		if( @status.threads && @config.threads && @config.antiflood && !con && !skipflood )
+			# Determine threshold
+			if( @floodlevel[ user ].nil? || @floodlevel[ user ] < 1 )
+				@floodlevel[ user ] = 0
+				threshold = @config.floodtime
+			else
+				threshold = @config.floodtime * @floodlevel[ user ]
+			end
+
+			# Check if time between now and the last command is less than trigger time
+			if( @lastcmd[ user ].nil? )
+				@lastcmd[ user ] = Time.new - threshold
+			end
+
+			if( ( Time.new - @lastcmd[ user ] ) < threshold )
+				if( @floodlevel[ user ] > 4 )
+					# Drop request
+					@lastcmd[ user ] = Time.new
+					Thread.exit
+				else
+					# Delay thread
+					@floodlevel[ user ] += 1
+					@irc.notice( nick, "Delaying your command by " + threshold.to_s + " seconds. If too many requests are sent in a short time, they may be dropped." )
+					@lastcmd[ user ] = Time.new
+					sleep( threshold )
+				end
+			else
+				@lastcmd[ user ] = Time.new
+
+				if( @floodlevel[ user ].nil? || @floodlevel[ user ] < 1 )
+					@floodlevel[ user ] == 0
+				else
+					@floodlevel[ user ] -= 1
+				end
+			end
+		end
 
 		cmd, rest = msg.split(' ', 2)
 
@@ -70,7 +113,7 @@ class Commands
 				else
 					if( cmd != "core" )
 						# Try to call as command from core plugin
-						process(nick, user, host, from, "core " + msg)
+						process(nick, user, host, from, "core " + msg , true )
 					end
 				end
 			end
