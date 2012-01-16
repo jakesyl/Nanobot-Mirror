@@ -7,17 +7,70 @@ class IRC
 		@config		= config
 		@output		= output
 		@socket		= socket
+
+		if( usequeue )
+			@high	= Queue.new
+			@low	= Queue.new
+			@proc	= Thread.new{ processqueues }
+			@mutex	= Queue.new
+		end
 	end
 
+	# Method to determine the use of queues.
+	def usequeue
+		return( @status.threads && @config.threads && @config.throttleoutput )
+	end
+
+	# Function for queued sending thread
+	def processqueues
+		while true do
+			line = nil
+
+			@mutex.pop
+			if( !@high.empty? )
+				# Process high priority
+				line = @high.pop
+				@output.debug_extra( "<==+ " + line + "\n")
+			elsif( !@low.empty? )
+				# Process low priority
+				line = @low.pop
+				@output.debug_extra( "<==- " + line + "\n")
+			end
+
+			# Send output
+			if( !line.nil? )
+				@socket.puts( line )
+				sleep( 1 )
+			end
+		end
+		
+	end
+	
+	# Function to add stuff to queues ( Low priority unless specified otherwise. )
+	def enqueue( line, high = false )
+		if( high )
+			@high.push( line )
+		else
+			@low.push( line )
+		end
+
+		# Tell the processing thread data is ready.
+		@mutex.push( "" )
+	end
+	
 	# Get raw socket.
 	def socket
 		return @socket
 	end
 
 	# Send raw data to IRC
-	def raw( line )
-		@output.debug_extra( "<== " + line + "\n")
+	def raw( line, high = false )
+		if( usequeue )
+			enqueue( line, high )
+		else
+			@output.debug_extra( "<== " + line + "\n")
 			@socket.puts( line )
+		end
 	end
 
 	# Send initial connect data
@@ -41,7 +94,8 @@ class IRC
 
 	# Reply to PINGs
 	def pong( line )
-		raw( "PONG " + line )
+		raw( "PONG " + line, true )
+
 		if( @config.waitforping && !@status.login )
 			login
 			@status.login( 1 )
@@ -49,54 +103,54 @@ class IRC
 	end
 
 	# Send standard message
-	def message( to, message )
-		raw( "PRIVMSG " + to + " :" + message )
+	def message( to, message, high = false )
+		raw( "PRIVMSG " + to + " :" + message, high )
 	end
 
 	# Send ACTION message
-	def action( to, action )
-		raw( "PRIVMSG " + to + " :ACTION " + action + "" )
+	def action( to, action, high = false )
+		raw( "PRIVMSG " + to + " :ACTION " + action + "", high )
 	end
 
 	# Send notice
-	def notice( to, message )
-		raw( "NOTICE " + to + " :" + message )
+	def notice( to, message, high = false )
+		raw( "NOTICE " + to + " :" + message, high )
 	end
 
 	# Change nickname
-	def nick( nick )
+	def nick( nick, high = false )
 		@config.nick( nick )
-		raw( "NICK " + nick )
+		raw( "NICK " + nick, high )
 	end
 
 	# Set topic
-	def topic( channel, topic )
-		raw( "TOPIC " + channel + " :" + topic )
+	def topic( channel, topic, high = false )
+		raw( "TOPIC " + channel + " :" + topic, high )
 	end
 
 	# Join channel
-	def join( channel )
-		raw( "JOIN " + channel )
+	def join( channel, high = false )
+		raw( "JOIN " + channel, high )
 	end
 
 	# Part channel
-	def part( channel )
-		raw( "PART " + channel )
+	def part( channel, high = false )
+		raw( "PART " + channel, high )
 	end
 
 	# Kick user
-	def kick( channel, user, reason )
-		raw( "KICK " + channel + " " + user + " " + reason )
+	def kick( channel, user, reason, high = false )
+		raw( "KICK " + channel + " " + user + " " + reason, high )
 	end
 
 	# Set modes
-	def mode( channel, mode, subject )
-		raw( "MODE " + channel + " " + mode + " " + subject )
+	def mode( channel, mode, subject, high = false )
+		raw( "MODE " + channel + " " + mode + " " + subject, high )
 	end
 
 	# Quit IRC
-	def quit( message )
-		raw( "QUIT " + message )
+	def quit( message, high = false )
+		raw( "QUIT " + message, high )
 		disconnect
 	end
 

@@ -132,9 +132,9 @@ class Commands
 				cmd, message = msg.split( ' ', 2 )
 
 				if( message == nil )
-					@irc.quit( @config.nick + " was instructed to quit." )
+					@irc.quit( @config.nick + " was instructed to quit.", true )
 				else
-					@irc.quit( message )
+					@irc.quit( message, true )
 				end
 
 				@output.std( "Received quit command.\n" )

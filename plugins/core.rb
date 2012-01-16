@@ -86,7 +86,7 @@ class Core
 				@irc.join( chan )
 			else
 				if( con )
-					@output.cinfo( "Usage: join #channel" )
+					@output.cinfo( "Usage: join #channel", true )
 				else
 					@irc.notice( nick, "Usage: " + @config.command + "join #channel" )
 				end
@@ -100,7 +100,7 @@ class Core
 				@irc.part( chan )
 			else
 				if( con )
-					@output.cinfo( "Usage: part #channel" )
+					@output.cinfo( "Usage: part #channel", true )
 				else
 					@irc.notice( nick, "Usage: " + @config.command + "part #channel" )
 				end
@@ -147,7 +147,7 @@ class Core
 				@irc.mode( chan, mode, name )
 			else
 				if( con )
-					@output.cinfo( "Usage: mode #channel +/-mode nick" )
+					@output.cinfo( "Usage: mode #channel +/-mode nick", true )
 				else
 					@irc.notice( nick, "Usage: " + @config.command + "Usage: mode #channel +/-mode nick" )
 				end
@@ -172,7 +172,7 @@ class Core
 					chan = from
 					name = nick
 				end
-				@irc.mode( chan, "+o", name )
+				@irc.mode( chan, "+o", name, true )
 			else
 				if( con )
 					@output.cinfo( "Usage: op #channel user" )
@@ -199,7 +199,7 @@ class Core
 					chan = from
 					name = nick
 				end
-				@irc.mode( chan, "-o", name )
+				@irc.mode( chan, "-o", name, true )
 			else
 				if( con )
 					@output.cinfo( "Usage: deop #channel user" )
@@ -227,7 +227,7 @@ class Core
 					chan = from
 					name = nick
 				end
-				@irc.mode( chan, "+h", name )
+				@irc.mode( chan, "+h", name, true )
 			else
 				if( con )
 					@output.cinfo( "Usage: hop #channel user" )
@@ -254,7 +254,7 @@ class Core
 					chan = from
 					name = nick
 				end
-				@irc.mode( chan, "-h", name )
+				@irc.mode( chan, "-h", name, true )
 			else
 				if( con )
 					@output.cinfo( "Usage: dehop #channel user" )
@@ -282,7 +282,7 @@ class Core
 					chan = from
 					name = nick
 				end
-				@irc.mode( chan, "+v", name )
+				@irc.mode( chan, "+v", name, true )
 			else
 				if( con )
 					@output.cinfo( "Usage: voice #channel user" )
@@ -309,7 +309,7 @@ class Core
 					chan = from
 					name = nick
 				end
-				@irc.mode( chan, "-v", name )
+				@irc.mode( chan, "-v", name, true )
 			else
 				if( con )
 					@output.cinfo( "Usage: devoice #channel user" )
@@ -335,7 +335,7 @@ class Core
 					reason = "Requested by " + nick + "."
 				end
 
-				@irc.kick( chan, name, reason )
+				@irc.kick( chan, name, reason, true )
 			else
 				if( con )
 					@output.cinfo( "Usage: kick #channel nick" )
@@ -358,7 +358,7 @@ class Core
 				chan	= from
 			end
 
-			@irc.mode( chan, "+b", host )
+			@irc.mode( chan, "+b", host, true )
 		else
 			if( con )
 				@output.cinfo( "Usage: ban #channel host" )
@@ -379,7 +379,7 @@ class Core
 				chan	= from
 			end
 
-			@irc.mode( chan, "-b", host )
+			@irc.mode( chan, "-b", host, true )
 		else
 			if( con )
 				@output.cinfo( "Usage: unban #channel host" )
@@ -403,8 +403,8 @@ class Core
 						chan	= from
 					end
 
-					@irc.mode( chan, "+b", host )
-					@timer.action( timeout.to_i, "@irc.mode( \"#{chan}\", \"-b\", \"#{host}\" )" )
+					@irc.mode( chan, "+b", host, true )
+					@timer.action( timeout.to_i, "@irc.mode( \"#{chan}\", \"-b\", \"#{host}\", true )" )
 
 					if( con )
 						@output.cinfo( "Unban set for " + timeout.to_s + " seconds from now." )

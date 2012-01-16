@@ -30,6 +30,8 @@ class Configuration
 		@antiflood	= true						# Attempt to mitigate people flooding bot with command
 		@floodtime	= 5							# Command spread that triggers flood protect (seconds)
 
+		@throttle	= true						# Throttle output to avoid flooding from the bot
+
 		@autorejoin	= true						# Rejoin on kick
 		@rejointime	= 3							# Time to wait before rejoin (seconds)
 
@@ -163,6 +165,13 @@ class Configuration
 			@floodtime = floodtime
 		end
 		return @floodtime
+	end
+
+	def throttleoutput ( throttle = "" )
+		if( throttle != "" )
+			@throttle = throttle
+		end
+		return @throttle
 	end
 
 	def rejoin( rejoin = "" )
