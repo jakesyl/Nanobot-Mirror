@@ -28,7 +28,7 @@ class Identified
 			cmd, subject, status = message.split( ' ', 3 )
 
 			if( status == "3" )
-				@irc.mode( @channel, "+v" ,subject )
+				@irc.mode( @channel, "+v" ,subject, true )
 			end
 		end
 	end

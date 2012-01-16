@@ -12,7 +12,7 @@ class IRC
 			@high	= Queue.new
 			@low	= Queue.new
 			@proc	= Thread.new{ processqueues }
-			@mutex	= Queue.new
+			@signal	= Queue.new
 		end
 	end
 
@@ -26,7 +26,7 @@ class IRC
 		while true do
 			line = nil
 
-			@mutex.pop
+			@signal.pop
 			if( !@high.empty? )
 				# Process high priority
 				line = @high.pop
@@ -55,7 +55,7 @@ class IRC
 		end
 
 		# Tell the processing thread data is ready.
-		@mutex.push( "" )
+		@signal.push( "" )
 	end
 	
 	# Get raw socket.

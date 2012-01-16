@@ -150,6 +150,10 @@ class Toolbox
 			# Execute dig command
 			output = `#{cmd}`
 
+			if( output.nil? || output.empty? )
+				output = "Error: No output received."
+			end
+
 			if( con )
 				@output.c( output + "\n" )
 			else
@@ -190,6 +194,10 @@ class Toolbox
 			if( !cmd.nil? )
 				output = `#{cmd}`
 				output = output.split( "\n", 3 )
+			end
+
+			if( output.nil? || output.empty? )
+				output[1] = "Error: No output received."
 			end
 
 			# Show output
@@ -295,6 +303,11 @@ class Toolbox
 		end
 	end
 
+	# Alias method
+	def unhex( nick, user, host, from, msg, arguments, con )
+		dehex( nick, user, host, from, msg, arguments, con )
+	end
+
 	# (De-)decimal functions
 	def dec( nick, user, host, from, msg, arguments, con )
 		output = ""
@@ -331,6 +344,11 @@ class Toolbox
 		else
 			@irc.message( from, output )
 		end
+	end
+
+	# Alias method
+	def undec( nick, user, host, from, msg, arguments, con )
+		dedec( nick, user, host, from, msg, arguments, con )
 	end
 
 	# Function to send help about this plugin (Can also be called by the help plugin.)

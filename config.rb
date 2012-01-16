@@ -4,7 +4,7 @@
 # Modify the following variables to your liking
 class Configuration
 	def initialize( status, output )
-		@nick		= "nanobot4"				# Bot nickname
+		@nick		= "nanotmp"				# Bot nickname
 		@user		= "nanobot"					# IRC username
 		@pass		= ""						# NickServ password
 		@version	= "Nanobot 4 beta 2"		# Version

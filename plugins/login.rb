@@ -46,7 +46,7 @@ class Login
 		if( con )
 			@output.c( returnval + "\n" )
 		else
-			@irc.notice( nick, returnval )
+			@irc.notice( nick, returnval, true )
 		end
 	end
 

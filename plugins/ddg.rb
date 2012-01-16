@@ -17,7 +17,7 @@ class Ddg
 	# Method that receives a notification when a user joins (optional)
 	def joined( nick, user, host, channel )
 		if( channel == @channel )
-			@irc.mode( channel, "+v" ,nick )
+			@irc.mode( channel, "+v" ,nick, true )
 		end
 	end
 end
