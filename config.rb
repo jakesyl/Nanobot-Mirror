@@ -4,7 +4,7 @@
 # Modify the following variables to your liking
 class Configuration
 	def initialize( status, output )
-		@nick		= "nanotmp"				# Bot nickname
+		@nick		= "nanobot4"				# Bot nickname
 		@user		= "nanobot"					# IRC username
 		@pass		= ""						# NickServ password
 		@version	= "Nanobot 4 beta 2"		# Version
@@ -24,7 +24,7 @@ class Configuration
 
 		@data		= "data"					# Data directory
 		@plugins	= "plugins"					# Plugin directory
-		@autoload	= [ "core", "help", "seen", "identified", "ddg", "login", "toolbox" ]
+		@autoload	= [ "core", "help", "seen", "identified", "ddg", "login", "toolbox", "translate", "twitter" ]
 												# Plugin autoload list
 
 		@antiflood	= true						# Attempt to mitigate people flooding bot with command
