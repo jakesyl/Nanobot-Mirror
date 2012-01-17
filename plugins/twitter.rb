@@ -19,10 +19,11 @@ class Twitter
 			@filename	= "twitter.data"
 			@announce	= "#hackerthreads"
 			@freq		= 60
-			@ftread		= Thread.new{ follow_thread }
 
 			# Load database of users being followed
 			load_db
+
+			@ftread		= Thread.new{ follow_thread }
 		end
 	end
 
