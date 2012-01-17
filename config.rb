@@ -24,7 +24,7 @@ class Configuration
 
 		@data		= "data"					# Data directory
 		@plugins	= "plugins"					# Plugin directory
-		@autoload	= [ "core", "help", "seen", "identified", "ddg", "login", "toolbox", "translate", "twitter" ]
+		@autoload	= [ "core", "ddg", "help", "identified", "login", "seen", "shells", "toolbox", "translate", "twitter" ]
 												# Plugin autoload list
 
 		@antiflood	= true						# Attempt to mitigate people flooding bot with command
