@@ -132,36 +132,36 @@ class Seen
 	# Add regular message to seen database
 	def messaged( nick, user, host, from, message )
 		line = nick  + " on " + from + ": " + message
-		nick.downcase!
-		add( nick, line )
+		tmp = nick.downcase
+		add( tmp, line )
 	end
 
 	# Add kick to seen database
 	def kicked( nick, user, host, channel, kicked, reason )
 		line = kicked + " was kicked from " + channel + " by " + nick + " (" + reason + ")."
-		kicked.downcase!
-		add( kicked, line )
+		tmp = kicked.downcase
+		add( tmp, line )
 	end
 
 	# Add join to seen database
 	def joined( nick, user, host, channel )
 		line = nick + " joined " + channel
-		nick.downcase!
-		add( nick, line )
+		tmp = nick.downcase
+		add( tmp, line )
 	end
 
 	# Add part to seen database
 	def parted( nick, user, host, channel )
 		line = nick + " parted " + channel
-		nick.downcase!
-		add( nick, line )
+		tmp = nick.downcase
+		add( tmp, line )
 	end
 
 	# Add quit to seen database
 	def quited( nick, user, host, message )
 		line = nick + " quit (" + message + ")"
-		nick.downcase!
-		add( nick, line )
+		tmp = nick.downcase
+		add( tmp, line )
 	end
 
 	# Meta function to force write
