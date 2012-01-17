@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
 # Plugin to grab latest message from a twitter feed
+
+require 'cgi'
 class Twitter
 
 	# This method is called when the plugin is first loaded
@@ -40,6 +42,7 @@ class Twitter
 			# Parse out XML (needs better regex)
 			if( line =~ /<item>\n    <title>(.+?)<\/title>/is )
 				line = $1
+				line = CGI.unescapeHTML( line )
 			else
 				line = "Error: No result."
 			end
@@ -68,6 +71,8 @@ class Twitter
 					if( line =~ /<item>\n    <title>(.+?)<\/title>/is )
 						line = $1
 						@follow[ arguments ] = line
+
+						line = CGI.unescapeHTML( line )
 						line = "Following: " + line
 
 						# Write database to disk
@@ -186,8 +191,9 @@ class Twitter
 
 				# Check against last message
 				if( line != last )
-					@irc.message( @announce, "Twitter: " + line )
 					@follow[ user ] = line
+					line = CGI.unescapeHTML( line )
+					@irc.message( @announce, "Twitter: " + line )
 				end
 			end
 
