@@ -194,6 +194,7 @@ class Twitter
 					@follow[ user ] = line
 					line = CGI.unescapeHTML( line )
 					@irc.message( @announce, "Twitter: " + line )
+					write_db
 				end
 			end
 
