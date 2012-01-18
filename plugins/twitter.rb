@@ -156,6 +156,31 @@ class Twitter
 		end
 	end
 
+	# Set channel for feeds
+	def channel( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( !arguments.nil? && !arguments.empty? )
+				if( @status.threads && @config.threads)
+					@announce = arguments
+					line = "Set new channel to " + arguments + "."
+				else
+					line = "Feeds are not being collected. (No threading available.)"
+				end
+			else
+				line = "Expecting channel name."
+			end
+		else
+			line = "You are not authorized to perform this action."
+		end
+
+		# Show output
+		if( con )
+			@output.c( line + "\n" )
+		else
+			@irc.message( from, line )
+		end
+	end
+
 	# Show list of accounts being followed
 	def following( nick, user, host, from, msg, arguments, con )
 		line = ""
@@ -182,6 +207,7 @@ class Twitter
 			"  twitter follow [twittername]      - Follow twitter user.",
 			"  twitter unfollow [twittername]    - Unfollow twitter user.",
 			"  twitter following                 - Show list of accounts being followed.",
+			"  twitter channel [channel]         - Set channel for followed feeds.",
 			"  twitter stop                      - Stop feed collection.",
 			"  twitter help                      - Show this help"
 		]
