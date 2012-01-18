@@ -260,7 +260,7 @@ class Twitter
 				# Check against last message
 				if( line != last )
 					# Check for feed failures
-					if( line !~ /\<?xml version=\"1\.0\" encoding=\"UTF-8\"?\>/ )
+					if( line !~ /\<\?xml version=\"1\.0\" encoding=\"UTF-8\"\?\>/ )
 						@follow[ user ] = line
 						line = CGI.unescapeHTML( line )
 						@irc.message( @announce, "Twitter: " + line )
