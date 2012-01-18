@@ -18,7 +18,7 @@ class Twitter
 			@follow		= {}
 			@filename	= "twitter.data"
 			@announce	= "#hackerthreads"
-			@freq		= 60
+			@freq		= 120
 
 			# Load database of users being followed
 			load_db
@@ -135,6 +135,45 @@ class Twitter
 		end
 	end
 
+	# Method stop feed collection
+	def stop( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( @status.threads && @config.threads)
+				@ftread.exit
+				line = "Feed collection stopped."
+			else
+				line = "Feeds are not being collected. (No threading available.)"
+			end
+		else
+			line = "You are not authorized to perform this action."
+		end
+
+		# Show output
+		if( con )
+			@output.c( line + "\n" )
+		else
+			@irc.message( from, line )
+		end
+	end
+
+	# Show list of accounts being followed
+	def following( nick, user, host, from, msg, arguments, con )
+		line = ""
+		if( @status.threads && @config.threads)
+			@follow.each do |user, last|
+				line = line + user + " "
+			end
+		else
+			line = "Not following anyone. (No threading.)"
+		end
+
+		if( con )
+			@output.c( line + "\n" )
+		else
+			@irc.notice( nick, line )
+		end
+	end
+
 	# Function to send help about this plugin (Can also be called by the help plugin.)
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
@@ -142,6 +181,8 @@ class Twitter
 			"  twitter getlast [twittername]     - Public plugin function.",
 			"  twitter follow [twittername]      - Follow twitter user.",
 			"  twitter unfollow [twittername]    - Unfollow twitter user.",
+			"  twitter following                 - Show list of accounts being followed.",
+			"  twitter stop                      - Stop feed collection.",
 			"  twitter help                      - Show this help"
 		]
 
@@ -192,10 +233,13 @@ class Twitter
 
 				# Check against last message
 				if( line != last )
-					@follow[ user ] = line
-					line = CGI.unescapeHTML( line )
-					@irc.message( @announce, "Twitter: " + line )
-					write_db
+					# Check for feed failures
+					if( line != "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" )
+						@follow[ user ] = line
+						line = CGI.unescapeHTML( line )
+						@irc.message( @announce, "Twitter: " + line )
+						write_db
+					end
 				end
 			end
 
