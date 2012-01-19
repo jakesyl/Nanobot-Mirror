@@ -19,6 +19,7 @@ class Twitter
 			@filename	= "twitter.data"
 			@announce	= "#news"
 			@freq		= 300
+			@extra_line	= true
 
 			# Load database of users being followed
 			load_db
@@ -264,6 +265,11 @@ class Twitter
 							@follow[ user ] = line
 							line = CGI.unescapeHTML( line )
 							@irc.message( @announce, "Twitter: " + line )
+
+							# Formating for output
+							if( @extra_line )
+								@irc.message( @announce, " - - - - - - - - - - - - - - - - - - - - - - - - " )
+							end
 							write_db
 						end
 					end
