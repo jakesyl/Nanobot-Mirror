@@ -246,10 +246,9 @@ class Twitter
 	# Function for thread that checks updates for users being followed
 	def follow_thread
 		while true
-			begin
-				# Loop trough users
-				@follow.each do |user, last|
-
+			# Loop trough users
+			@follow.each do |user, last|
+				begin
 					# Retreive XML
 					line = Net::HTTP.get( 'twitter.com', '/statuses/user_timeline/' + user + '.rss' )
 
@@ -268,9 +267,10 @@ class Twitter
 							write_db
 						end
 					end
+				rescue
+					# Silently fail
+					@output.debug( "Failure while retreiving " + user + " feed." )
 				end
-			rescue
-				# Silently fail
 			end
 
 			# Wait before checking for updates again
