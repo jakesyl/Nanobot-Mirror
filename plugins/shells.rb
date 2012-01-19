@@ -122,6 +122,7 @@ class Shells
 			"  shells uptime          - Show uptime for shell hosts.",
 			"  shells users           - Show user count for shell hosts.",
 			"  shells online          - Show online user count for shell hosts.",
+			"  shells month           - Show number of active users this month for shell hosts.",
 			"  shells load            - Show load avarage for shell hosts",
 			"  shells kernel          - Show kernel version for shell hosts."
 		]
@@ -147,6 +148,10 @@ class Shells
 
 	def online( nick, user, host, from, msg, arguments, con )
 		getstat( from, "ousers" )
+	end
+
+	def month( nick, user, host, from, msg, arguments, con )
+		getstat( from, "numusers" )
 	end
 
 	def load( nick, user, host, from, msg, arguments, con )
