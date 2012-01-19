@@ -17,8 +17,8 @@ class Twitter
 			# Variables for following users
 			@follow		= {}
 			@filename	= "twitter.data"
-			@announce	= "#hackerthreads"
-			@freq		= 120
+			@announce	= "#news"
+			@freq		= 300
 
 			# Load database of users being followed
 			load_db
@@ -68,7 +68,7 @@ class Twitter
 					# Retreive XML
 					line = Net::HTTP.get( 'twitter.com', '/statuses/user_timeline/' + arguments + '.rss' )
 
-					# Parse out XML (needs better regex)
+					# Parse out XML (needs better regex, or a real XML parser, realistically)
 					if( line =~ /<item>\n    <title>(.+?)<\/title>/is )
 						line = $1
 						@follow[ arguments ] = line
@@ -246,27 +246,31 @@ class Twitter
 	# Function for thread that checks updates for users being followed
 	def follow_thread
 		while true
-			# Loop trough users
-			@follow.each do |user, last|
+			begin
+				# Loop trough users
+				@follow.each do |user, last|
 
-				# Retreive XML
-				line = Net::HTTP.get( 'twitter.com', '/statuses/user_timeline/' + user + '.rss' )
+					# Retreive XML
+					line = Net::HTTP.get( 'twitter.com', '/statuses/user_timeline/' + user + '.rss' )
 
-				# Parse out XML (needs better regex)
-				if( line =~ /<item>\n    <title>(.+?)<\/title>/is )
-					line = $1
-				end
+					# Parse out XML (needs better regex)
+					if( line =~ /<item>\n    <title>(.+?)<\/title>/is )
+						line = $1
+					end
 
-				# Check against last message
-				if( line != last )
-					# Check for feed failures
-					if( line !~ /\<\?xml version=\"1\.0\" encoding=\"UTF-8\"\?\>/ )
-						@follow[ user ] = line
-						line = CGI.unescapeHTML( line )
-						@irc.message( @announce, "Twitter: " + line )
-						write_db
+					# Check against last message
+					if( line != last )
+						# Check for feed failures
+						if( line !~ /\<\?xml version=\"1\.0\" encoding=\"UTF-8\"\?\>/ )
+							@follow[ user ] = line
+							line = CGI.unescapeHTML( line )
+							@irc.message( @announce, "Twitter: " + line )
+							write_db
+						end
 					end
 				end
+			rescue
+				# Silently fail
 			end
 
 			# Wait before checking for updates again
