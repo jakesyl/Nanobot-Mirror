@@ -268,7 +268,7 @@ class Twitter
 
 							# Formating for output
 							if( @extra_line )
-								@irc.message( @announce, " - - - - - - - - - - - - - - - - - - - - - - - - " )
+								@irc.message( @announce, " " )
 							end
 							write_db
 						end
