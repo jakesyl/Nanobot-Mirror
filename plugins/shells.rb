@@ -47,7 +47,7 @@ class Shells
 
 			voice = Net::HTTP.get( 'www.insomnia247.nl', '/users.php?user=' + nick )
 			if( voice == "YES" )
-				@irc.mode( @channel, "+v" , nick, true )
+				@irc.mode( channel, "+v" , nick, true )
 			end
 		end
 	end
