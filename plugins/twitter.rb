@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# coding: utf-8
 
 # Plugin to grab latest message from a twitter feed
 
@@ -21,6 +22,25 @@ class Twitter
 			@freq		= 300
 			@extra_line	= true
 
+			@specials	= {	"&#8211;"	=> "–",
+							"&#8212;"	=> "—",
+							"&#8216;"	=> "‘",
+							"&#8217;"	=> "’",
+							"&#8218;"	=> "‚",
+							"&#8220;"	=> "“",
+							"&#8221;"	=> "”",
+							"&#8222;"	=> "„",
+							"&#8224;"	=> "†",
+							"&#8225;"	=> "‡",
+							"&#8226;"	=> "•",
+							"&#8230;"	=> "…",
+							"&#8240;"	=> "‰",
+							"&#8364;"	=> "€",
+							"&euro;"	=> "€",
+							"&#8482;"	=> "™",
+							"&gt;&gt;"	=> ">>",
+							"&lt;&lt;"	=> "<<"}
+			
 			# Load database of users being followed
 			load_db
 
@@ -263,7 +283,13 @@ class Twitter
 						# Check for feed failures
 						if( line !~ /\<\?xml version=\"1\.0\" encoding=\"UTF-8\"\?\>/ )
 							@follow[ user ] = line
+
+							# Special char parsing
 							line = CGI.unescapeHTML( line )
+							@specials.each_key do |char|
+								line.gsub!( key, @specials[key] )
+							end
+
 							@irc.message( @announce, "Twitter: " + line )
 
 							# Formating for output
