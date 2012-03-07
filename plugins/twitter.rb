@@ -65,7 +65,7 @@ class Twitter
 			if( line =~ /<item>\n    <title>(.+?)<\/title>/is )
 				line = $1
 				line = CGI.unescapeHTML( line )
-				@specials.each_key do |char|
+				@specials.each_key do |key|
 					line.gsub!( key, @specials[key] )
 				end
 			else
@@ -98,7 +98,7 @@ class Twitter
 						@follow[ arguments ] = line
 
 						line = CGI.unescapeHTML( line )
-						@specials.each_key do |char|
+						@specials.each_key do |key|
 							line.gsub!( key, @specials[key] )
 						end
 
@@ -293,7 +293,7 @@ class Twitter
 
 							# Special char parsing
 							line = CGI.unescapeHTML( line )
-							@specials.each_key do |char|
+							@specials.each_key do |key|
 								line.gsub!( key, @specials[key] )
 							end
 
