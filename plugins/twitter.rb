@@ -65,6 +65,9 @@ class Twitter
 			if( line =~ /<item>\n    <title>(.+?)<\/title>/is )
 				line = $1
 				line = CGI.unescapeHTML( line )
+				@specials.each_key do |char|
+					line.gsub!( key, @specials[key] )
+				end
 			else
 				line = "Error: No result."
 			end
@@ -95,6 +98,10 @@ class Twitter
 						@follow[ arguments ] = line
 
 						line = CGI.unescapeHTML( line )
+						@specials.each_key do |char|
+							line.gsub!( key, @specials[key] )
+						end
+
 						line = "Following: " + line
 
 						# Write database to disk
@@ -290,7 +297,7 @@ class Twitter
 								line.gsub!( key, @specials[key] )
 							end
 
-							@irc.message( @announce, "Twitter: " + line )
+							@irc.message( @announce, line )
 
 							# Formating for output
 							if( @extra_line )
