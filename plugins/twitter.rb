@@ -38,8 +38,8 @@ class Twitter
 							"&#8364;"	=> "€",
 							"&euro;"	=> "€",
 							"&#8482;"	=> "™",
-							"&gt;&gt;"	=> ">>",
-							"&lt;&lt;"	=> "<<"}
+							"&gt;"		=> ">",
+							"&lt;"		=> "<"}
 			
 			# Load database of users being followed
 			load_db
