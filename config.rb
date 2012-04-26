@@ -171,7 +171,12 @@ class Configuration
 		if( throttle != "" )
 			@throttle = throttle
 		end
-		return @throttle
+
+		if( RUBY_VERSION =~ /^1\.8/ )
+			return false
+		else
+			return @throttle
+		end
 	end
 
 	def rejoin( rejoin = "" )

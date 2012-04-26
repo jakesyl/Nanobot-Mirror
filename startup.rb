@@ -52,6 +52,12 @@ class Startup
 		end
 	end
 
+	def checkoutputqueuing
+		if( RUBY_VERSION =~ /^1\.8/ )
+			@output.info("Old Ruby version detected. Output queuing is not available.\n")
+		end
+	end
+
 	# Check if directories exist
 	def checkdirectorydata
 		@output.std( "Checking for data directory ...... " )

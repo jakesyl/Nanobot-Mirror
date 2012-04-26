@@ -25,7 +25,6 @@ class IRC
 	def processqueues
 		while true do
 			line = nil
-
 			@signal.pop
 			if( !@high.empty? )
 				# Process high priority

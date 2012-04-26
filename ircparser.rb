@@ -71,6 +71,7 @@ class IRCParser
 			if( @config.waitforping && !@status.login )
 				@irc.login
 				autoload
+				@status.login( 1 )
 			end
 
 		# KICK
