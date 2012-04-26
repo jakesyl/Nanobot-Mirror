@@ -33,8 +33,15 @@ class Translate
 				string.gsub!( /&/, "" ) # Sanitize GET variables
 
 				# Send GET request
-				line = Net::HTTP.get( 'api.microsofttranslator.com', '/v2/Http.svc/Translate?appId=' + @appid + '&to=' + to + '&text=' + string )
+				line = Net::HTTP.get( 'api.microsofttranslator.com', '/v2/Http.svc/Translate?appId=' + @appid + '&to=' + to + '&text=' + string + '&contentType=text/plain' )
 
+				# Catching some common errors
+				if( line =~ /'to' must be a valid language/ )
+					line = "Error: Invalid language code specified."
+				elsif( line =~ /'from' must be a valid language/ )
+					line = "Error: Could not detect language to translate from."
+				end
+					
 				# Clean up output
 				line.gsub!( /(<string(.+?)>)|(<\/string>)|(\n)|(\r)/, "" )
 				line.gsub!( /(<(.+?)>)|(<\/(.+?))/, " " )
