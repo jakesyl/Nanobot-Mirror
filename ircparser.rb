@@ -85,7 +85,7 @@ class IRCParser
 			@sub.notice( $1, $2, $3, $4, $5 )
 
 		# JOIN
-		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) JOIN \:(.+)/ )
+		elsif( line =~ /^\:(.+?)!(.+?)@(.+?) JOIN \:?(.+)/ )
 			@output.debug( "Received join\n" )
 			@sub.join( $1, $2, $3, $4 )
 
