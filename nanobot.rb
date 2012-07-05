@@ -55,6 +55,7 @@ while status.reconnect do
 		status.reconnect( 0 )
 		Process.exit
 	end
+
 	# Create timer object for later use
 	timer = Timer.new( status, config, output, irc )
 

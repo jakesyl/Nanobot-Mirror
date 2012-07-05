@@ -41,10 +41,12 @@ class IRCParser
 		rescue Timeout::Error
 			@output.debug( "IRC timeout, trying to reconnect.\n" )
 			@irc.disconnect
+			@status.reconnect( 1 )
 		rescue IOError
 			@output.debug( "Socket was closed.\n" )
 		rescue Exception => e
 			@output.debug( "Socket error: " + e.to_s + "\n" )
+			@status.reconnect( 1 )
 		end
 	end
 

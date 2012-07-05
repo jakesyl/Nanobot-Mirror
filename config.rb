@@ -4,12 +4,12 @@
 # Modify the following variables to your liking
 class Configuration
 	def initialize( status, output )
-		@nick		= "nanobot4"				# Bot nickname
+		@nick		= "nanodev"					# Bot nickname
 		@user		= "nanobot"					# IRC username
 		@pass		= ""						# NickServ password
 		@version	= "Nanobot 4 beta 2"		# Version
 
-		@command	= '\!'						# Character prefix for commands (escape special chars)
+		@command	= '\?'						# Character prefix for commands (escape special chars)
 
 		@server		= "irc.insomnia247.nl"		# IPv4 address
 		@server6	= "irc6.insomnia247.nl"		# IPv6 address
@@ -24,7 +24,8 @@ class Configuration
 
 		@data		= "data"					# Data directory
 		@plugins	= "plugins"					# Plugin directory
-		@autoload	= [ "core", "ddg", "help", "identified", "login", "seen", "shells", "toolbox", "translate", "twitter" ]
+		#@autoload	= [ "core", "ddg", "help", "identified", "login", "seen", "shells", "toolbox", "translate", "twitter" ]
+		@autoload	= [ "core", "toolbox" ]
 												# Plugin autoload list
 
 		@antiflood	= true						# Attempt to mitigate people flooding bot with command
