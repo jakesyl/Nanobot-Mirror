@@ -26,10 +26,22 @@ class Startup
 		@output.std( "Checking for openssl support ..... " )
 		begin
 			require 'openssl'
-			@output.good( "[OK]\n" )
+
+			@output.good( "[OK]" )
+			if( @config.ssl )
+				@output.good( "\n" )
+			else
+				@output.info( " (unused)\n" )
+			end
 			@status.ssl( 1 )
 		rescue LoadError
-			@output.bad( "[NO]\n" )
+			@output.bad( "[NO]" )
+			if( @config.ssl )
+				@output.bad( "\n" )
+			else
+				@output.info( " (unused)\n" )
+			end
+
 			@status.ssl( 0 )
 		end
 	end
@@ -40,10 +52,23 @@ class Startup
 		begin
 			require 'thread'
 			@status.threads( 1 )
-			@output.good( "[OK]\n" )
+
+			@output.good( "[OK]" )
+			if( @config.threads )
+				@output.good( "\n" )
+			else
+				@output.info( " (unused)\n" )
+			end
+
 		rescue LoadError
 			@status.threads( 0 )
-			@output.bad( "[NO]\n" )
+	
+			@output.bad( "[NO]" )
+			if( @config.threads )
+				@output.bad( "\n" )
+			else
+				@output.info( " (unused)\n" )
+			end
 
 			if( !@config.threadingfallback )
 				@output.info( "No threading support, and fallback is disabled.\n" )

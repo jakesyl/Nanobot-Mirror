@@ -13,6 +13,7 @@ class Status
 		@showconf	= 0
 		@console	= 1
 		@reconnect	= 1
+		@autoload	= 0
 		@plugins	= {}
 		@startup	= Time.new
 	end
@@ -72,6 +73,13 @@ class Status
 			@reconnect = reconnect
 		end
 		return( @reconnect == 1 )
+	end
+
+	def autoload( autoload = "" )
+		if( autoload != "" )
+			@autoload = autoload
+		end
+		return( @autoload == 1 )
 	end
 
 	def showconfig( show = "" )

@@ -8,6 +8,7 @@ class Connection
 		@status		= status
 		@config		= config
 		@output		= output
+		@sock		= nil
 	end
 
 	# Start connection
@@ -22,11 +23,13 @@ class Connection
 		rescue Timeout::Error
 			@output.bad( "[NO]\n" )
 			@output.debug( "Connection timeout.\n" )
-			Process.exit
+
+			return false
 		rescue
 			@output.bad( "[NO]\n" )
 			@output.debug( "Error: " + $!.to_s + "\n" )
-			Process.exit
+
+			return false
 		end
 		@output.good( "[OK]\n" )
 
@@ -54,15 +57,22 @@ class Connection
 					end
 
 					@output.good( "[OK]\n" )
-					return ssl_sock
+					@sock = ssl_sock
+					return true
 			rescue OpenSSL::SSL::SSLError
 				@output.bad( "[NO]\n" )
 				@output.debug( getSSLerror( ssl_sock.verify_result ) + "\n" )
-				Process.exit
+				return false
 			end
 		else
-			return sock
+			@sock = sock
+			return true
 		end
+	end
+
+	# Function to return reference to socket object
+	def socket
+		return @sock
 	end
 
 	# Function to make SSL error codes human readable
