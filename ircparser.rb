@@ -16,37 +16,39 @@ class IRCParser
 
 	# Start parser
 	def start
-		@irc.sendinit
+		while( true )
+			@irc.sendinit
 
-		if( !@config.waitforping && !@status.login )
-			@irc.login
-			autoload
-			@status.login( 1 )
-		end
+			if( !@config.waitforping && !@status.login )
+				@irc.login
+				autoload
+				@status.login( 1 )
+			end
 
-		# Main IRC parser loop
-		begin
-			while true
+			# Main IRC parser loop
+			begin
+				while( true )
 
-				# Set IRC timeout
-				Timeout::timeout( @config.pingtimeout ) do
-					line = @irc.socket.gets
-					if( @status.threads && @config.threads )
-						spawn_parser( line.chomp )
-					else
-						parser( line.chomp )
+					# Set IRC timeout
+					Timeout::timeout( @config.pingtimeout ) do
+						line = @irc.socket.gets
+						if( @status.threads && @config.threads )
+							spawn_parser( line.chomp )
+						else
+							parser( line.chomp )
+						end
 					end
 				end
+			rescue Timeout::Error
+				@output.debug( "IRC timeout, trying to reconnect.\n" )
+				@irc.reconnect
+			rescue IOError
+				@output.debug( "Socket was closed.\n" )
+				@irc.reconnect
+			rescue Exception => e
+				@output.debug( "Socket error: " + e.to_s + "\n" )
+				@irc.reconnect
 			end
-		rescue Timeout::Error
-			@output.debug( "IRC timeout, trying to reconnect.\n" )
-			@irc.disconnect
-			@status.reconnect( 1 )
-		rescue IOError
-			@output.debug( "Socket was closed.\n" )
-		rescue Exception => e
-			@output.debug( "Socket error: " + e.to_s + "\n" )
-			@status.reconnect( 1 )
 		end
 	end
 

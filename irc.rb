@@ -8,12 +8,7 @@ class IRC
 		@output		= output
 		@connection	= connection
 
-		if( @connection.start )
-			@socket		= @connection.socket
-		elsif( @status.reconnect )
-			@output.info( "Trying reconnect in #{@config.connecttimeout} seconds." )
-			
-		end
+		@socket = connect()
 
 		if( usequeue )
 			@high	= Queue.new
@@ -117,6 +112,31 @@ class IRC
 	def quit( message, high = false )
 		raw( "QUIT " + message, high )
 		disconnect
+	end
+
+	# Function to connect to the server	
+	def connect
+		if( @status.reconnect )
+			while( !@connection.start )
+				@output.info( "Trying reconnect in #{@config.connecttimeout} seconds.\n" )
+				sleep( @config.connecttimeout )
+			end
+		else
+			if( !@connection.start )
+				@output.bad( "Could not connect to server.\n" )
+				Process.exit
+			end
+		end
+
+		return @connection.socket
+	end
+
+	# Reconnect when something went wrong upstream
+	def reconnect
+		@status.login( 0 )
+		@socket.close
+		sleep( 1 )
+		@socket = connect()
 	end
 
 	# Disconnect socket

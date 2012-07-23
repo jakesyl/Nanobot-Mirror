@@ -11,7 +11,7 @@ class Configuration
 
 		@command	= '\?'						# Character prefix for commands (escape special chars)
 
-		@server		= "localhost"		# IPv4 address
+		@server		= "irc.insomnia247.nl"		# IPv4 address
 		@server6	= "irc6.insomnia247.nl"		# IPv6 address
 		@port		= 6667						# Normal port
 		@sslport	= 6697						# SSL port
@@ -38,7 +38,7 @@ class Configuration
 
 		@pingwait	= false						# Wait for server's first PING
 		@conn_time	= 20						# Connect timeout
-		@timeout	= 10						# IRC timeout
+		@timeout	= 300						# IRC timeout
 
 		@use_thread	= true						# Prefer threading
 		@use_ipv6	= false						# Prefer IPv6
