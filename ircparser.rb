@@ -16,7 +16,7 @@ class IRCParser
 
 	# Start parser
 	def start
-		while( true )
+		while( @status.reconnect )
 			@irc.sendinit
 
 			if( !@config.waitforping && !@status.login )

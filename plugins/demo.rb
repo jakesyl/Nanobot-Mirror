@@ -14,7 +14,7 @@ class Demo
 
 	# Default method, called when no argument is given (optional, but highly recomended)
 	def main( nick, user, host, from, msg, arguments, con )
-		@irc.message( from, "This is the demo module, function and function_admin are availble." )
+		@irc.message( from, "This is the demo module, function, function_admin and remote are availble." )
 	end
 
 	# Method that receives a notification when a user is kicked (optional)
@@ -79,6 +79,25 @@ class Demo
 			@irc.message( from, nick + " called \"function_admin\" from " + from + "." )
 		else
 			@irc.message( from, "Sorry " + nick + ", this is a function for admins only!" )
+		end
+	end
+
+	# This function uses a function from another plugin. The help plugin in this example.
+	def remote( nick, user, host, from, msg, arguments, con )
+		if( @status.checkplugin( "help" ) ) # Returns True if a plugin by that name is loaded.
+			plugin = @status.getplugin( "help" ) # We can now use the 'plugin' object to make calls to an external plugin.
+
+			# Send data along to the 'main' function of the 'help' plugin.
+			plugin.main( nick, user, host, from, msg, arguments, con )
+		else
+			# Show error to user
+			line = "The plugin this function depends on doesn't appear to be loaded."
+
+			if( con )
+				@output.c( line + "\n" )
+			else
+				@irc.notice( nick, line )
+			end
 		end
 	end
 
