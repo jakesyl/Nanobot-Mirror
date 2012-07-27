@@ -48,8 +48,8 @@ irc = IRC.new( status, config, output, connection )
 Signal.trap( 'INT' ) do
 	Signal.trap( 'INT', 'DEFAULT' )
 	status.reconnect( 0 )
-	irc.quit( "Caught interrupt, quiting." )
-	output.std( "Caught interrupt, quiting.\n" )
+	irc.quit( "Caught keyboard interrupt, quiting." )
+	output.std( "Caught keyboard interrupt, quiting.\n" )
 	Process.exit
 end
 

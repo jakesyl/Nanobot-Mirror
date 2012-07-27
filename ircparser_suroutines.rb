@@ -81,15 +81,19 @@ class IRCSubs
 		end
 	end
 
-	# Function for unknow messages
-	def misc( unknown )
-		# Passing on the signal for module autoloading
-		if( unknown == "autoload" && !@status.autoload )
+	# Function to handle autoload message
+	def autoload
+		if( !@status.autoload )
 			tmp = Commands.new( @status, @config, @output, @irc, @timer, 1 )
 			tmp.autoload
 			tmp = nil
 			@status.autoload( 1 )
 		end
+	end
+
+	# Function for unknown messages
+	def misc( unknown )
+		# TODO plugin hook for misc messages
 	end
 
 	# Function to sanitize user input

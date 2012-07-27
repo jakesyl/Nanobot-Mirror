@@ -143,7 +143,7 @@ class IRC
 	def disconnect
 		@status.login( 0 )
 		@status.reconnect( 0 )
-		sleep( 1 ) # Allow some time for the QUIT to be sent.
+		#sleep( 1 ) # Allow some time for the QUIT to be sent.
 		@socket.close
 	end
 

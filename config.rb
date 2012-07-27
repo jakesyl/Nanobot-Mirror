@@ -7,7 +7,7 @@ class Configuration
 		@nick		= "nanodev"					# Bot nickname
 		@user		= "nanobot"					# IRC username
 		@pass		= ""						# NickServ password
-		@version	= "Nanobot 4 beta 2"		# Version
+		@version	= "Nanobot 4 beta 3"		# Version
 
 		@command	= '\?'						# Character prefix for commands (escape special chars)
 
