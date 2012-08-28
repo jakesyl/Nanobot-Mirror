@@ -62,9 +62,11 @@ class Title
 			size = head['Content-Length']
 
 			if( size.to_i < 5000000 )
+				response = "Title: " + agent.get( url ).title
+
 				response.gsub!( /\r/, "" )
 				response.gsub!( /\n/, "" )
-				puts "TITLE:#{response}:"
+
 				noerror = true
 			else
 				response = "Error: Page seems unreasonably large."
