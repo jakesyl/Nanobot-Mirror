@@ -24,8 +24,8 @@ class Title
 	# Method that receives a notification when a message is received, that is not a command (optional)
 	def messaged( nick, user, host, from, message )
 		if( @config.nick != nick )
-			if( message =~ /((https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-=\?]*)*\/?)/ )
-				response = getTitle( $1, false )
+			if( message =~ /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.\-=\?]*)*\/?/ )
+				response = getTitle( $&, false )
 				@irc.message( from, response )
 			end
 		end
@@ -62,7 +62,6 @@ class Title
 			size = head['Content-Length']
 
 			if( size.to_i < 5000000 )
-				response = "Title: " + agent.get( url ).title
 				response.gsub!( /\r/, "" )
 				response.gsub!( /\n/, "" )
 				puts "TITLE:#{response}:"
