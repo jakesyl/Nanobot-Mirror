@@ -17,7 +17,7 @@ class Title
 
 	# Default method, called when no argument is given (optional, but highly recomended)
 	def main( nick, user, host, from, msg, arguments, con )
-		response = getTitle( arguments )
+		response = getTitle( arguments, true )
 		@irc.message( from, response )
 	end
 
@@ -25,7 +25,7 @@ class Title
 	def messaged( nick, user, host, from, message )
 		if( @config.nick != nick )
 			if( message =~ /((https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-=]*)*\/?)/ )
-				response = getTitle( $1 )
+				response = getTitle( $1, false )
 				@irc.message( from, response )
 			end
 		end
@@ -50,10 +50,12 @@ class Title
 	private
 
 	# Function to do the actual lookup
-	def getTitle( url )
+	def getTitle( url, verbose )
 		agent = Mechanize.new
 		agent.user_agent = 'Mozilla5 AppleWebKit535 KHTML like Gecko Chrome 13 Safari535' # To prevent any use agent based denails.
 		agent.max_file_buffer = 1024
+
+		noerror = false
 
 		begin
 			head = agent.head( url )
@@ -61,6 +63,10 @@ class Title
 
 			if( size.to_i < 5000000 )
 				response = "Title: " + agent.get( url ).title
+				response.gsub!( /\r/, "" )
+				response.gsub!( /\n/, "" )
+				puts "TITLE:#{response}:"
+				noerror = true
 			else
 				response = "Error: Page seems unreasonably large."
 			end
@@ -75,12 +81,16 @@ class Title
 			response = "Error: Unable to read response."
 		rescue Mechanize::RobotsDisallowedError => e
 			response = "Error: Disallowed by robots.txt."
-		rescue Mechanize::NoMethodError => e
+		rescue NoMethodError => e
 			response = "Error: Page doesn't seem to have a title."
 		rescue Exception => e
 			response = "Error: #{e.message}"
 		end
 
-		return response
+		if( noerror )
+			return response
+		elsif( verbose )
+			return response
+		end
 	end
 end
