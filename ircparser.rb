@@ -21,8 +21,8 @@ class IRCParser
 
 			# Wait for the server to ping first if needed and send login info.
 			if( !@config.waitforping && !@status.login )
-				@irc.login
 				autoload
+				@irc.login
 				@status.login( 1 )
 			end
 
