@@ -24,7 +24,7 @@ class Title
 	# Method that receives a notification when a message is received, that is not a command (optional)
 	def messaged( nick, user, host, from, message )
 		if( @config.nick != nick )
-			if( message =~ /((https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-=]*)*\/?)/ )
+			if( message =~ /((https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-=\?]*)*\/?)/ )
 				response = getTitle( $1, false )
 				@irc.message( from, response )
 			end
