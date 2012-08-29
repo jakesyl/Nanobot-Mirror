@@ -34,7 +34,8 @@ class Title
 	# Function to send help about this plugin (Can also be called by the help plugin.)
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
-			"This plugin grabs the title for a URL."
+			"This plugin grabs the title for any URL in the channel.",
+			"  !title url gives more verbose output in case of errors."
 		]
 
 		# Print out help
@@ -64,8 +65,11 @@ class Title
 			if( size.to_i < 5000000 )
 				response = "Title: " + agent.get( url ).title
 
+				response = response[ 0 .. 400 ] # Truncate absurdly long titles.
+
 				response.gsub!( /\r/, "" )
 				response.gsub!( /\n/, "" )
+				response.gsub!( / +/, " " )
 
 				noerror = true
 			else
