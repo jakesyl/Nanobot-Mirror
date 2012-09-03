@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# Plugin to demonstrate the working of plugins
+# Plugin to grab the title of an HTML page to which a link is posted.
 class Title
 
 	require 'rubygems'
@@ -24,9 +24,23 @@ class Title
 	# Method that receives a notification when a message is received, that is not a command (optional)
 	def messaged( nick, user, host, from, message )
 		if( @config.nick != nick )
+
+			# Parse out URL
 			if( message =~ /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.\-=\?]*)*\/?/ )
-				response = getTitle( $&, false )
+				url = $&
+				response = getTitle( url, false )
 				@irc.message( from, response )
+
+				# In case of a youtube link, see if we can get some more info
+				if( url =~ /youtube\.com/ )
+
+					# Check if youtube plugin is loaded
+					if( @status.checkplugin( "youtube" ) )
+						plugin = @status.getplugin( "youtube" )
+
+						plugin.main( nick, user, host, from, nil, url, false )
+					end
+				end
 			end
 		end
 	end
