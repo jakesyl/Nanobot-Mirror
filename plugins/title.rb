@@ -28,6 +28,8 @@ class Title
 			# Parse out URL
 			if( message =~ /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.\-&_=\?]*)*\/?/ )
 				url = $&
+
+				# Look for a title
 				response = getTitle( url, false )
 				@irc.message( from, response )
 
@@ -49,7 +51,7 @@ class Title
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
 			"This plugin grabs the title for any URL in the channel.",
-			"  !title url gives more verbose output in case of errors."
+			"  title url gives more verbose output in case of errors."
 		]
 
 		# Print out help
@@ -67,7 +69,7 @@ class Title
 	# Function to do the actual lookup
 	def getTitle( url, verbose )
 		agent = Mechanize.new
-		agent.user_agent = 'Mozilla5 AppleWebKit535 KHTML like Gecko Chrome 13 Safari535' # To prevent any use agent based denails.
+		agent.user_agent = 'Mozilla5 AppleWebKit535 KHTML like Gecko Chrome 13 Safari535' # To prevent any user agent based denails.
 		agent.max_file_buffer = 1024
 
 		noerror = false
@@ -75,10 +77,12 @@ class Title
 		begin
 			head = agent.head( url )
 			size = head['Content-Length']
+			type = head['Content-Type']
 
-			if( size.to_i < 5000000 )
-				response = "Title: " + agent.get( url ).title
+			if( size.to_i < 5000000 && type =~ /html/ )
+				page = agent.get( url )
 
+				response = "Title: " + page.title
 				response = response[ 0 .. 400 ] # Truncate absurdly long titles.
 
 				response.gsub!( /\r/, "" )
@@ -88,7 +92,8 @@ class Title
 
 				noerror = true
 			else
-				response = "Error: Page seems unreasonably large."
+				response = "File type: #{type} | Size: #{size} bytes."
+				noerror = true
 			end
 		
 		rescue Mechanize::RedirectLimitReachedError => e
@@ -102,7 +107,7 @@ class Title
 		rescue Mechanize::RobotsDisallowedError => e
 			response = "Error: Disallowed by robots.txt."
 		rescue NoMethodError => e
-			response = "Error: Page doesn't seem to have a title."
+			response = "Error: Page doesn't seem to have a title. #{e.message}"
 		rescue Exception => e
 			response = "Error: #{e.message}"
 		end
