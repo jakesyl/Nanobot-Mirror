@@ -26,7 +26,7 @@ class Title
 		if( @config.nick != nick )
 
 			# Parse out URL
-			if( message =~ /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.\-&_=\?]*)*\/?/ )
+			if( message =~ /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.\-&_=~\?]*)*\/?/ )
 				url = $&
 
 				# Look for a title
