@@ -80,17 +80,33 @@ class Title
 			type = head['Content-Type']
 
 			if( size.to_i < 5000000 && type =~ /html/ )
-				page = agent.get( url )
+				title = agent.get( url ).title
 
-				response = "Title: " + page.title
-				response = response[ 0 .. 400 ] # Truncate absurdly long titles.
+				response = "Title: #{title}"
 
+				# Truncate absurdly long titles to fit IRC.
+				response = response[ 0 .. 400 ]
+
+				# Parse out unwanted characters
 				response.gsub!( /\r/, "" )
 				response.gsub!( /\n/, "" )
 				response.gsub!( /\t/, "" )
 				response.gsub!( / +/, " " )
 
-				noerror = true
+				# See if URL itself isn't enough information already.
+				words = title.split
+
+				matches = 0
+				words.each do |w|
+					if( url.match( /#{Regexp.escape( w )}/ ) )
+						matches = matches + 1
+					end
+				end
+				matchlevel = matches.to_f / words.length.to_f
+
+				if( matchlevel < 0.75 )
+					noerror = true
+				end
 			else
 				response = "File type: #{type} | Size: #{size} bytes."
 				noerror = true
