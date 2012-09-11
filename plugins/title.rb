@@ -98,7 +98,7 @@ class Title
 
 				matches = 0
 				words.each do |w|
-					if( url.match( /#{Regexp.escape( w )}/ ) )
+					if( url.match( /#{Regexp.escape( w )}/i ) )
 						matches = matches + 1
 					end
 				end
