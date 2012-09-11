@@ -83,6 +83,7 @@ class Title
 
 				response.gsub!( /\r/, "" )
 				response.gsub!( /\n/, "" )
+				response.gsub!( /\t/, "" )
 				response.gsub!( / +/, " " )
 
 				noerror = true
