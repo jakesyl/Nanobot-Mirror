@@ -108,26 +108,24 @@ class Title
 					noerror = true
 				end
 			else
-				if( size.to_i > 1000000000000 )
-					size = size.to_f / 1000000000000.0
+				if( size.to_i > 1099511627776 )
+					size = size.to_f / 1099511627776.0
 					unit = "TB"
-				elsif( size.to_i > 1000000000 )
-					size = size.to_f / 1000000000.0
+				elsif( size.to_i > 1073741824 )
+					size = size.to_f / 1073741824.0
 					unit = "GB"
-				elsif( size.to_i > 1000000 )
-					size = size.to_f / 1000000.0
+				elsif( size.to_i > 1048576 )
+					size = size.to_f / 1048576.0
 					unit = "MB"
-				elsif( size.to_i > 1000 )
-					size = size.to_f / 1000.0
+				elsif( size.to_i > 1024 )
+					size = size.to_f / 1024.0
 					unit = "KB"
 				else
 					unit = "bytes"
 				end
 
-				if( size.to_s =~ /([0-9])?\.([0-9]{2})/ )
+				if( size.to_s =~ /([0-9])+?\.([0-9]{2})/ )
 					size = $&
-				else
-					size = size.to_s
 				end
 
 				response = "File type: #{type} | Size: #{size.to_s} #{unit}."
