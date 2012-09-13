@@ -13,6 +13,9 @@ class Title
 		@output		= output
 		@irc		= irc
 		@timer		= timer
+
+		# Show info for common image types? (jpeg, png, gif)
+		@imgtypes	= true
 	end
 
 	# Default method, called when no argument is given (optional, but highly recomended)
@@ -47,11 +50,20 @@ class Title
 		end
 	end
 
+	# Function to turn on/off showing type/size info for common image types
+	def commonimages( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			@imgtypes = !@imgtypes
+			@irc.message( from, "Showing type/size info for common image types: #{@imgtypes.to_s}." )
+		end
+	end
+
 	# Function to send help about this plugin (Can also be called by the help plugin.)
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
 			"This plugin grabs the title for any URL in the channel.",
-			"  title url gives more verbose output in case of errors."
+			"  title url		Gives more verbose output in case of errors.",
+			"  title commonimages	Toggle showing type/size info for common image types."
 		]
 
 		# Print out help
@@ -108,28 +120,30 @@ class Title
 					noerror = true
 				end
 			else
-				if( size.to_i > 1099511627776 )
-					size = size.to_f / 1099511627776.0
-					unit = "TB"
-				elsif( size.to_i > 1073741824 )
-					size = size.to_f / 1073741824.0
-					unit = "GB"
-				elsif( size.to_i > 1048576 )
-					size = size.to_f / 1048576.0
-					unit = "MB"
-				elsif( size.to_i > 1024 )
-					size = size.to_f / 1024.0
-					unit = "KB"
-				else
-					unit = "bytes"
-				end
+				if( type !~ /image\/(png|jpe?g|gif)/  || @imgtypes )
+					if( size.to_i > 1099511627776 )
+						size = size.to_f / 1099511627776.0
+						unit = "TB"
+					elsif( size.to_i > 1073741824 )
+						size = size.to_f / 1073741824.0
+						unit = "GB"
+					elsif( size.to_i > 1048576 )
+						size = size.to_f / 1048576.0
+						unit = "MB"
+					elsif( size.to_i > 1024 )
+						size = size.to_f / 1024.0
+						unit = "KB"
+					else
+						unit = "bytes"
+					end
 
-				if( size.to_s =~ /([0-9])+?\.([0-9]{2})/ )
-					size = $&
-				end
+					if( size.to_s =~ /([0-9])+?\.([0-9]{2})/ )
+						size = $&
+					end
 
-				response = "File type: #{type} | Size: #{size.to_s} #{unit}."
-				noerror = true
+					response = "File type: #{type} | Size: #{size.to_s} #{unit}."
+					noerror = true
+				end
 			end
 		
 		rescue Mechanize::RedirectLimitReachedError => e
