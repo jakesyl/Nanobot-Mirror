@@ -211,6 +211,62 @@ class Toolbox
 		end
 	end
 
+	# Nmap command
+	def nmap( nick, user, host, from, msg, arguments, con )
+		output = ""
+		cmd = nil
+
+		# Check if host is given
+		if( !arguments.nil? && !arguments.empty? )
+
+			# See if output plugin is loaded
+			if( @status.checkplugin( "paste" ) )
+
+				# Check for valid host types
+				case type( arguments )
+				when 1..6
+					cmd = "nmap -sV -PN " + arguments
+				else
+					output = [ "" ,"Invalid host." ]
+				end
+
+				# Provide feedback
+				feedback = "Scanning #{arguments}. Please wait."
+				if( con )
+					@output.c( feedback + "\n" )
+				else
+					@irc.message( from, feedback )
+				end
+
+				# Execute command
+				if( !cmd.nil? )
+					output = `#{cmd}`
+				end
+
+				if( output.nil? || output.empty? )
+					output[1] = "Error: No output received."
+				end
+
+				# Show output
+				paste = @status.getplugin( "paste" )
+
+				# Send data along to the 'main' function of the 'help' plugin.
+				paste.main( nick, user, host, from, "nmap", "#{output}", con )
+			else
+				# Show error to user
+				line = "The plugin this function depends on doesn't appear to be loaded."
+
+				if( con )
+					@output.c( line + "\n" )
+				else
+					@irc.notice( nick, line )
+				end
+			end
+		else
+			help( nick, user, host, from, msg, arguments, con )
+		end
+	end
+
 	# Webchat IP decoder
 	def webchat( nick, user, host, from, msg, arguments, con )
 		output = ""
@@ -361,6 +417,7 @@ class Toolbox
 			"  toolbox lsha1 [sha1 hash]            - Do a database lookup for given sha1 hash.",
 			"  toolbox dig [host]                   - Do a (reverse) DNS lookup for a host.",
 			"  toolbox ping [host]                  - Send a PING request to a host.",
+			"  toolbox nmap [host]                  - Do a port scan on target.",
 			"  toolbox webchat [hexmask]            - Reverse webchat hex encoded IP address.",
 			"  toolbox base [from] [to] [number]    - Convert base of number.",
 			"  toolbox hex [string]                 - Translate string to hex. (UTF-8)",
