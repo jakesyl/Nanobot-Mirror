@@ -133,17 +133,29 @@ class IRC
 
 	# Reconnect when something went wrong upstream
 	def reconnect
+		# Wait for high priority queue to empty
+		if( usequeue )
+			while( !@high.empty? )
+				sleep( 1 )
+			end
+		end
+
 		@status.login( 0 )
 		@socket.close
-		sleep( 1 )
 		@socket = connect()
 	end
 
 	# Disconnect socket
 	def disconnect
+		# Wait for high priority queue to empty
+		if( usequeue )
+			while( !@high.empty? )
+				sleep( 1 )
+			end
+		end
+
 		@status.login( 0 )
 		@status.reconnect( 0 )
-		#sleep( 1 ) # Allow some time for the QUIT to be sent.
 		@socket.close
 	end
 

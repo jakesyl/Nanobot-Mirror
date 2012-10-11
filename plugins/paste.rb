@@ -21,7 +21,7 @@ class Paste
 	def main( nick, user, host, from, msg, arguments, con )
 
 		params =  {
-			'type' => 'nmap',
+			'type' => msg,
 			'content' => arguments
 		}
 

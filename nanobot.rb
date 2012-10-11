@@ -47,9 +47,9 @@ irc = IRC.new( status, config, output, connection )
 # Catch Ctrl-C
 Signal.trap( 'INT' ) do
 	Signal.trap( 'INT', 'DEFAULT' )
+	output.std( "Caught interrupt, attempting to flush high priority queue before quiting.\n" )
 	status.reconnect( 0 )
-	irc.quit( "Caught keyboard interrupt, quiting." )
-	output.std( "Caught keyboard interrupt, quiting.\n" )
+	irc.quit( "Caught keyboard interrupt, quiting.", true )
 	Process.exit
 end
 
