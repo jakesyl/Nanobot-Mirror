@@ -9,6 +9,7 @@ class Status
 		@debug		= 0
 		@login		= 0
 		@threads	= 0
+		@readline	= 0
 		@ssl		= 0
 		@showconf	= 0
 		@console	= 1
@@ -52,6 +53,13 @@ class Status
 			@threads = threads
 		end
 		return( @threads == 1 )
+	end
+
+	def readline( readline = "" )
+		if( readline != "" )
+			@readline = readline
+		end
+		return( @readline == 1 )
 	end
 
 	def ssl( ssl = "" )

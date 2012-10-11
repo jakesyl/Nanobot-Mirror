@@ -77,6 +77,22 @@ class Startup
 		end
 	end
 
+	def checkreadline
+		@output.std( "Checking for readline support .... " )
+		begin
+			require "readline"
+			@status.readline( 1 )
+
+			@output.good( "[OK]\n" )
+
+		rescue LoadError
+			@status.readline( 0 )
+	
+			@output.bad( "[NO]" )
+			@output.info( " (using STDIO)\n" )
+		end
+	end
+
 	def checkoutputqueuing
 		if( RUBY_VERSION =~ /^1\.8/ )
 			@output.info("Old Ruby version detected. Output queuing is not available.\n")

@@ -32,10 +32,17 @@ class Console
 	def parse
 		@output.cspecial( @config.version + " console" )
 
-		while true do
-			print( @config.nick + "# " )
-			STDOUT.flush
-			@cmd.process( "", "", "", "", STDIN.gets.chomp )
+		# Use readline lib if possible
+		if( @status.readline )
+			while buf = Readline.readline("#{@config.nick}# ", true)
+				@cmd.process( "", "", "", "", buf )
+			end
+		else
+			while true do
+				print( @config.nick + "# " )
+				STDOUT.flush
+				@cmd.process( "", "", "", "", STDIN.gets.chomp )
+			end
 		end
 	end
 end
