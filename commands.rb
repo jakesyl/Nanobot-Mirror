@@ -300,7 +300,7 @@ class Commands
 
 	# Function to list available modules
 	def available( nick, user, host, from, msg )
-		contents = Dir.entries("./" + super.config.plugindir + "/" )
+		contents = Dir.entries("./" + @config.plugindir + "/" )
 		plugs = Array.new
 		contents.entries.each do |file|
 			if( file =~ /\.rb$/i )
