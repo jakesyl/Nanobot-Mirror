@@ -4,19 +4,21 @@
 # Do not modify variables manually
 class Status
 	def initialize
-		@output		= 1
-		@colour		= 1
-		@debug		= 0
-		@login		= 0
-		@threads	= 0
-		@readline	= 0
-		@ssl		= 0
-		@showconf	= 0
-		@console	= 1
-		@reconnect	= 1
-		@autoload	= 0
-		@plugins	= {}
-		@startup	= Time.new
+		@output			= 1
+		@colour			= 1
+		@debug			= 0
+		@login			= 0
+		@threads		= 0
+		@readline		= 0
+		@tabcomplete	= 1
+		@ssl			= 0
+		@showconf		= 0
+		@console		= 1
+		@reconnect		= 1
+		@autoload		= 0
+		@plugins		= {}
+		@startup		= Time.new
+		@config			= nil
 	end
 
 	# Get/set functions
@@ -60,6 +62,13 @@ class Status
 			@readline = readline
 		end
 		return( @readline == 1 )
+	end
+
+	def tabcomplete( tc = "" )
+		if( tc != "" )
+			@tabcomplete = tc
+		end
+		return( @tabcomplete == 1 )
 	end
 
 	def ssl( ssl = "" )
@@ -175,5 +184,44 @@ class Status
 		end
 
 		return output
+	end
+
+	# Give config object to this object
+	def giveConfig( config )
+		@config = config
+	end
+
+	# Tab complete functions
+	def getBaseComplete
+		list = [ "quit", "load", "unload", "reload", "loaded", "available" ]
+		list = list.inject( @plugins.keys, :<< )
+		return list.sort
+	end
+
+	def getPluginComplete( plugin )
+		if( plugin =~ /^([^\s]+){1,}/ )
+			plugin = $1
+		end
+
+		if( checkplugin( plugin ) )
+			list = @plugins.fetch( plugin ).methods - Object.methods
+			return list.sort
+		elsif( plugin == "unload" )
+			return @plugins.keys.sort
+		elsif( plugin == "load" )
+			contents = Dir.entries("./" + @config.plugindir + "/" )
+			plugs = Array.new
+			contents.entries.each do |file|
+				if( file =~ /\.rb$/i )
+					file.gsub!( /\.rb$/i, "" )
+					plugs.push( file )
+				end
+			end
+			return plugs
+		elsif( plugin == "reload" )
+			return @plugins.keys.sort
+		else
+			return [ "" ]
+		end
 	end
 end

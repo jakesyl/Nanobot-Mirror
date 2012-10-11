@@ -28,10 +28,13 @@ class Commands
 		return @config.command
 	end
 
-	def sanitize( input, downcase = 0 )
+	def sanitize( input, downcase = 0, spaces = 0 )
 		input.gsub!( /[^a-zA-Z0-9 -]/, "" )
 		if( downcase == 1 )
 			input.downcase!
+		end
+		if( spaces == 1 )
+		input.gsub!( /[\s]/, "" )
 		end
 	end
 
@@ -156,7 +159,7 @@ class Commands
 			cmd, plugin = msg.split( ' ', 2 )
 			if( plugin != nil )
 				# Clean variable
-				sanitize( plugin, 1 )
+				sanitize( plugin, 1, 1 )
 
 				# Check if plugin isn't loaded already
 				if( !@status.checkplugin( plugin ) )
@@ -224,7 +227,7 @@ class Commands
 			cmd, plugin = msg.split( ' ', 2 )
 			if( plugin != nil )
 				# Clean variable
-				sanitize( plugin, 1 )
+				sanitize( plugin, 1, 1 )
 
 				# Check if plugin is loaded
 				if( @status.checkplugin( plugin ) )
@@ -297,7 +300,7 @@ class Commands
 
 	# Function to list available modules
 	def available( nick, user, host, from, msg )
-		contents = Dir.entries("./" + @config.plugindir + "/" )
+		contents = Dir.entries("./" + super.config.plugindir + "/" )
 		plugs = Array.new
 		contents.entries.each do |file|
 			if( file =~ /\.rb$/i )

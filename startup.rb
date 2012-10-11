@@ -95,7 +95,10 @@ class Startup
 
 	def checkoutputqueuing
 		if( RUBY_VERSION =~ /^1\.8/ )
-			@output.info("Old Ruby version detected. Output queuing is not available.\n")
+			@output.info( "Old Ruby version detected.\n" )
+			@output.info( "\tOutput queuing is not available.\n" )
+			@output.info( "\tTab completion on console not available.\n" )
+			@status.tabcomplete( 0 )
 		end
 	end
 

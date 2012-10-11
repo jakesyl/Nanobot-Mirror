@@ -16,6 +16,7 @@ require './console.rb'
 status	= Status.new
 output	= Output.new( status )
 config	= Configuration.new( status, output )
+status.giveConfig( config )
 
 # Process commandline options
 parser	= ArgumentParser.new( status, config, output, $0 )

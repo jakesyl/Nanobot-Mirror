@@ -34,12 +34,29 @@ class Console
 
 		# Use readline lib if possible
 		if( @status.readline )
+
+			# Load tabcomplete items if possible
+			if( @status.tabcomplete )
+				comp = proc do |s|
+					if( Readline.line_buffer =~ /^(#{@status.getBaseComplete.join("|")})/ )
+						@status.getPluginComplete( Readline.line_buffer ).grep(/^#{Regexp.escape(s)}/)
+					else
+						@status.getBaseComplete.grep(/^#{Regexp.escape(s)}/)
+					end
+				end
+
+				Readline.completion_append_character = " "
+				Readline.completion_proc = comp
+			end
+
+			# Read lines
 			while buf = Readline.readline("#{@config.nick}# ", true)
 				@cmd.process( "", "", "", "", buf )
 			end
 		else
+			# Fallback to STDIO console
 			while true do
-				print( @config.nick + "# " )
+				print( "#{@config.nick}# " )
 				STDOUT.flush
 				@cmd.process( "", "", "", "", STDIN.gets.chomp )
 			end
