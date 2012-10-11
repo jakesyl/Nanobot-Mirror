@@ -32,11 +32,30 @@ class Youtube
 			# Create Nokogiri object for xml object
 			xml = Nokogiri::XML( xml )
 
-			# Parse info and build result string
-			result = ""
-			xml.xpath('//media:category').each { |node| result = "#{result}Category: #{ node['label'].to_s }" }
-			xml.xpath('//yt:duration').each { |node| result = "#{result} | Duration: #{ node['seconds'].to_s } sec." }
-			xml.xpath('//gd:rating').each { |node| result = "#{result} | Rating: #{ node['average'].to_s }/5 " }
+			# Parse info
+			cat, duration, rating, views, likes, dislikes = "Unknown", 0, 0.0, 0, 0, 0
+			xml.xpath('//media:category').each { |node| cat = node['label'].to_s }
+			xml.xpath('//yt:duration').each { |node| duration = node['seconds'] }
+			xml.xpath('//gd:rating').each { |node| rating = node['average'].to_s }
+			xml.xpath('//yt:statistics').each { |node| views = node['viewCount'].to_s }
+			xml.xpath('//yt:rating').each { |node|
+							likes = node['numLikes'].to_s
+							dislikes = node['numDislikes'].to_s }
+
+			# Truncate rating
+			if( rating =~ /([0-9])+?\.([0-9]{1})/ )
+				rating = $&
+			end
+
+			# Format duration
+			if( duration.to_i < 3600 )
+				duration = Time.at(duration.to_i).gmtime.strftime('%M:%S')
+			else
+				duration = Time.at(duration.to_i).gmtime.strftime('%R:%S')
+			end
+
+			# Build string
+			result = "Type: #{cat} | Lenght: #{duration} | Views: #{views} | Rating: #{rating}/5 | Like/dislike: #{likes}/#{dislikes}"
 
 			@irc.message( from, result )
 		end
