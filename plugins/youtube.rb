@@ -55,7 +55,7 @@ class Youtube
 			end
 
 			# Build string
-			result = "Type: #{cat} | Lenght: #{duration} | Views: #{views} | Rating: #{rating}/5 | Like/dislike: #{likes}/#{dislikes}"
+			result = "Type: #{cat} | Length: #{duration} | Views: #{views} | Rating: #{rating}/5 | Like/dislike: #{likes}/#{dislikes}"
 
 			@irc.message( from, result )
 		end
