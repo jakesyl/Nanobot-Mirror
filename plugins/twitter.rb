@@ -22,7 +22,8 @@ class Twitter
 			@freq		= 300
 			@extra_line	= true
 
-			@specials	= {	"&#8211;"	=> "–",
+			@specials	= {	"&amp;"	=> "&",
+							"&#8211;"	=> "–",
 							"&#8212;"	=> "—",
 							"&#8216;"	=> "‘",
 							"&#8217;"	=> "’",
@@ -59,11 +60,11 @@ class Twitter
 			arguments.gsub!( /&/, "" ) # Sanitize GET variables
 
 			# Retreive XML
-			line = Net::HTTP.get( 'twitter.com', '/statuses/user_timeline/' + arguments + '.rss' )
+			line = Net::HTTP.get( 'api.twitter.com', '/1/statuses/user_timeline.rss?screen_name=' + arguments )
 
 			# Parse out XML (needs better regex)
-			if( line =~ /<item>\n    <title>(.+?)<\/title>/is )
-				line = $1
+			if( line =~ /<item>\n    <title>(.+?)<\/title>\n    <description>(.+?)<\/description>/is )
+				line = $2
 				line = CGI.unescapeHTML( line )
 				@specials.each_key do |key|
 					line.gsub!( key, @specials[key] )
