@@ -91,11 +91,11 @@ class Twitter
 					arguments.gsub!( /&/, "" ) # Sanitize GET variables
 				
 					# Retreive XML
-					line = Net::HTTP.get( 'twitter.com', '/statuses/user_timeline/' + arguments + '.rss' )
+					line = Net::HTTP.get( 'api.twitter.com', '/1/statuses/user_timeline.rss?screen_name=' + arguments )
 
 					# Parse out XML (needs better regex, or a real XML parser, realistically)
-					if( line =~ /<item>\n    <title>(.+?)<\/title>/is )
-						line = $1
+					if( line =~ /<item>\n    <title>(.+?)<\/title>\n    <description>(.+?)<\/description>/is )
+						line = $2
 						@follow[ arguments ] = line
 
 						line = CGI.unescapeHTML( line )
@@ -279,11 +279,11 @@ class Twitter
 			@follow.each do |user, last|
 				begin
 					# Retreive XML
-					line = Net::HTTP.get( 'twitter.com', '/statuses/user_timeline/' + user + '.rss' )
+					line = Net::HTTP.get( 'api.twitter.com', '/1/statuses/user_timeline.rss?screen_name=' + user )
 
 					# Parse out XML (needs better regex)
-					if( line =~ /<item>\n    <title>(.+?)<\/title>/is )
-						line = $1
+					if( line =~ /<item>\n    <title>(.+?)<\/title>\n    <description>(.+?)<\/description>/is )
+						line = $2
 					end
 
 					# Check against last message
