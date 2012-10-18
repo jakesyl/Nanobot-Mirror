@@ -29,12 +29,16 @@ class Title
 		if( @config.nick != nick )
 
 			# Parse out URL
-			if( message =~ /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.\-&_=~\?]*)*\/?/ )
+			if( message =~ /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.\-&_%=~\?]*)*\/?/ )
 				url = $&
+				puts "URL: #{url}:"
 
 				# Look for a title
 				response = getTitle( url, false )
-				@irc.message( from, response )
+
+				if(response)
+					@irc.message( from, response )
+				end
 
 				# In case of a youtube link, see if we can get some more info
 				if( url =~ /youtube\.com/ )
