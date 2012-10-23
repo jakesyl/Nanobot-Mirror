@@ -31,7 +31,6 @@ class Title
 			# Parse out URL
 			if( message =~ /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.\-&_%=~\?]*)*\/?/ )
 				url = $&
-				puts "URL: #{url}:"
 
 				# Look for a title
 				response = getTitle( url, false )
