@@ -123,7 +123,7 @@ class Title
 					noerror = true
 				end
 			else
-				if( type !~ /image\/(png|jpe?g|gif)/  || @imgtypes )
+				if( type !~ /image\/(png|jpe?g|gif)/  || @imgtypes || verbose )
 					if( size.to_i > 1099511627776 )
 						size = size.to_f / 1099511627776.0
 						unit = "TB"
