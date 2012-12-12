@@ -171,13 +171,20 @@ class Shells
 
 	# Function to grab statistics from shell hosts.
 	def getstat( chan, stat )
-		iline = Net::HTTP.get( 'www.insomnia247.nl', '/stats.php?get=' + stat )
-		rline = Net::HTTP.get( 'rootedker.nl', '/stats.php?get=' + stat )
-		#fline = Net::HTTP.get( 'coolfire.fastshells.co.uk', '/stats.php?get=' + stat )
+		begin
+			iline = Net::HTTP.get( 'www.insomnia247.nl', '/stats.php?get=' + stat )
+		rescue Exception => e
+			iline = "[Host appears to be down! (#{e.to_s})]"
+		end
+		begin
+			#Timeout::timeout( 10 )
+			rline = Net::HTTP.get( 'rootedker.nl', '/stats.php?get=' + stat )
+		rescue Exception => e
+			rline = "[Host appears to be down! (#{e.to_s})]"
+		end
 
 		@irc.message( chan, "Insomnia 24/7: " + iline )
 		@irc.message( chan, "Rootedker.nl:  " + rline )
-		#@irc.message( chan, "Fastshells:    " + fline )
 	end
 
 	# Function to print arrays
