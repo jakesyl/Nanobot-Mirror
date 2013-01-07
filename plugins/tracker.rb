@@ -21,7 +21,7 @@ class Tracker
 
 		@timeout	= 10
 
-		@channel	= "#bot"
+		@channel	= "#shells"
 
 		@blurbs		= {
 						"left_home"		=> "Cool_Fire has left the vicinity of his house.",
