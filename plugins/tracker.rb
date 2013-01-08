@@ -19,7 +19,7 @@ class Tracker
 		@last_time	= Time.new
 		@last_stat	= ""
 
-		@timeout	= 10
+		@timeout	= 300
 
 		@channel	= "#shells"
 
@@ -40,11 +40,33 @@ class Tracker
 		@irc.message( from, "This module will allow live tracking data to be used by nanobot." )
 	end
 
+	# Method stop data collection
+	def stop( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( @status.threads && @config.threads)
+				@ftread.exit
+				line = "Data collection stopped."
+			else
+				line = "Data is not being collected. (No threading available.)"
+			end
+		else
+			line = "You are not authorized to perform this action."
+		end
+
+		# Show output
+		if( con )
+			@output.c( line + "\n" )
+		else
+			@irc.message( from, line )
+		end
+	end
+
 
 	# Function to send help about this plugin (Can also be called by the help plugin.)
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
-			"This is a plugin that tracks Cool_Fire."
+			"This is a plugin that tracks Cool_Fire.",
+			"	tracker stop	Tell it to gracfully stop the update thread."
 		]
 
 		# Print out help

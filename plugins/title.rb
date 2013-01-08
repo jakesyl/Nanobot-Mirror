@@ -15,7 +15,7 @@ class Title
 		@timer		= timer
 
 		# Show info for common image types? (jpeg, png, gif)
-		@imgtypes	= true
+		@imgtypes	= false
 	end
 
 	# Default method, called when no argument is given (optional, but highly recomended)
