@@ -85,16 +85,19 @@ class Tracker
 	# Function that actually does the status lookup.
 	def get_status
 		while true
+			begin
+				# Grab status
+				result = Net::HTTP.get( @host, @path )
+				if( result != @last_stat )
+					@last_stat = result
+					@last_time = Time.new
 
-			# Grab status
-			result = Net::HTTP.get( @host, @path )	
-			if( result != @last_stat )
-				@last_stat = result
-				@last_time = Time.new
-
-				@irc.message( @channel, @blurbs[@last_stat] )
+					@irc.message( @channel, @blurbs[@last_stat] )
+				end
+			rescue
+				# Silently fail
+				@output.debug( "Failure while trying to fetch location data." )
 			end
-
 			# Wait a bit and check again.
 			sleep( @timeout )
 		end

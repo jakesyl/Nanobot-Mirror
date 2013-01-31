@@ -36,19 +36,24 @@ class Hackerthreads
 	# Thread to check for new posts
 	def check_rss
 		while true
-			# Grab rss
-			xml = Net::HTTP.get( @rss_host, @rss_path )
-			xml = Nokogiri::XML( xml )
+			begin
+				# Grab rss
+				xml = Net::HTTP.get( @rss_host, @rss_path )
+				xml = Nokogiri::XML( xml )
 
-			# Parse out info
-			title, link = "", ""
-			title = xml.xpath( '//item/title' ).first.text
-			link  = xml.xpath( '//item/link' ).first.text
+				# Parse out info
+				title, link = "", ""
+				title = xml.xpath( '//item/title' ).first.text
+				link  = xml.xpath( '//item/link' ).first.text
 
-			# Check if this is a new post
-			if( @last != link )
-				@last = link
-				@irc.message( @channel, "New post: #{title} #{link}" )
+				# Check if this is a new post
+				if( @last != link )
+					@last = link
+					@irc.message( @channel, "New post: #{title} #{link}" )
+				end
+			rescue
+				# Silently fail
+				@output.debug( "Failure while retreiving " + user + " feed." )
 			end
 
 			# Wait for a bit before fetching again
