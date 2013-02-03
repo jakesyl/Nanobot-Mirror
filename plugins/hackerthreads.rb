@@ -53,7 +53,7 @@ class Hackerthreads
 				end
 			rescue
 				# Silently fail
-				@output.debug( "Failure while retreiving " + user + " feed." )
+				@output.debug( "Failure while retreiving rss feed." )
 			end
 
 			# Wait for a bit before fetching again

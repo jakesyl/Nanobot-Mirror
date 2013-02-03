@@ -124,7 +124,7 @@ class Translate
 			file.each do |line|
 				@appid << line
 			end
-			@appid.gsub!( /[^0-9a-zA-Z]/, "" )
+			@appid.gsub!( /[:blank:\n\r]/, "" )
 
 			file.close
 		else
