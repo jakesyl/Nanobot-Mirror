@@ -4,6 +4,8 @@
 # Plugin to grab latest message from a twitter feed
 
 require 'cgi'
+require 'nokogiri'
+
 class Twitter
 
 	# This method is called when the plugin is first loaded
@@ -13,6 +15,9 @@ class Twitter
 		@output		= output
 		@irc		= irc
 		@timer		= timer
+		
+		@apihost	= "api.twitter.com"
+		@apipath	= "/1/statuses/user_timeline.rss?screen_name="
 
 		if( @status.threads && @config.threads)
 			# Variables for following users
@@ -40,8 +45,10 @@ class Twitter
 							"&euro;"	=> "€",
 							"&#8482;"	=> "™",
 							"&gt;"		=> ">",
-							"&lt;"		=> "<"}
-			
+							"&lt;"		=> "<",
+							"&quot;"	=> "\""
+						}
+
 			# Load database of users being followed
 			load_db
 
@@ -60,26 +67,20 @@ class Twitter
 			arguments.gsub!( /&/, "" ) # Sanitize GET variables
 
 			# Retreive XML
-			line = Net::HTTP.get( 'api.twitter.com', '/1/statuses/user_timeline.rss?screen_name=' + arguments )
-
-			# Parse out XML (needs better regex)
-			if( line =~ /<item>\n    <title>(.+?)<\/title>\n    <description>(.+?)<\/description>/is )
-				line = $2
-				line = CGI.unescapeHTML( line )
-				@specials.each_key do |key|
-					line.gsub!( key, @specials[key] )
-				end
-			else
-				line = "Error: No result."
+			xml = Net::HTTP.get( @apihost, @apipath + arguments )
+			result = xmlparse( xml )
+			
+			if( result.empty? )
+				result = "Error: No result."
 			end
 		else
-			line = "Not valid input. Expecting twitter username."
+			result = "Not valid input. Expecting twitter username."
 		end
 
 		if( con )
-			@output.c( line + "\n" )
+			@output.c( result + "\n" )
 		else
-			@irc.message( from, line )
+			@irc.message( from, result )
 		end
 	end
 
@@ -91,18 +92,11 @@ class Twitter
 					arguments.gsub!( /&/, "" ) # Sanitize GET variables
 				
 					# Retreive XML
-					line = Net::HTTP.get( 'api.twitter.com', '/1/statuses/user_timeline.rss?screen_name=' + arguments )
-
-					# Parse out XML (needs better regex, or a real XML parser, realistically)
-					if( line =~ /<item>\n    <title>(.+?)<\/title>\n    <description>(.+?)<\/description>/is )
-						line = $2
+					xml = Net::HTTP.get( @apihost, @apipath + arguments )
+					line = xmlparse( xml )
+					
+					if( !line.empty? )
 						@follow[ arguments ] = line
-
-						line = CGI.unescapeHTML( line )
-						@specials.each_key do |key|
-							line.gsub!( key, @specials[key] )
-						end
-
 						line = "Following: " + line
 
 						# Write database to disk
@@ -279,28 +273,19 @@ class Twitter
 			@follow.each do |user, last|
 				begin
 					# Retreive XML
-					line = Net::HTTP.get( 'api.twitter.com', '/1/statuses/user_timeline.rss?screen_name=' + user )
+					xml = Net::HTTP.get( @apihost, @apipath + user )
+					line = xmlparse( xml )
+					
+					# Check for failure to fetch feed data.
+					if( !line.empty? )
 
-					# Parse out XML (needs better regex)
-					if( line =~ /<item>\n    <title>(.+?)<\/title>\n    <description>(.+?)<\/description>/is )
-						line = $2
-					end
-
-					# Check against last message
-					if( line != last )
-						# Check for feed failures
-						if( line !~ /\<\?xml version=\"1\.0\" encoding=\"UTF-8\"\?\>/ )
+						# Check against last message
+						if( line != last )
 							@follow[ user ] = line
-
-							# Special char parsing
-							line = CGI.unescapeHTML( line )
-							@specials.each_key do |key|
-								line.gsub!( key, @specials[key] )
-							end
 
 							@irc.message( @announce, line )
 
-							# Formating for output
+							# See if an extra blank line is desired.
 							if( @extra_line )
 								@irc.message( @announce, " " )
 							end
@@ -315,6 +300,25 @@ class Twitter
 
 			# Wait before checking for updates again
 			sleep( @freq )
+		end
+	end
+	
+	# XML parser routine
+	def xmlparse( xmldoc )
+		xmldoc = Nokogiri::XML( xmldoc )
+		
+		title = xmldoc.at_xpath( "//item/title" )
+
+		if( title.instance_of? NilClass )
+			return ""
+		else
+			# Parse out and fix special chars
+			line = CGI.unescapeHTML( title.text )
+			@specials.each_key do |key|
+				line.gsub!( key, @specials[key] )
+			end
+			
+			return line
 		end
 	end
 end
