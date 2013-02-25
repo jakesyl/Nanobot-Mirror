@@ -52,6 +52,36 @@ class Shells
 		end
 	end
 
+	# Show links
+	def link( nick, user, host, from, msg, arguments, con )
+		case arguments
+		when /^main/i
+			info = [ "http://wiki.insomnia247.nl/wiki/Shells" ]
+		when /^rule/i
+			info = [ "http://wiki.insomnia247.nl/wiki/Shells_rules" ]
+		when /^shell/i
+			info = [ "http://wiki.insomnia247.nl/wiki/Shells_FAQ#How_do_I_request_a_shell.3F",
+			         "The short version is: You need an invite." ]
+		when /^invite/i
+			info = [ "http://wiki.insomnia247.nl/wiki/Shells_FAQ#How_do_I_get_an_invite.3F",
+			         "The short version is: You need a good reason." ]
+		when /^good/i
+			info = [ "http://wiki.insomnia247.nl/wiki/Shells_FAQ#What_is_a_good_reason_for_an_invite.3F" ]
+		when /^bad/i
+			info = [ "http://wiki.insomnia247.nl/wiki/Shells_FAQ#What_are_bad_reasons_for_an_invite.3F" ]
+		when /^learning/i
+			info = [ "http://wiki.insomnia247.nl/wiki/Shells_FAQ#Why_isn.27t_learning_a_valid_usage.3F" ]
+		when /^heartbeat/i
+			info = [ "http://heartbeat.insomnia247.nl" ]
+		when /^git/i
+			info = [ "http://git.insomnia247.nl",
+			         "No shell account is required to sign up here." ]
+		else
+			info = [ "Available options: Main, Rules, Shell, Invite, Good, Bad, Learning, Heartbeat, Git" ]
+		end
+		printhelp( from, con, info )
+	end
+	
 	# Show information about open ports
 	def port( nick, user, host, from, msg, arguments, con )
 		ports( nick, user, host, from, msg, arguments, con )
@@ -119,6 +149,7 @@ class Shells
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
 			"This plugin provides several functions to support " + @chan + ".",
+			"  shells link [topic]    - Show link to wiki.",
 			"  shells ports           - Show information about open ports.",
 			"  shells websites        - Show information about users websites.",
 			"  shells go              - Show information about Google Go.",

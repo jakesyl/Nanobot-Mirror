@@ -3,6 +3,7 @@
 
 # Plugin to grab latest message from a twitter feed
 
+require 'rubygems'
 require 'cgi'
 require 'nokogiri'
 
@@ -27,7 +28,7 @@ class Twitter
 			@freq		= 300
 			@extra_line	= true
 
-			@specials	= {	"&amp;"	=> "&",
+			@specials	= {	"&amp;"		=> "&",
 							"&#8211;"	=> "–",
 							"&#8212;"	=> "—",
 							"&#8216;"	=> "‘",
@@ -320,5 +321,8 @@ class Twitter
 			
 			return line
 		end
+		
+		# Mark object for garbage collection
+		xmldoc = nil
 	end
 end
