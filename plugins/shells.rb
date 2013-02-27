@@ -57,6 +57,8 @@ class Shells
 		case arguments
 		when /^main/i
 			info = [ "http://wiki.insomnia247.nl/wiki/Shells" ]
+		when /^faq/i
+			info = [ "http://wiki.insomnia247.nl/wiki/Shells_FAQ" ]
 		when /^rule/i
 			info = [ "http://wiki.insomnia247.nl/wiki/Shells_rules" ]
 		when /^shell/i
@@ -77,7 +79,7 @@ class Shells
 			info = [ "http://git.insomnia247.nl",
 			         "No shell account is required to sign up here." ]
 		else
-			info = [ "Available options: Main, Rules, Shell, Invite, Good, Bad, Learning, Heartbeat, Git" ]
+			info = [ "Available options: Main, FAQ, Rules, Shell, Invite, Good, Bad, Learning, Heartbeat, Git" ]
 		end
 		printhelp( from, con, info )
 	end
