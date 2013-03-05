@@ -34,12 +34,12 @@ class Youtube
 
 			# Parse info
 			cat, duration, rating, views, likes, dislikes = "Unknown", 0, 0.0, 0, 0, 0
-			cat			= xml.at_xpath( "//media:group/media:category" )[ "label" ]
-			duration	= xml.at_xpath( "//media:group/yt:duration" )[ "seconds" ]
-			rating		= xml.at_xpath( "//gd:rating" )[ "average" ]
-			views		= xml.at_xpath( "//yt:statistics" )[ "viewCount" ]
-			likes		= xml.at_xpath( "//yt:rating" )[ "numLikes" ]
-			dislikes	= xml.at_xpath( "//yt:rating" )[ "numDislikes" ]
+			cat      = xml.at_xpath( "//media:group/media:category" )[ "label" ]
+			duration = xml.at_xpath( "//media:group/yt:duration" )[ "seconds" ]
+			rating   = xml.at_xpath( "//gd:rating" )[ "average" ]
+			views    = xml.at_xpath( "//yt:statistics" )[ "viewCount" ]
+			likes    = xml.at_xpath( "//yt:rating" )[ "numLikes" ]
+			dislikes = xml.at_xpath( "//yt:rating" )[ "numDislikes" ]
 
 			# Truncate rating
 			if( rating =~ /([0-9])+?\.([0-9]{1})/ )
