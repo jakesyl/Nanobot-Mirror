@@ -4,8 +4,8 @@
 # Plugin to grab latest message from a twitter feed
 
 require 'rubygems'
+require 'json'
 require 'cgi'
-require 'nokogiri'
 
 class Twitter
 
@@ -17,8 +17,8 @@ class Twitter
 		@irc		= irc
 		@timer		= timer
 		
-		@apihost	= "api.twitter.com"
-		@apipath	= "/1/statuses/user_timeline.rss?screen_name="
+		@apihost	= "search.twitter.com"
+		@apipath	= "/search.json?q=from:"
 
 		if( @status.threads && @config.threads)
 			# Variables for following users
@@ -67,9 +67,9 @@ class Twitter
 		if( !arguments.nil? && !arguments.empty? )
 			arguments.gsub!( /&/, "" ) # Sanitize GET variables
 
-			# Retreive XML
-			xml = Net::HTTP.get( @apihost, @apipath + arguments )
-			result = xmlparse( xml )
+			# Retreive JSON
+			json = Net::HTTP.get( @apihost, @apipath + arguments )
+			result = jsonparse( json )
 			
 			if( result.empty? )
 				result = "Error: No result."
@@ -92,9 +92,9 @@ class Twitter
 				if( !arguments.nil? && !arguments.empty? )
 					arguments.gsub!( /&/, "" ) # Sanitize GET variables
 				
-					# Retreive XML
-					xml = Net::HTTP.get( @apihost, @apipath + arguments )
-					line = xmlparse( xml )
+					# Retreive JSON
+					json = Net::HTTP.get( @apihost, @apipath + arguments )
+					line = jsonparse( json )
 					
 					if( !line.empty? )
 						@follow[ arguments ] = line
@@ -273,9 +273,9 @@ class Twitter
 			# Loop trough users
 			@follow.each do |user, last|
 				begin
-					# Retreive XML
-					xml = Net::HTTP.get( @apihost, @apipath + user )
-					line = xmlparse( xml )
+					# Retreive JSON
+					json = Net::HTTP.get( @apihost, @apipath + user )
+					line = jsonparse( json )
 					
 					# Check for failure to fetch feed data.
 					if( !line.empty? )
@@ -304,7 +304,29 @@ class Twitter
 		end
 	end
 	
-	# XML parser routine
+	# JSON parser routine
+	def jsonparse( doc )
+		doc = JSON.parse( doc )
+		
+		doc = doc[ "results" ][ 0 ]
+		
+		if( doc.instance_of? NilClass )
+			return ""
+		else
+			# Parse out and fix special chars
+			doc = CGI.unescapeHTML( doc[ "text" ] )
+			@specials.each_key do |key|
+				doc.gsub!( key, @specials[key] )
+			end
+			
+			return doc
+		end
+		
+		# Mark object for garbage collection
+		doc = nil
+	end
+	
+	# XML parser routine (No longer used)
 	def xmlparse( xmldoc )
 		xmldoc = Nokogiri::XML( xmldoc )
 		
