@@ -73,6 +73,8 @@ class Twitter
 			
 			if( result.empty? )
 				result = "Error: No result."
+			else
+				result = "#{arguments}: #{result}"
 			end
 		else
 			result = "Not valid input. Expecting twitter username."
@@ -98,7 +100,7 @@ class Twitter
 					
 					if( !line.empty? )
 						@follow[ arguments ] = line
-						line = "Following: " + line
+						line = "Following: #{arguments}: #{line}"
 
 						# Write database to disk
 						write_db
@@ -284,7 +286,7 @@ class Twitter
 						if( line != last )
 							@follow[ user ] = line
 
-							@irc.message( @announce, line )
+							@irc.message( @announce, "#{user}: #{line}" )
 
 							# See if an extra blank line is desired.
 							if( @extra_line )
