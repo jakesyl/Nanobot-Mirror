@@ -79,7 +79,7 @@ class Search
 			return ""
 		else
 			title = doc[ 0 ] [ "titleNoFormatting" ]
-			url = doc[ 0 ] [ "url" ]
+			url =  CGI::unescape( doc[ 0 ] [ "url" ])
 
 			result = "Result: #{title} - #{url}"
 			return result
