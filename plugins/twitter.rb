@@ -57,6 +57,13 @@ class Twitter
 		end
 	end
 
+	# Method to be called when the plugin is unloaded
+	def unload
+		if( @status.threads && @config.threads)
+			@ftread.exit
+		end
+	end
+
 	# Meta method for getlast
 	def main( nick, user, host, from, msg, arguments, con )
 		getlast( nick, user, host, from, msg, arguments, con )

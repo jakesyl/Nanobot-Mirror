@@ -232,14 +232,23 @@ class Commands
 				# Check if plugin is loaded
 				if( @status.checkplugin( plugin ) )
 					begin
+						# See if plugin wants to receive notification of unloading
+						if( @status.getplugin( plugin ).respond_to?( "unload" ) )
+							if( @status.getplugin( plugin ).unload )
+								@output.debug( "Plugin #{plugin} finised 'unload' routine.\n" )
+							else
+								@output.debug( "Plugin #{plugin} could not successfully complete 'unload' routine.\n" )
+							end
+						end
+
 						# Remove @plugins
 						eval( "@status.delplugin( plugin )" )
 						@output.debug( "Object was removed from plugin hash.\n" )
 
 						if( con )
-							@output.cgood( "Plugin " + plugin + " unloaded.\n" )
+							@output.cgood( "Plugin #{plugin} unloaded.\n" )
 						else
-							@irc.notice( nick, "Plugin " + plugin + " unloaded." )
+							@irc.notice( nick, "Plugin #{plugin} unloaded." )
 						end
 					rescue Exception => e
 						if( con )
@@ -251,17 +260,17 @@ class Commands
 					end
 				else
 					if( con )
-						@output.cbad( "Plugin " + plugin + " is not loaded.\n" )
+						@output.cbad( "Plugin #{plugin} is not loaded.\n" )
 					else
-						@irc.notice( nick, "Plugin " + plugin + " is not loaded." )
+						@irc.notice( nick, "Plugin #{plugin} is not loaded." )
 					end
 				end
 			else
 				if( con )
-					@output.info( "Usage: " + cmc + "unload plugin" )
+					@output.info( "Usage: #{cmc} unload plugin" )
 				else
-					@irc.notice( nick, "Usage: " + cmc + "unload plugin" )
-				end				
+					@irc.notice( nick, "Usage: #{cmc} unload plugin" )
+				end
 			end
 		end
 	end

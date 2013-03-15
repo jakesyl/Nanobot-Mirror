@@ -19,7 +19,7 @@ class IRCParser
 		while( @status.reconnect )
 			@irc.sendinit
 
-			# Wait for the server to ping first if needed and send login info.
+			# We don't need to wait for the server ping.
 			if( !@config.waitforping && !@status.login )
 				autoload
 				@irc.login
@@ -63,10 +63,10 @@ class IRCParser
 	def spawn_parser( line )
 
 		# Join threads and print results when running at the highest debug level
-		if(@status.debug == 3)
+		if( @status.debug == 3 )
 			puts Thread.new { parser( line ) }.join
 		else
-			Thread.new { parser( line )	}
+			Thread.new { parser( line ) }
 		end
 	end
 
@@ -144,8 +144,9 @@ class IRCParser
 					servername = $1
 					messagenumber = $2
 					message = $3
+					servermsg( servername, messagenumber, message )
 				else
-					unparsable( "UNKNOWN SERVER MESSAGE", line )
+					unparsableserver( "UNKNOWN SERVER MESSAGE", line )
 				end
 			end
 
@@ -180,13 +181,23 @@ class IRCParser
 		end
 	end
 
-	# Show output for unparsable lines
+	# 
+	def servermsg( servername, messagenumber, message )
+		@output.debug( "Numbered server message #{messagenumber} received.\n" )
+		@sub.servermsg( servername, messagenumber, message )
+	end
+
+	# Methods for unparsable lines
 	def unparsable( type, line )
-		@output.info( "Unparsable '#{type}' received.\n" )
-		@output.debug( "#{line}\n" )
+		@output.debug( "Unparsable '#{type}' received.\n" )
 		@sub.misc( line )
 	end
-	
+
+	def unparsableserver( type, line )
+		@output.debug( "Unparsable '#{type}' received.\n" )
+		@sub.miscservermsg( line )
+	end	
+
 	# Kickstart module autoloading
 	def autoload
 		if( @status.threads && @config.threads )

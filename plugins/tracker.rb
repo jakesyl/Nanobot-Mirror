@@ -35,6 +35,14 @@ class Tracker
 		end
 	end
 
+	# Method to be called when the plugin is unloaded
+	def unload
+		if( @status.threads && @config.threads)
+			@ftread.exit
+		end
+		return true
+	end
+
 	# Default method, called when no argument is given (optional, but highly recomended)
 	def main( nick, user, host, from, msg, arguments, con )
 		@irc.message( from, "This module will allow live tracking data to be used by nanobot." )

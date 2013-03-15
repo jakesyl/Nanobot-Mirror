@@ -12,6 +12,13 @@ class Demo
 		@timer		= timer
 	end
 
+	# Method that will get called just before a plugin is unloaded/reloaded. (optional)
+	# If implemented must return true when ready to unload.
+	def unload
+		@output.std( "Received notification that this plugin will be unloaded.\n" )
+		return true
+	end
+
 	# Default method, called when no argument is given (optional, but highly recomended)
 	def main( nick, user, host, from, msg, arguments, con )
 		@irc.message( from, "This is the demo module, function, function_admin and remote are availble." )
@@ -49,6 +56,21 @@ class Demo
 		@output.std( nick + " quit: " + message )
 	end
 
+	# Method that receives numbered server messages like MOTD, rules, names etc. (optional)
+	def servermsg( servername, messagenumber, message )
+		@output.std( "Specific message #{messagenumber} received from #{servername}: #{message}\n" )
+	end
+
+	# Method that receives server messages (optional)
+	def miscservermsg( unknown )
+		@output.std( "Server message: #{unknown}\n" )
+	end
+	
+	# Method that receives miscellaneous messages that don't fit any other profile (optional)
+	def misc( unknown )
+		@output.std( "Miscellaneous message: #{unknown}\n" )
+	end
+	
 	# Function to send help about this plugin (Can also be called by the help plugin.)
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [

@@ -53,7 +53,6 @@ class IRCSubs
 				@status.getplugin( key ).parted( nick, user, host, channel )
 			end
 		end
-
 	end
 
 	def quit( nick, user, host, message )
@@ -91,9 +90,30 @@ class IRCSubs
 		end
 	end
 
-	# Function for unknown messages
+	# Function for specified server messages
+	def servermsg( servername, messagenumber, message )
+		@status.plugins.each_key do |key|
+			if( @status.getplugin( key ).respond_to?( "servermsg" ) )
+				@status.getplugin( key ).servermsg( servername, messagenumber, message )
+			end
+		end
+	end
+
+	# Functions for unknown messages
 	def misc( unknown )
-		# TODO plugin hook for misc messages
+		@status.plugins.each_key do |key|
+			if( @status.getplugin( key ).respond_to?( "misc" ) )
+				@status.getplugin( key ).misc( unknown )
+			end
+		end
+	end
+
+	def miscservermsg( unknown )
+		@status.plugins.each_key do |key|
+			if( @status.getplugin( key ).respond_to?( "miscservermsg" ) )
+				@status.getplugin( key ).miscservermsg( unknown )
+			end
+		end
 	end
 
 	# Function to sanitize user input

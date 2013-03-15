@@ -27,6 +27,12 @@ class Hackerthreads
 		end
 	end
 
+	# Method to be called when the plugin is unloaded
+	def unload
+		@ftread.exit
+		return true
+	end
+
 	# Default method
 	def main( nick, user, host, from, msg, arguments, con )
 		check_rss

@@ -28,6 +28,12 @@ class Seen
 		load_db
 	end
 
+	# Method to be called when the plugin is unloaded
+	def unload
+		write_db
+		return true
+	end
+
 	# Grab last seen
 	def main( nick, user, host, from, msg, arguments, con )
 		# Declare result string
