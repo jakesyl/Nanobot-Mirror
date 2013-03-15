@@ -181,9 +181,9 @@ class IRCParser
 		end
 	end
 
-	# 
+	# Receive specified server messages
 	def servermsg( servername, messagenumber, message )
-		@output.debug( "Numbered server message #{messagenumber} received.\n" )
+		@output.debug( "Specified server message #{messagenumber} received.\n" )
 		@sub.servermsg( servername, messagenumber, message )
 	end
 
