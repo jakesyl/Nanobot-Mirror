@@ -65,8 +65,8 @@ class Title
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
 			"This plugin grabs the title for any URL in the channel.",
-			"  title url		Gives more verbose output in case of errors.",
-			"  title commonimages	Toggle showing type/size info for common image types."
+			"  title url            Gives more verbose output in case of errors.",
+			"  title commonimages   Toggle showing type/size info for common image types."
 		]
 
 		# Print out help
