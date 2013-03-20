@@ -33,17 +33,25 @@ class Youtube
 			xml = Nokogiri::XML( xml )
 
 			# Parse info
-			cat, duration, rating, views, likes, dislikes = "Unknown", 0, 0.0, 0, 0, 0
+			cat, duration, rating, views, likes, dislikes, rate_disabled = "Unknown", 0, 0.0, 0, 0, 0, false
 			cat      = xml.at_xpath( "//media:group/media:category" )[ "label" ]
 			duration = xml.at_xpath( "//media:group/yt:duration" )[ "seconds" ]
-			rating   = xml.at_xpath( "//gd:rating" )[ "average" ]
 			views    = xml.at_xpath( "//yt:statistics" )[ "viewCount" ]
-			likes    = xml.at_xpath( "//yt:rating" )[ "numLikes" ]
-			dislikes = xml.at_xpath( "//yt:rating" )[ "numDislikes" ]
+
+			# Make sure ratings aren't disabled
+			if( xml.at_xpath( "//gd:rating" ).instance_of? NilClass )
+				rate_disabled = true
+			else
+				rating   = xml.at_xpath( "//gd:rating" )[ "average" ]
+				likes    = xml.at_xpath( "//yt:rating" )[ "numLikes" ]
+				dislikes = xml.at_xpath( "//yt:rating" )[ "numDislikes" ]
+			end
 
 			# Truncate rating
-			if( rating =~ /([0-9])+?\.([0-9]{1})/ )
-				rating = $&
+			if( !rate_disabled )
+				if( rating =~ /([0-9])+?\.([0-9]{1})/ )
+					rating = $&
+				end
 			end
 
 			# Format duration
@@ -54,7 +62,11 @@ class Youtube
 			end
 
 			# Build string
-			result = "Type: #{cat} | Length: #{duration} | Views: #{views} | Rating: #{rating}/5 | Like/dislike: #{likes}/#{dislikes}"
+			if( rate_disabled )
+				result = "Type: #{cat} | Length: #{duration} | Views: #{views}"
+			else
+				result = "Type: #{cat} | Length: #{duration} | Views: #{views} | Rating: #{rating}/5 | Like/dislike: #{likes}/#{dislikes}"
+			end
 
 			@irc.message( from, result )
 		end
