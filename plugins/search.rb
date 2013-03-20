@@ -39,7 +39,7 @@ class Search
 		if( !arguments.nil? && !arguments.empty? )
 			arguments.gsub!( / /, "+" ) # Sanitize search request
 			# Retreive JSON
-			json = Net::HTTP.get( @googleapihost, @googleapipath + arguments )
+			json = Net::HTTP.get( @googleapihost, @goolgeapipath + arguments )
 			result = googlejsonparse( json )
 			
 			if( result.empty? )
