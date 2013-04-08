@@ -75,7 +75,7 @@ class Shells
 			info = [ "http://wiki.insomnia247.nl/wiki/Shells_FAQ#Why_isn.27t_learning_a_valid_usage.3F" ]
 		when /^suwww/i
 			info = [ "You can use the 'suwww' command to change to your Apache user.",
-				"More info here: http://wiki.insomnia247.nl/wiki/Shells_websites#suwwww" ]
+				"More info here: http://wiki.insomnia247.nl/wiki/Shells_websites#suwww" ]
 		when /^heartbeat/i
 			info = [ "http://heartbeat.insomnia247.nl" ]
 		when /^git/i
