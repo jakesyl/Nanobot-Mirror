@@ -73,13 +73,16 @@ class Shells
 			info = [ "http://wiki.insomnia247.nl/wiki/Shells_FAQ#What_are_bad_reasons_for_an_invite.3F" ]
 		when /^learning/i
 			info = [ "http://wiki.insomnia247.nl/wiki/Shells_FAQ#Why_isn.27t_learning_a_valid_usage.3F" ]
+		when /^suwww/i
+			info = [ "You can use the 'suwww' command to change to your Apache user.",
+				"More info here: http://wiki.insomnia247.nl/wiki/Shells_websites#suwwww" ]
 		when /^heartbeat/i
 			info = [ "http://heartbeat.insomnia247.nl" ]
 		when /^git/i
 			info = [ "http://git.insomnia247.nl",
 			         "No shell account is required to sign up here." ]
 		else
-			info = [ "Available options: Main, FAQ, Rules, Shell, Invite, Good, Bad, Learning, Heartbeat, Git" ]
+			info = [ "Available options: Main, FAQ, Rules, Shell, Invite, Good, Bad, Learning, suwww, Heartbeat, Git" ]
 		end
 		printhelp( from, con, info )
 	end
