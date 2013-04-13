@@ -49,6 +49,13 @@ class Title
 						plugin.main( nick, user, host, from, nil, url, false )
 					end
 				end
+				
+				# Check if tinyurl plugin is loaded
+				if( @status.checkplugin( "tinyurl" ) )
+					plugin = @status.getplugin( "tinyurl" )
+					
+					plugin.main( nick, user, host, from, nil, url, false )
+				end
 			end
 		end
 	end
