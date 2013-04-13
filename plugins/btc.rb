@@ -20,7 +20,26 @@ class Btc
 
 	# Alias for last
 	def main( nick, user, host, from, msg, arguments, con )
-		last( nick, user, host, from, msg, arguments, con )
+		result = JSON.parse( Net::HTTP.get( @api_host, @api_path ) )
+		
+		if( result[ "result" ] != "success" )
+			line = "Mtgox API error."
+		else
+			diff = result[ 'data' ][ 'sell' ][ 'value' ].to_f - result[ 'data' ][ 'last' ][ 'value' ].to_f
+			if( diff > 0 )
+				diff = "+#{diff.to_s}"
+			else
+				diff = "#{diff.to_s}"
+			end
+			line = "Mtgox rate: #{result[ 'data' ][ 'sell' ][ 'display' ]} (#{result[ 'data' ][ 'sell' ][ 'value' ]}) #{diff.to_s}"
+		end
+		
+		
+		if( con )
+			@output.c( line + "\n" )
+		else
+			@irc.message( from, line )
+		end
 	end
 	
 	# Get last value
@@ -81,7 +100,7 @@ class Btc
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
 			"Gets current values from mtgox",
-			"  btc          - Alias for 'btc last'",
+			"  btc          - Get mtgox exchange rat rate (buying rate)",
 			"  btc last     - Latest reported value for bitcoins",
 			"  btc buy      - What price mtgox will buy your bitcoins for",
 			"  btc sell     - What price mtgox will sell you bitcoins for"
