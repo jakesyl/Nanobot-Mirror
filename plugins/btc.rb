@@ -30,7 +30,7 @@ class Btc
 		if( result[ "result" ] != "success" )
 			line = "Mtgox API error."
 		else
-			line = result[ "data" ][ "last" ][ "display" ]
+			line = "#{result[ 'data' ][ 'last' ][ 'display' ]} (#{result[ 'data' ][ 'last' ][ 'value' ]})"
 		end
 		
 		
@@ -48,7 +48,7 @@ class Btc
 		if( result[ "result" ] != "success" )
 			line = "Mtgox API error."
 		else
-			line = "Mtgox will buy your bitcoins for #{result[ 'data' ][ 'buy' ][ 'display' ]}."
+			line = "Mtgox will buy your bitcoins for #{result[ 'data' ][ 'buy' ][ 'display' ]} (#{result[ 'data' ][ 'buy' ][ 'value' ]})"
 		end
 		
 		
@@ -66,7 +66,7 @@ class Btc
 		if( result[ "result" ] != "success" )
 			line = "Mtgox API error."
 		else
-			line = "Mtgox will sell you bitcoins for #{result[ 'data' ][ 'sell' ][ 'display' ]}."
+			line = "Mtgox will sell you bitcoins for #{result[ 'data' ][ 'sell' ][ 'display' ]} (#{result[ 'data' ][ 'sell' ][ 'value' ]})"
 		end
 		
 		
