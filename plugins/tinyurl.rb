@@ -17,13 +17,14 @@ class Tinyurl
 	# Default method, called when no argument is given (optional, but highly recomended)
 	def main( nick, user, host, from, msg, arguments, con )
 		if( !arguments.nil? && !arguments.empty? )
+			if( arguments !~ /tinyurl/ )
+				line = Net::HTTP.get( 'tinyurl.com', '/api-create.php?url=' + arguments )
 			
-			line = Net::HTTP.get( 'tinyurl.com', '/api-create.php?url=' + arguments )
-			
-			if( con )
-				@output.c( line + "\n" )
-			else
-				@irc.message( from, line )
+				if( con )
+					@output.c( line + "\n" )
+				else
+					@irc.message( from, line )
+				end
 			end
 		end
 	end
