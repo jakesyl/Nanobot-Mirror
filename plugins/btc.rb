@@ -16,6 +16,8 @@ class Btc
 		
 		@api_host	= 'data.mtgox.com'
 		@api_path	= '/api/2/BTCUSD/money/ticker'
+		
+		@last		= 0.0
 	end
 
 	# Alias for last
@@ -25,13 +27,26 @@ class Btc
 		if( result[ "result" ] != "success" )
 			line = "Mtgox API error."
 		else
+			# Calculate delta from API 'last'
 			diff = result[ 'data' ][ 'sell' ][ 'value' ].to_f - result[ 'data' ][ 'last' ][ 'value' ].to_f
+			diff = ( diff * 1000 ).round / 1000.0
 			if( diff > 0 )
 				diff = "+#{diff.to_s}"
 			else
 				diff = "#{diff.to_s}"
 			end
-			line = "Mtgox rate: #{result[ 'data' ][ 'sell' ][ 'display' ]} (#{result[ 'data' ][ 'sell' ][ 'value' ]}) #{diff.to_s}"
+
+			# Calculate delta from last !btc
+			ldiff = result[ 'data' ][ 'sell' ][ 'value' ].to_f - @last
+			ldiff = ( ldiff * 1000 ).round / 1000.0
+			if( ldiff > 0 )
+				ldiff = "+#{ldiff.to_s}"
+			else
+				ldiff = "#{ldiff.to_s}"
+			end
+			@last = result[ 'data' ][ 'sell' ][ 'value' ].to_f
+			
+			line = "Mtgox rate: #{result[ 'data' ][ 'sell' ][ 'display' ]} (#{result[ 'data' ][ 'sell' ][ 'value' ]}) #{diff.to_s} (#{ldiff} since last !btc)"
 		end
 		
 		
