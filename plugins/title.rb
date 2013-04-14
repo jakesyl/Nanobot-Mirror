@@ -16,6 +16,9 @@ class Title
 
 		# Show info for common image types? (jpeg, png, gif)
 		@imgtypes	= false
+		
+		@albumhost	= "coolfire.insomnia247.nl"
+		@albumpath	= "/nanoalbum/add.php?url="
 	end
 
 	# Default method, called when no argument is given (optional, but highly recomended)
@@ -136,6 +139,12 @@ class Title
 					noerror = true
 				end
 			else
+				# Push to album
+				if( type =~ /image\/(png|jpe?g|gif)/ )
+					Net::HTTP.get( @albumhost, "#{@albumpath}#{url}" )
+				end
+				
+				# Check file size
 				if( type !~ /image\/(png|jpe?g|gif)/  || @imgtypes || verbose )
 					if( size.to_i > 1099511627776 )
 						size = size.to_f / 1099511627776.0
