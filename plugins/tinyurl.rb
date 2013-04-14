@@ -19,11 +19,16 @@ class Tinyurl
 		if( !arguments.nil? && !arguments.empty? )
 			if( arguments !~ /tinyurl/ )
 				line = Net::HTTP.get( 'tinyurl.com', '/api-create.php?url=' + arguments )
-			
-				if( con )
-					@output.c( line + "\n" )
+				
+				# Check for chained calling
+				if( caller[ 0 ][ /([a-zA-Z0-9]+)(\.rb)/, 1 ] == "title" )
+					return line
 				else
-					@irc.message( from, line )
+					if( con )
+						@output.c( line + "\n" )
+					else
+						@irc.message( from, line )
+					end
 				end
 			end
 		end

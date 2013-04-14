@@ -33,12 +33,25 @@ class Title
 				url = $&
 
 				# Look for a title
+				response = nil
 				response = getTitle( url, false )
-
-				if(response)
-					@irc.message( from, response )
+				
+				# Check if tinyurl plugin is loaded
+				turl = nil
+				if( @status.checkplugin( "tinyurl" ) )
+					plugin = @status.getplugin( "tinyurl" )
+					
+					turl = plugin.main( nick, user, host, from, nil, url, false )
 				end
-
+				
+				if( response && turl )
+					@irc.message( from, "#{response} | #{turl}" )
+				elsif( response )
+					@irc.message( from, response )
+				elsif( turl )
+					@irc.message( from, turl )
+				end
+				
 				# In case of a youtube link, see if we can get some more info
 				if( url =~ /youtube\.com/ )
 
@@ -48,13 +61,6 @@ class Title
 
 						plugin.main( nick, user, host, from, nil, url, false )
 					end
-				end
-				
-				# Check if tinyurl plugin is loaded
-				if( @status.checkplugin( "tinyurl" ) )
-					plugin = @status.getplugin( "tinyurl" )
-					
-					plugin.main( nick, user, host, from, nil, url, false )
 				end
 			end
 		end
