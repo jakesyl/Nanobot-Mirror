@@ -20,7 +20,7 @@ class Btc
 		@last		= 0.0
 	end
 
-	# Alias for last
+	# Get current value
 	def main( nick, user, host, from, msg, arguments, con )
 		result = JSON.parse( Net::HTTP.get( @api_host, @api_path ) )
 		
@@ -54,13 +54,21 @@ class Btc
 		else
 			@irc.message( from, line )
 		end
+	end
+	
+	# Function to chain BTC and LTC lookup
+	def both( nick, user, host, from, msg, arguments, con )
+		
+		# Run main value lookup
+		main( nick, user, host, from, msg, arguments, con )
 		
 		# Check if ltc plugin is loaded
+		ratio = ""
 		ltcv = nil
 		if( @status.checkplugin( "ltc" ) )
 			plugin = @status.getplugin( "ltc" )
 			ltcv = plugin.main( nick, user, host, from, nil, nil, false )
-			btcv = result[ 'data' ][ 'sell' ][ 'value' ].to_f
+			btcv = @last
 			
 			ltctobtc = ltcv / btcv
 			ltctobtc = ( ltctobtc * 1000 ).round / 1000.0
@@ -69,11 +77,15 @@ class Btc
 			
 			ratio = "Ratios: BTC to LTC #{btctoltc} | LTC to BTC #{ltctobtc}"
 			
-			if( con )
-				@output.c( ratio + "\n" )
-			else
-				@irc.message( from, ratio )
-			end
+			
+		else
+			ratio = "Litecoin plugin not loaded."
+		end
+		
+		if( con )
+			@output.c( ratio + "\n" )
+		else
+			@irc.message( from, ratio )
 		end
 	end
 	
