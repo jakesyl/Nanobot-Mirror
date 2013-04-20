@@ -49,11 +49,31 @@ class Btc
 			line = "Mtgox rate: #{result[ 'data' ][ 'sell' ][ 'display' ]} (#{result[ 'data' ][ 'sell' ][ 'value' ]}) #{diff.to_s} (#{ldiff} since last !btc)"
 		end
 		
-		
 		if( con )
 			@output.c( line + "\n" )
 		else
 			@irc.message( from, line )
+		end
+		
+		# Check if ltc plugin is loaded
+		ltcv = nil
+		if( @status.checkplugin( "ltc" ) )
+			plugin = @status.getplugin( "ltc" )
+			ltcv = plugin.main( nick, user, host, from, nil, nil, false )
+			btcv = result[ 'data' ][ 'sell' ][ 'value' ].to_f
+			
+			ltctobtc = ltcv / btcv
+			ltctobtc = ( ltctobtc * 1000 ).round / 1000.0
+			btctoltc = btcv / ltcv
+			btctoltc = ( btctoltc * 1000 ).round / 1000.0
+			
+			ratio = "Ratios: BTC to LTC #{btctoltc} | LTC to BTC #{ltctobtc}"
+			
+			if( con )
+				@output.c( ratio + "\n" )
+			else
+				@irc.message( from, ratio )
+			end
 		end
 	end
 	

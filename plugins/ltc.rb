@@ -33,8 +33,6 @@ class Ltc
 		request = Net::HTTP::Get.new(uri.request_uri)
 		response = http.request(request)
 		
-		
-		puts "just before JAY-SON!"
 		result = JSON.parse( response.body )
 		
 		# Calculate delta from API 'last'
@@ -56,17 +54,21 @@ class Ltc
 		end
 		@last = result[ 'ticker' ][ 'sell' ].to_f
 		
-		line = "Btc-e rate: #{result[ 'ticker' ][ 'sell' ]} #{diff.to_s} (#{ldiff} since last !ltc)"
+		rounded = "$#{( result[ 'ticker' ][ 'sell' ].to_f * 100 ).round / 100.0}"
 		
+		line = "Btc-e rate: #{rounded} (#{result[ 'ticker' ][ 'sell' ]}) #{diff.to_s} (#{ldiff} since last !ltc)"
 		
 		if( con )
 			@output.c( line + "\n" )
 		else
 			@irc.message( from, line )
 		end
+		
+		# Check for chained calling
+		if( caller[ 0 ][ /([a-zA-Z0-9]+)(\.rb)/, 1 ] == "btc" )
+			return result[ 'ticker' ][ 'sell' ].to_f
+		end
 	end
-	
-	# Nobody uses the other ones anywayyyyyy
 	
 	# Function to send help about this plugin (Can also be called by the help plugin.)
 	def help( nick, user, host, from, msg, arguments, con )
