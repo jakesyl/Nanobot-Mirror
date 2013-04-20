@@ -24,8 +24,6 @@ class Ltc
 	def main( nick, user, host, from, msg, arguments, con )
 		uri = URI.parse( "https://#{@api_host}#{@api_path}" )
 		
-		puts "past uri #{uri.to_s}"
-		
 		http = Net::HTTP.new(uri.host, uri.port)
 		http.use_ssl = true
 		http.verify_mode = OpenSSL::SSL::VERIFY_NONE
