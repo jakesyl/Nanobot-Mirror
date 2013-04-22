@@ -57,7 +57,7 @@ class Btc
 	end
 	
 	# Function to chain BTC and LTC lookup
-	def both( nick, user, host, from, msg, arguments, con )
+	def ltc( nick, user, host, from, msg, arguments, con )
 		
 		# Run main value lookup
 		main( nick, user, host, from, msg, arguments, con )
@@ -148,6 +148,7 @@ class Btc
 		help = [
 			"Gets current values from mtgox",
 			"  btc          - Get mtgox exchange rat rate (buying rate)",
+			"  btc ltc      - Get bitcoin & litecoin exchange rates",
 			"  btc last     - Latest reported value for bitcoins",
 			"  btc buy      - What price mtgox will buy your bitcoins for",
 			"  btc sell     - What price mtgox will sell you bitcoins for"
