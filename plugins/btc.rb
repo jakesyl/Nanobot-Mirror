@@ -147,7 +147,7 @@ class Btc
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
 			"Gets current values from mtgox",
-			"  btc          - Get mtgox exchange rat rate (buying rate)",
+			"  btc          - Get mtgox exchange rate (buying rate)",
 			"  btc ltc      - Get bitcoin & litecoin exchange rates",
 			"  btc last     - Latest reported value for bitcoins",
 			"  btc buy      - What price mtgox will buy your bitcoins for",

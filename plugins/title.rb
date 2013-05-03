@@ -44,7 +44,11 @@ class Title
 				if( @status.checkplugin( "tinyurl" ) )
 					plugin = @status.getplugin( "tinyurl" )
 					
-					turl = plugin.main( nick, user, host, from, nil, url, false )
+					if( url.length > 30 )
+						turl = plugin.main( nick, user, host, from, nil, url, false )
+					else
+						turl = nil
+					end
 				end
 				
 				if( response && turl )

@@ -72,7 +72,7 @@ class Ltc
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
 			"Gets current litecoin values from Btc-e",
-			"  btc          - Get Btc-e exchange rat rate (buying rate)"
+			"  btc          - Get Btc-e exchange rate (buying rate)"
 		]
 		
 		# Print out help
