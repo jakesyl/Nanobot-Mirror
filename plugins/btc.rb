@@ -22,7 +22,16 @@ class Btc
 
 	# Get current value
 	def main( nick, user, host, from, msg, arguments, con )
-		result = JSON.parse( Net::HTTP.get( @api_host, @api_path ) )
+		uri = URI.parse( "https://#{@api_host}#{@api_path}" )
+		
+		http = Net::HTTP.new(uri.host, uri.port)
+		http.use_ssl = true
+		http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+		
+		request = Net::HTTP::Get.new(uri.request_uri)
+		response = http.request(request)
+		
+		result = JSON.parse( response.body )
 		
 		if( result[ "result" ] != "success" )
 			line = "Mtgox API error."
