@@ -104,8 +104,8 @@ class Search
 		doc = JSON.parse( doc )
 		
 		doc = doc[ "responseData" ][ "results" ]
-		
-		if( doc.instance_of? NilClass )
+
+		if( doc.instance_of? NilClass or doc.empty? )
 			return ""
 		else
 			title = doc[ 0 ] [ "titleNoFormatting" ]
