@@ -12,7 +12,7 @@ class Commands
 		@console	= console
 
 		# List of protected commands for plugins
-		@protected	= [ "kicked", "noticed", "messaged", "joined", "parted", "quited" ]
+		@protected	= [ "kicked", "noticed", "messaged", "joined", "parted", "quited", "unload" ]
 
 		# Hashtables to keep flood statistics
 		@floodlevel	= {}
