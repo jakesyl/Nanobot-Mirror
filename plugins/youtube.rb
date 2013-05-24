@@ -33,10 +33,21 @@ class Youtube
 			xml = Nokogiri::XML( xml )
 
 			# Parse info
-			cat, duration, rating, views, likes, dislikes, rate_disabled = "Unknown", 0, 0.0, 0, 0, 0, false
+			cat, duration, rating, views, likes, dislikes, rate_disabled, no_views, paid = "Unknown", 0, 0.0, 0, 0, 0, false, false, false
 			cat      = xml.at_xpath( "//media:group/media:category" )[ "label" ]
 			duration = xml.at_xpath( "//media:group/yt:duration" )[ "seconds" ]
-			views    = xml.at_xpath( "//yt:statistics" )[ "viewCount" ]
+
+			# No view count can happen in rare cases
+			if( !xml.at_xpath( "//yt:paidContent" ).instance_of? NilClass )
+				paid = true
+			end
+
+			# No view count can happen in rare cases
+			if( xml.at_xpath( "//yt:statistics" ).instance_of? NilClass )
+				no_views = true
+			else
+				views    = xml.at_xpath( "//yt:statistics" )[ "viewCount" ]
+			end
 
 			# Make sure ratings aren't disabled
 			if( xml.at_xpath( "//gd:rating" ).instance_of? NilClass )
@@ -62,10 +73,18 @@ class Youtube
 			end
 
 			# Build string
-			if( rate_disabled )
-				result = "Type: #{cat} | Length: #{duration} | Views: #{views}"
-			else
-				result = "Type: #{cat} | Length: #{duration} | Views: #{views} | Rating: #{rating}/5 | Like/dislike: #{likes}/#{dislikes}"
+			if( paid )
+				result = "PAID CONTENT | "
+			end
+
+			result = "#{result}Type: #{cat} | Length: #{duration}"
+
+			if( !no_views )
+				result = "#{result} | Views: #{views}"
+			end
+
+			if( !rate_disabled )
+				result = "#{result} | Rating: #{rating}/5 | Like/dislike: #{likes}/#{dislikes}"
 			end
 
 			@irc.message( from, result )
