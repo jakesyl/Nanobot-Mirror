@@ -21,7 +21,7 @@ class Tinyurl
 				line = Net::HTTP.get( 'tinyurl.com', '/api-create.php?url=' + arguments )
 				
 				# Check for chained calling
-				if( caller[ 0 ][ /([a-zA-Z0-9]+)(\.rb)/, 1 ] == "title" )
+				if( caller[ 0 ][ /([a-zA-Z0-9]+)(\.rb)/, 1 ] != "commands" )
 					return line
 				else
 					if( con )

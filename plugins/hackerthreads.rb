@@ -49,13 +49,24 @@ class Hackerthreads
 
 				# Parse out info
 				title, link = "", ""
-				title = xml.xpath( '//item/title' ).first.text
-				link  = xml.xpath( '//item/link' ).first.text
+				title  = xml.xpath( '//item/title' ).first.text
+				link   = xml.xpath( '//item/link' ).first.text
+				author = xml.xpath( '//item/author' ).first.text
+				if( author =~ /\((.+?)\)$/ )
+					author = $1
+				end
 
 				# Check if this is a new post
 				if( @last != link )
 					@last = link
-					@irc.message( @channel, "New post: #{title} #{link}" )
+
+					# If the tinyurl plugin is loaded, use it
+					if( @status.checkplugin( "tinyurl" ) )
+						plugin = @status.getplugin( "tinyurl" )
+						link = plugin.main( nil, nil, nil, nil, nil, link, false )
+					end
+
+					@irc.message( @channel, "New post by #{author} | #{title} | #{link}" )
 				end
 			rescue
 				# Silently fail
