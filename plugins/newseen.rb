@@ -366,8 +366,6 @@ class Newseen
 
 		result = @retreive.execute( "nickname" => nickname )
 
-		puts result.class
-
 		row = result.next
 		result = nil
 
@@ -425,7 +423,6 @@ class Newseen
 			oldest = Time.now.to_i
 			n = nil
 			@list.each do |nick, data|
-				puts data 
 				if( data[ :timestamp ] <= oldest )
 					oldest = data[ :timestamp ]
 					n = nick
