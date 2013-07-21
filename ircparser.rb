@@ -53,7 +53,8 @@ class IRCParser
 				@output.debug( "Socket was closed.\n" )
 				@irc.reconnect
 			rescue Exception => e
-				@output.debug( "Socket error: " + e.to_s + "\n" )
+				@output.debug( "Error: #{$!}\n" )
+				@output.debug( "Trace:\n\t#{e.backtrace.join("\n\t")}" )
 				@irc.reconnect
 			end
 		end

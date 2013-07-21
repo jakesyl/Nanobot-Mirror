@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+# ! This plugin has been deprecated. It should only be used if there is a
+# ! legacy database or if there is no sqlite3 support on the system.
+# ! If you want to use this plugin please rename it to 'seen.rb'.
+
 # Plugin to keep track of when users were last seen.
 class Seen
 
