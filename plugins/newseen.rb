@@ -231,7 +231,7 @@ class Newseen
 		rows = @db.execute( @recordcount )
 		@records = rows[0][0].to_i + @inram
 
-		line = "RAM usage: #{@inram}/#{@inrammax} | Events logged: #{@events} | Unique nicks: #{@records} | Database writes: #{@writes}"
+		line = "RAM usage: #{@inram}/#{@inrammax} | Events logged: #{@events} | Total records: #{@records} | Database writes: #{@writes}"
 
 		if( con )
 			@output.cinfo( line )
