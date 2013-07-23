@@ -456,7 +456,6 @@ class Newseen
 	
 	def mem_update( data )
 		@output.debug("mem_update\n")
-		puts data.to_s
 		
 		# Update timestamp for when it was last used
 		data[ :timestamp ] = Time.now.to_i
@@ -545,7 +544,7 @@ class Newseen
 				mem_push_oldest
 				
 				# Put data in memory
-				@list[ nickname ] = d
+				mem_update( d )
 				return d
 			else
 				return nil
