@@ -46,13 +46,16 @@ class Newseen
 		
 		# How many users should be kept in memory
 		@inrammax   = 50
-		@inram      = 0
 		
 		# Variables used to keep track of statistics
 		@startdate  = 0
 		@writes     = 0
 		@records    = 0
 		@events     = 0
+
+		# Variables to keep track of the cache hit rate for the current session
+		@cache_req  = 0
+		@cache_hit  = 0
 		
 		# Listing of database queries
 		# Create tables
@@ -225,13 +228,20 @@ class Newseen
 		end
 		lines = nil
 	end
-	
+
 	# Function that shows some statistics
 	def stats( nick, user, host, from, msg, arguments, con )
 		rows = @db.execute( @recordcount )
-		@records = rows[0][0].to_i + @inram
+		@records = rows[0][0].to_i + @list.size
 
-		line = "RAM usage: #{@inram}/#{@inrammax} | Events logged: #{@events} | Total records: #{@records} | Database writes: #{@writes}"
+		if( @cache_req != 0 )
+			@cache_rate = ( @cache_hit.to_f / @cache_req.to_f ) * 100
+			@cache_rate = ( @cache_rate * 10 ).round / 10.0
+		else
+			@cache_rate = "N/A"
+		end
+
+		line = "Mem: #{@list.size}/#{@inrammax} | Events logged: #{@events} | Total records: #{@records} | Db writes: #{@writes} | Cache hit rate: #{@cache_rate}%"
 
 		if( con )
 			@output.cinfo( line )
@@ -278,7 +288,12 @@ class Newseen
 	def unload
 		# Force database write
 		db_write
-		
+
+		# Close any prepared statements		
+		@insert.close()
+		@retreive.close()
+		@setmeta.close()
+
 		return true
 	end
 	
@@ -346,10 +361,10 @@ class Newseen
 				"lastntext"     => i[ :lastntext ],
 				"lastntextdate" => i[ :lastntextdate ].to_i
 			)
-
-			@writes += 1
 		end
+		
 		db_write_meta
+		@writes += 1
 	end
 	
 	def db_write_meta
@@ -385,7 +400,6 @@ class Newseen
 
 			# Update objects MAC time
 			data[ :timestamp ] = Time.now.to_i
-			@inram += 1
 
 			return data
 		else
@@ -417,7 +431,7 @@ class Newseen
 		@output.debug("mem_push_oldest\n")
 
 		# Check if there's really no room in memory
-		if( @inram > @inrammax )
+		if( @list.size > @inrammax )
 		
 			# Find oldest entry
 			oldest = Time.now.to_i
@@ -435,7 +449,6 @@ class Newseen
 			# Mark entry for garbage collection
 			@list.delete( n )
 			n = nil
-			@inram -= 1
 		end
 	end
 	
@@ -480,13 +493,12 @@ class Newseen
 		else
 			# Put full new data struct in memory
 			@list[ data[ :nickname ] ] = data
-			@inram += 1
 		end
 		inram_counter
 	end
 	
 	def inram_counter
-		if( @inram > @inrammax )
+		if( @list.size > @inrammax )
 			mem_push_oldest
 		end
 	end
@@ -498,9 +510,15 @@ class Newseen
 		# Make sure we always work with the lowercase
 		data[ :nickname ].downcase!
 		
+		# Keep track of cache requests
+		@cache_req += 1
+
 		# Check if nick is in memory
 		m = mem_retreive( data[ :nickname ] )
 		if( !m.nil? )
+			# Register cache hit
+			@cache_hit += 1
+
 			# Update record in memory
 			mem_update( data )
 		else
@@ -513,6 +531,9 @@ class Newseen
 				# Put current data from database in memory
 				mem_update( d )
 			else
+				# Not a missed cache request if it's entirely new data
+				@cache_req -= 1
+
 				# Put previously unknown nickname in memory
 				mem_update( data )
 			end
@@ -532,9 +553,15 @@ class Newseen
 		# Make sure we always work with the lowercase
 		nickname.downcase!
 		
+		# Keep track of cache requests
+		@cache_req += 1
+
 		# Check if nickname is kept in ram
 		m = mem_retreive( nickname )
 		if( !m.nil? )
+			# Register cache hit
+			@cache_hit += 1
+
 			return m
 		else
 			# Check if nick is in database
@@ -547,6 +574,9 @@ class Newseen
 				mem_update( d )
 				return d
 			else
+				# Not a cache miss if requesting non-existent data
+				@cache_req -= 1
+
 				return nil
 			end
 		end
