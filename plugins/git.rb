@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-# Plugin to pull updates from SVN
-class Svn
+# Plugin to pull updates from git
+class Git
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
@@ -12,7 +12,7 @@ class Svn
 		@timer		= timer
 	end
 
-	# Alias to update
+	# Alias to pull
 	def main( nick, user, host, from, msg, arguments, con )
 		update( nick, user, host, from, msg, arguments, con )
 	end
@@ -20,9 +20,9 @@ class Svn
 	# Function to send help about this plugin (Can also be called by the help plugin.)
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
-			"This plugin allows you to pull updates from the svn repo.",
-			"Will only work if you checked the bot out from svn.",
-			"  svn updates              - Get updates."
+			"This plugin allows you to pull updates from a git repo.",
+			"Will only work if you cloned the bot from git.",
+			"  git pull              - Pull updates."
 		]
 
 		# Print out help
@@ -35,10 +35,10 @@ class Svn
 		end
 	end
 	
-	# Function to get updates from SVN
+	# Generic function that can only be called by an admin
 	def update( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
-			res = %x( svn up ).gsub!( "\n", " " )
+			res = %x( git pull ).gsub!( "\n", " " )
 			@irc.notice( nick, "#{res}" )
 		end
 	end
