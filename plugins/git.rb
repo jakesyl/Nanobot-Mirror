@@ -14,7 +14,7 @@ class Git
 
 	# Alias to pull
 	def main( nick, user, host, from, msg, arguments, con )
-		update( nick, user, host, from, msg, arguments, con )
+		pull( nick, user, host, from, msg, arguments, con )
 	end
 	
 	# Function to send help about this plugin (Can also be called by the help plugin.)
@@ -36,7 +36,7 @@ class Git
 	end
 	
 	# Generic function that can only be called by an admin
-	def update( nick, user, host, from, msg, arguments, con )
+	def pull( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
 			res = %x( git pull ).gsub!( "\n", " " )
 			@irc.notice( nick, "#{res}" )
