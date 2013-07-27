@@ -52,6 +52,7 @@ class Shells
 		end
 	end
 
+	
 	# Show links
 	def link( nick, user, host, from, msg, arguments, con )
 		case arguments
@@ -81,10 +82,17 @@ class Shells
 		when /^git/i
 			info = [ "http://git.insomnia247.nl",
 			         "No shell account is required to sign up here." ]
+		when /^learnix/i
+			info = [ "Learnix shells: http://dams.insomnia247.nl/Public/Learnix.html" ]
 		else
-			info = [ "Available options: Main, FAQ, Rules, Shell, Invite, Good, Bad, Learning, suwww, Heartbeat, Git" ]
+			info = [ "Available options: Main, FAQ, Rules, Shell, Invite, Good, Bad, Learning, suwww, Heartbeat, Git, Learnix" ]
 		end
 		printhelp( from, con, info )
+	end
+	
+	# Alias for link
+	def info( nick, user, host, from, msg, arguments, con )
+		link( nick, user, host, from, msg, arguments, con )
 	end
 	
 	# Show information about open ports
