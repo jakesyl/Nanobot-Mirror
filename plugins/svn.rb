@@ -42,9 +42,4 @@ class Svn
 			@irc.notice( nick, "#{res}" )
 		end
 	end
-
-	private
-	def something
-		# This is an internal function that cannot be called from outside this plugin.
-	end
 end
