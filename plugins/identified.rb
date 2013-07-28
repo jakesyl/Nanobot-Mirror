@@ -5,13 +5,13 @@ class Identified
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status  = status
+		@config  = config
+		@output  = output
+		@irc     = irc
+		@timer   = timer
 
-		@channel	= "#hackerthreads"
+		@channel = "#hackerthreads"
 	end
 
 	# Method that receives a notification when a user joins (optional)

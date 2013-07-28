@@ -9,11 +9,11 @@ class Toolbox
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status  = status
+		@config  = config
+		@output  = output
+		@irc     = irc
+		@timer   = timer
 	end
 
 	# Redirect random nothing requests to help

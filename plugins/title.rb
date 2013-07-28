@@ -8,17 +8,17 @@ class Title
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status     = status
+		@config     = config
+		@output     = output
+		@irc        = irc
+		@timer      = timer
 
 		# Show info for common image types? (jpeg, png, gif)
-		@imgtypes	= false
+		@imgtypes   = false
 		
-		@albumhost	= "coolfire.insomnia247.nl"
-		@albumpath	= "/nanoalbum/add.php?url="
+		@albumhost  = "coolfire.insomnia247.nl"
+		@albumpath  = "/nanoalbum/add.php?url="
 	end
 
 	# Default method, called when no argument is given (optional, but highly recomended)

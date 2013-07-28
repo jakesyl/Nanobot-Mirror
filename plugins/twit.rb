@@ -13,11 +13,11 @@ class Twit
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status  = status
+		@config  = config
+		@output  = output
+		@irc     = irc
+		@timer   = timer
 		
 		# Set up twitter gem tokens & keys
 		@tokenfile          = "twitter.json"

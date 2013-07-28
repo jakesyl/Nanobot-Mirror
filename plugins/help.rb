@@ -3,11 +3,11 @@
 # Plugin for online user help
 class Help
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status  = status
+		@config  = config
+		@output  = output
+		@irc     = irc
+		@timer   = timer
 	end
 
 	def main( nick, user, host, from, msg, arguments, con )

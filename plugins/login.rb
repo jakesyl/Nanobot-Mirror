@@ -13,14 +13,14 @@ class Login
 			raise LoadError, "Cannot load bcrypt library. Make sure the bcrypt-ruby gem is installed."
 		end
 
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status   = status
+		@config   = config
+		@output   = output
+		@irc      = irc
+		@timer    = timer
 
-		@password	= ""
-		@filename	= "password.data"
+		@password = ""
+		@filename = "password.data"
 
 		loadpass
 	end

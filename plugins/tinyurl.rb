@@ -7,11 +7,11 @@ class Tinyurl
 	
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status  = status
+		@config  = config
+		@output  = output
+		@irc     = irc
+		@timer   = timer
 	end
 
 	# Default method, called when no argument is given (optional, but highly recomended)

@@ -8,16 +8,16 @@ class Ltc
 	
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status   = status
+		@config   = config
+		@output   = output
+		@irc      = irc
+		@timer    = timer
 		
-		@api_host	= 'btc-e.com'
-		@api_path	= '/api/2/ltc_usd/ticker'
+		@api_host = 'btc-e.com'
+		@api_path = '/api/2/ltc_usd/ticker'
 		
-		@last		= 0.0
+		@last     = 0.0
 	end
 
 	# Alias for last

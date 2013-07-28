@@ -8,14 +8,14 @@ class Youtube
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status   = status
+		@config   = config
+		@output   = output
+		@irc      = irc
+		@timer    = timer
 
-		@api_host	= "gdata.youtube.com"
-		@api_path	= "/feeds/api/videos/video_id?v=2"
+		@api_host = "gdata.youtube.com"
+		@api_path = "/feeds/api/videos/video_id?v=2"
 	end
 
 	# Default method

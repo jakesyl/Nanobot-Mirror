@@ -9,24 +9,24 @@ class Seen
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
-		@filename	= "seen.data"
+		@status    = status
+		@config    = config
+		@output    = output
+		@irc       = irc
+		@timer     = timer
+		@filename  = "seen.data"
 
 		# Storage timing settings
-		@every		= 50	# Write to disk after every n actions
-		@current	= 0		# Number of actions since last write
+		@every     = 50	# Write to disk after every n actions
+		@current   = 0		# Number of actions since last write
 
 		# Declare empty hashtables
-		@seen		= {}
-		@time		= {}
-		@seen2		= {}
-		@time2		= {}
+		@seen      = {}
+		@time      = {}
+		@seen2     = {}
+		@time2     = {}
 
-		@first		= Time.new
+		@first     = Time.new
 
 		# See if there is a database stored to disk we can load
 		load_db

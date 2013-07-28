@@ -8,13 +8,13 @@ class Paste
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status  = status
+		@config  = config
+		@output  = output
+		@irc     = irc
+		@timer   = timer
 
-		@url		= "http://www.insomnia247.nl/output_api.php"
+		@url     = "http://www.insomnia247.nl/output_api.php"
 	end
 
 	# Default method, called when no argument is given (optional, but highly recomended)

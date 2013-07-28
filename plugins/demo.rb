@@ -5,11 +5,11 @@ class Demo
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status  = status
+		@config  = config
+		@output  = output
+		@irc     = irc
+		@timer   = timer
 	end
 
 	# Method that will get called just before a plugin is unloaded/reloaded. (optional)

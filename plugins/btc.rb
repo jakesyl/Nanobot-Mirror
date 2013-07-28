@@ -8,16 +8,16 @@ class Btc
 	
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status   = status
+		@config   = config
+		@output   = output
+		@irc      = irc
+		@timer    = timer
 		
-		@api_host	= 'data.mtgox.com'
-		@api_path	= '/api/2/BTCUSD/money/ticker'
+		@api_host = 'data.mtgox.com'
+		@api_path = '/api/2/BTCUSD/money/ticker'
 		
-		@last		= 0.0
+		@last     = 0.0
 	end
 
 	# Get current value

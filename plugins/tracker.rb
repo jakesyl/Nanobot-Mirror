@@ -7,23 +7,23 @@ class Tracker
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status     = status
+		@config     = config
+		@output     = output
+		@irc        = irc
+		@timer      = timer
 
 		@host		= "coolfire.insomnia247.nl"
 		@path		= "/tracker/tracker.dat"
 
-		@last_time	= Time.new
-		@last_stat	= ""
+		@last_time  = Time.new
+		@last_stat  = ""
 
-		@timeout	= 300
+		@timeout    = 300
 
-		@channel	= "#shells"
+		@channel    = "#shells"
 
-		@blurbs		= {
+		@blurbs     = {
 						"left_home"		=> "Cool_Fire has left the vicinity of his house.",
 						"entered_home"	=> "Cool_Fire has been spotted near his house.",
 						"left_work"		=> "Cool_Fire seems to have left his place of work.",

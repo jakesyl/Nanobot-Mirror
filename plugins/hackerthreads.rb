@@ -8,19 +8,19 @@ class Hackerthreads
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
-		@status		= status
-		@config		= config
-		@output		= output
-		@irc		= irc
-		@timer		= timer
+		@status    = status
+		@config    = config
+		@output    = output
+		@irc       = irc
+		@timer     = timer
 
-		@channel	= "#hackerthreads"
+		@channel   = "#hackerthreads"
 
-		@rss_host	= "www.hackerthreads.org"
-		@rss_path	= "/rss.php"
+		@rss_host  = "www.hackerthreads.org"
+		@rss_path  = "/rss.php"
 
-		@timeout	= 120
-		@last		= ""
+		@timeout   = 120
+		@last      = ""
 
 		if( @status.threads && @config.threads)
 			@ftread		= Thread.new{ check_rss }
