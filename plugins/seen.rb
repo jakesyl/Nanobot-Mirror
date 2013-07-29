@@ -4,7 +4,7 @@ require 'sqlite3'
 # Plugin to keep track of when users were last seen.
 # If you want to keep using the old version of the seen plugin rename or remove this file and
 # replace it with seen.old.rb.
-class Newseen
+class Seen
 	
 	# Structure used to store data per user
 	if( !defined? Datastore )
