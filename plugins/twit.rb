@@ -265,14 +265,14 @@ class Twit
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
 			"This plugin retrieves the last message from a users twitter feed.",
-			"  twitter getlast [twittername]     - Public plugin function.",
-			"  twitter tweet [message]           - Send tweets",
-			"  twitter follow [twittername]      - Follow twitter user.",
-			"  twitter unfollow [twittername]    - Unfollow twitter user.",
-			"  twitter following                 - Show list of accounts being followed.",
-			"  twitter channel [channel]         - Set channel for followed feeds.",
-			"  twitter stop                      - Stop feed collection.",
-			"  twitter help                      - Show this help"
+			"  twit getlast [twittername]     - Public plugin function.",
+			"  twit tweet [message]           - Send tweets",
+			"  twit follow [twittername]      - Follow twit user.",
+			"  twit unfollow [twittername]    - Unfollow twit user.",
+			"  twit following                 - Show list of accounts being followed.",
+			"  twit channel [channel]         - Set channel for followed feeds.",
+			"  twit stop                      - Stop feed collection.",
+			"  twit help                      - Show this help"
 		]
 
 		# Print out help

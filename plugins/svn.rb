@@ -22,7 +22,7 @@ class Svn
 		help = [
 			"This plugin allows you to pull updates from the svn repo.",
 			"Will only work if you checked the bot out from svn.",
-			"  svn updates              - Get updates."
+			"  svn update               - Get updates."
 		]
 
 		# Print out help

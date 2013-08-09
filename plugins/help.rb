@@ -73,6 +73,11 @@ class Help
 			when "topic"
 				tmp = [ "Don't be a smartass." ]
 			else
+				# Check for aliases
+				if( @status.checkplugin( "aliases" ) )
+					plugin = @status.getplugin( "aliases" )
+					arguments = plugin.alias( arguments )
+				end
 				# See if there is a plugin by that name which supports help
 				pluginname = arguments.gsub( /[^a-zA-Z0-9 -]/, "" ).downcase
 				if( @status.checkplugin( pluginname ) )

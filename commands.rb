@@ -12,7 +12,7 @@ class Commands
 		@console	= console
 
 		# List of protected commands for plugins
-		@protected	= [ "kicked", "noticed", "messaged", "joined", "parted", "quited", "unload" ]
+		@protected	= [ "kicked", "noticed", "messaged", "joined", "parted", "quited", "unload", "alias" ]
 
 		# Hashtables to keep flood statistics
 		@floodlevel	= {}
@@ -77,6 +77,12 @@ class Commands
 					@floodlevel[ user+host ] -= 1
 				end
 			end
+		end
+
+		# Check for aliases
+		if( @status.checkplugin( "aliases" ) )
+			plugin = @status.getplugin( "aliases" )
+			msg = plugin.alias( msg )
 		end
 
 		cmd, rest = msg.split(' ', 2)
