@@ -121,7 +121,6 @@ class Search
 	
 	# XML parser for ISBNdb results
 	def isbndbxmlparse( xmldoc )
-		puts xmldoc # Debug line
 		xmldoc = Nokogiri::XML( xmldoc )
 		
 		title = xmldoc.at_xpath( "//ISBNdb/BookList/BookData/Title" )

@@ -15,7 +15,7 @@ class Commands
 		@protected	= [ "kicked", "noticed", "messaged", "joined", "parted", "quited", "unload", "alias" ]
 
 		# Hashtables to keep flood statistics
-		@floodlevel	= {}
+		@timeout	= {}
 		@lastcmd	= {}
 	end
 
@@ -43,39 +43,32 @@ class Commands
 
 		# Do command throttling if desireable and threading allows it
 		if( @status.threads && @config.threads && @config.antiflood && !con && !skipflood )
-			# Determine threshold
-			if( @floodlevel[ user+host ].nil? || @floodlevel[ user+host ] < 1 )
-				@floodlevel[ user+host ] = 0
-				threshold = @config.floodtime
+			
+			# Check if this user has ever sent a command before
+			if( !@lastcmd[ user+host ].nil? )
+
+				# Up the timeout if needed
+				if( @lastcmd[ user+host ] + @config.floodtime > Time.now.to_i )
+					@timeout[ user+host ] += @config.floodtime
+				end
+
+				# Update values so they go back down over time
+				@timeout[ user+host ] -= ( Time.now.to_i - @lastcmd[ user+host ] )
+				if( @timeout[ user+host ] < 1 )
+					@timeout[ user+host ] = 0
+				end
+				@lastcmd[ user+host ] = Time.now.to_i
 			else
-				threshold = @config.floodtime * @floodlevel[ user+host ]
+				@lastcmd[ user+host ] = Time.now.to_i
+				@timeout[ user+host ] = 0
 			end
 
-			# Check if time between now and the last command is less than trigger time
-			if( @lastcmd[ user+host ].nil? )
-				@lastcmd[ user+host ] = Time.new - threshold
-			end
-
-			if( ( Time.new - @lastcmd[ user+host ] ) < threshold )
-				if( @floodlevel[ user+host ] > 4 )
-					# Drop request
-					@lastcmd[ user+host ] = Time.new
+			# Delay or drop command
+			if( @timeout[ user+host ] > 0 && @timeout[ user+host ] < @config.floodcut )
+				@irc.notice( nick, "Delaying by #{@timeout[ user+host ].to_s} seconds. If delay goes over #{@config.floodcut} seconds the command will be dropped.", true )
+				sleep( @timeout[ user+host ] )
+			elsif ( @timeout[ user+host ] > @config.floodcut )
 					Thread.exit
-				else
-					# Delay thread
-					@floodlevel[ user+host ] += 1
-					@irc.notice( nick, "Delaying your command by " + threshold.to_s + " seconds. If too many requests are sent in a short time, they may be dropped.", true )
-					@lastcmd[ user+host ] = Time.new
-					sleep( threshold )
-				end
-			else
-				@lastcmd[ user+host ] = Time.new
-
-				if( @floodlevel[ user+host ].nil? || @floodlevel[ user+host ] < 1 )
-					@floodlevel[ user+host ] == 0
-				else
-					@floodlevel[ user+host ] -= 1
-				end
 			end
 		end
 

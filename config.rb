@@ -7,7 +7,7 @@ class Configuration
 		@nick		= "nanodev"					# Bot nickname
 		@user		= "nanobot"					# IRC username
 		@pass		= ""						# NickServ password
-		@version	= "Nanobot 4 beta 3"		# Version
+		@version	= "Nanobot 4 beta 4"		# Version
 
 		@command	= '\?'						# Character prefix for commands (escape special chars)
 
@@ -29,7 +29,8 @@ class Configuration
 												# Plugin autoload list
 
 		@antiflood	= true						# Attempt to mitigate people flooding bot with command
-		@floodtime	= 5							# Command spread that triggers flood protect (seconds)
+		@floodtime	= 5							# Seconds withing which the flood limit is triggered
+		@floodcut	= 30						# Limit on the number of seconds delay before starting to drop
 
 		@throttle	= true						# Throttle output to avoid flooding from the bot
 
@@ -166,6 +167,13 @@ class Configuration
 			@floodtime = floodtime
 		end
 		return @floodtime
+	end
+
+	def floodcut ( floodcut = "" )
+		if( floodcut != "" )
+			@floodcut = floodcut
+		end
+		return @floodcut
 	end
 
 	def throttleoutput ( throttle = "" )
