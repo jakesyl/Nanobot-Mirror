@@ -79,7 +79,7 @@ class Connection
 	def getSSLerror( errorcode )
 		case errorcode
 			when 0
-				return "The operation was successful."
+				return "Operation returned successful but SSL not started. (Possibly connecting to non-ssl port.)"
 			when 2 
 				return "Unable to get issuer certificate."
 			when 3

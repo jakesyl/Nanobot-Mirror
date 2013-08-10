@@ -13,7 +13,11 @@ class Aliases
 
 		@alias   = {
 			"twitter"  => "twit",
-			"coins" => "btc ltc"
+			"coins"    => "btc ltc",
+			"dig"      => "toolbox dig",
+			"nslookup" => "toolbox dig",
+			"ping"     => "toolbox ping",
+			"nmap"     => "toolbox nmap"
 		}
 	end
 
