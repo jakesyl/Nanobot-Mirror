@@ -140,10 +140,6 @@ class Seen
 				# Write last active lines
 				lines[0] = "#{arguments} last seen"
 
-
-				puts data[ :last ].class
-				puts data[ :blast ].class
-				puts data[ :lastntext ].class
 				# Check for nil fields
 				# Only one item available
 				if( data[ :blast ].empty? && data[ :lastntext ].empty? )
