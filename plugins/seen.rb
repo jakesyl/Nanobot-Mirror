@@ -116,6 +116,9 @@ class Seen
 		
 		# Set metadata
 		@setmeta  = @db.prepare( "UPDATE metadata SET writes = :writes, records = :records, events = :events" )
+
+		# Search for nicknames in the database
+		@search  = @db.prepare( "SELECT nickname FROM logdata WHERE nickname LIKE :search" )
 	end
 
 	# Main function for plugin
@@ -211,7 +214,12 @@ class Seen
 				
 			else
 				logtime = @status.uptime( Time.now.to_i, @startdate )
-				lines[0] = "No log for #{arguments}. Log goes back #{logtime}."
+				suggestion = db_search( "%#{arguments}%" )
+				if( suggestion.nil? )
+					lines[0] = "No log for #{arguments}. (Log goes back #{logtime}.)"
+				else
+					lines[0] = "No log for #{arguments}. Did you mean '#{suggestion}'? (Log goes back #{logtime}.)"
+				end
 			end
 			data = nil
 		else
@@ -265,11 +273,32 @@ class Seen
 		end
 	end
 	
+	# Search for nicknames in the database
+	def search( nick, user, host, from, msg, arguments, con )
+		# Ensure all nicks are also in the database
+		db_write
+
+		result = db_search( arguments )
+
+		if( result.nil? )
+			result = "No match found."
+		else
+			result = "Best match: #{result}"
+		end
+
+		if( con )
+			@output.cinfo( result )
+		else
+			@irc.message( from, result )
+		end
+	end
+
 	# Function to send help about this plugin (Can also be called by the help plugin.)
 	def help( nick, user, host, from, msg, arguments, con )
 		help = [
 			"This plugin provides data on the last seen times and actions of users.",
 			"  seen [user]            - Provides the last seen action from a user.",
+			"  seen search [user]     - Search database for nicknames. (* and . allowed)",
 			"  seen stats             - Show some statistics from this plugin.",
 			"  seen write             - Force writing of seen database NOW."
 		]
@@ -293,6 +322,7 @@ class Seen
 		@insert.close()
 		@retreive.close()
 		@setmeta.close()
+		@search.close()
 
 		return true
 	end
@@ -423,6 +453,23 @@ class Seen
 		)
 
 		data = nil
+	end
+
+	def db_search( search )
+		@output.debug("db_search\n")
+
+		search.gsub!( /\*/, "%" )
+		search.gsub!( /\./, "_" )
+
+		result = @search.execute( "search" => search )
+		row = result.next
+		result = nil
+
+		if( !row.nil? )
+			return row[0]
+		else
+			return nil
+		end
 	end
 	
 	
