@@ -61,13 +61,13 @@ class Seen
 		# Create tables
 		@createdatatable =
 			"CREATE TABLE IF NOT EXISTS logdata(
-			 nickname     VARCHAR(10) UNIQUE,
-			 timestamp    INTEGER,
-			 last         VARCHAR(512),
-			 lastdate     INTEGER,
-			 blast        VARCHAR(512),
-			 blastdate    INTEGER,
-			 lastntext     VARCHAR(512),
+			 nickname      TEXT UNIQUE,
+			 timestamp     INTEGER,
+			 last          TEXT,
+			 lastdate      INTEGER,
+			 blast         TEXT,
+			 blastdate     INTEGER,
+			 lastntext     TEXT,
 			 lastntextdate INTEGER,
 			 PRIMARY KEY (nickname)
 			 )"
@@ -140,18 +140,22 @@ class Seen
 				# Write last active lines
 				lines[0] = "#{arguments} last seen"
 
+
+				puts data[ :last ].class
+				puts data[ :blast ].class
+				puts data[ :lastntext ].class
 				# Check for nil fields
 				# Only one item available
-				if( data[ :blast ].nil? && data[ :lastntext ].nil? )
+				if( data[ :blast ].empty? && data[ :lastntext ].empty? )
 					item1  = data[ :last ]
 					item1d = data[ :lastdate ]
 
-				elsif( data[ :last ].nil? && data[ :blast ].nil? )
+				elsif( data[ :last ].empty? && data[ :blast ].empty? )
 					item1  = data[ :lastntext ]
 					item1d = data[ :lastntextdate ]
 
 				# No Only two available
-				elsif( data[ :blast ].nil? )
+				elsif( data[ :blast ].empty? )
 					# Order last & lastntext
 					if( data[ :lastntextdate ].to_i > data[ :lastdate ].to_i )
 						item1  = data[ :last ]
@@ -164,7 +168,7 @@ class Seen
 						item2  = data[ :last ]
 						item2d = data[ :lastdate ]
 					end
-				elsif( data[ :lastntext ].nil? )
+				elsif( data[ :lastntext ].empty? )
 					item1  = data[ :blast ]
 					item1d = data[ :blastdate ]
 					item2  = data[ :last ]
@@ -370,10 +374,10 @@ class Seen
 
 		# Set metadata variables
 		rows = @db.execute( @getmeta )
-		@startdate = rows[0][0]
-		@writes    = rows[0][1]
-		@records   = rows[0][2]
-		@events    = rows[0][3]
+		@startdate = rows[0][0].to_i
+		@writes    = rows[0][1].to_i
+		@records   = rows[0][2].to_i
+		@events    = rows[0][3].to_i
 	end
 	
 	def db_write
@@ -382,13 +386,13 @@ class Seen
 		
 		@list.each do |nick, i|
 			@insert.execute( 
-				"nickname"      => i[ :nickname ],
+				"nickname"      => i[ :nickname ].to_s.encode('utf-8'),
 				"timestamp"     => i[ :timestamp ].to_i,
-				"last"          => i[ :last ],
+				"last"          => i[ :last ].to_s,
 				"lastdate"      => i[ :lastdate ].to_i,
-				"blast"         => i[ :blast ],
+				"blast"         => i[ :blast ].to_s,
 				"blastdate"     => i[ :blastdate ].to_i,
-				"lastntext"     => i[ :lastntext ],
+				"lastntext"     => i[ :lastntext ].to_s,
 				"lastntextdate" => i[ :lastntextdate ].to_i
 			)
 		end
@@ -416,14 +420,14 @@ class Seen
 
 		if( !row.nil? )
 			data = Datastore.new(
-				row[0],
-				row[1],
-				row[2],
-				row[3],
-				row[4],
-				row[5],
-				row[6],
-				row[7]
+				row[0].to_s.encode('utf-8'),
+				row[1].to_i,
+				row[2].to_s,
+				row[3].to_i,
+				row[4].to_s,
+				row[5].to_i,
+				row[6].to_s,
+				row[7].to_i
 			)
 
 			row    = nil
@@ -442,13 +446,13 @@ class Seen
 		@writes += 1
 
 		@insert.execute( 
-			"nickname"      => data[ :nickname ],
+			"nickname"      => data[ :nickname ].to_s.encode('utf-8'),
 			"timestamp"     => data[ :timestamp ].to_i,
-			"last"          => data[ :last ],
+			"last"          => data[ :last ].to_s,
 			"lastdate"      => data[ :lastdate ].to_i,
-			"blast"         => data[ :blast ],
+			"blast"         => data[ :blast ].to_s,
 			"blastdate"     => data[ :blastdate ].to_i,
-			"lastntext"     => data[ :lastntext ],
+			"lastntext"     => data[ :lastntext ].to_s,
 			"lastntextdate" => data[ :lastntextdate ].to_i
 		)
 
@@ -466,7 +470,7 @@ class Seen
 		result = nil
 
 		if( !row.nil? )
-			return row[0]
+			return row[0].to_s
 		else
 			return nil
 		end
