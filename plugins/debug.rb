@@ -22,6 +22,8 @@ class Debug
 		help = [
 			"Plugin to help with debugging.",
 			"  debug threadlist             - Print list of threads to console.",
+			"  debug threadtrace [thread]   - Show stacktrace for thread.",
+			"  debug threadkill [thread]    - Kill thread.",
 			"  debug level                  - Set debug level. (No input sanitsing!)"
 		]
 
@@ -42,6 +44,7 @@ class Debug
 				thr.backtrace.each do |level|
 					@output.info( "#{level.to_s}\n" )
 				end
+				@output.info( "\n" )
 			end
 		end
 	end
@@ -51,6 +54,20 @@ class Debug
 	def threadlist( nick, user, host, from, msg, arguments, con )
 		Thread.list.each do |thr| 
 			@output.info( "#{thr.inspect}\n" )
+		end
+		@output.info( "\n" )
+	end
+
+	# Kill thread
+	def threadkill( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			Thread.list.each do |thr| 
+				if( thr.to_s =~ /#{arguments}/ )
+					@output.info( "#{thr.kill.to_s}\n\n" )
+				end
+			end
+		else
+			@irc.message( from, "Sorry " + nick + ", this is a function for admins only!" )
 		end
 	end
 
