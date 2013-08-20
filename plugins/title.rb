@@ -103,6 +103,11 @@ class Title
 
 	# Function to do the actual lookup
 	def getTitle( url, verbose )
+		# Try prepending http:// if it's not there.
+		if( url !~ /^https?:\/\// )
+			url = "http://#{url}"
+		end
+
 		agent = Mechanize.new
 		agent.user_agent = 'Mozilla5 AppleWebKit535 KHTML like Gecko Chrome 13 Safari535' # To prevent any user agent based denails.
 		agent.max_file_buffer = 1024
