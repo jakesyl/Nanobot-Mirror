@@ -26,7 +26,7 @@ class IRCSubs
 		# Check for plugin hooks
 		@status.plugins.each_key do |key|
 			if( @status.getplugin( key ).respond_to?( "kicked" ) )
-				@status.getplugin( key ).kicked( nick, user, host, channel, kicked, reason )
+				@status.getplugin( key ).kicked( nick.clone, user.clone, host.clone, channel.clone, kicked.clone, reason.clone )
 			end
 		end
 	end
@@ -34,7 +34,7 @@ class IRCSubs
 	def notice( nick,  user,  host,  to,  message )
 		@status.plugins.each_key do |key|
 			if( @status.getplugin( key ).respond_to?( "noticed" ) )
-				@status.getplugin( key ).noticed( nick,  user,  host,  to,  message )
+				@status.getplugin( key ).noticed( nick.clone,  user.clone,  host.clone,  to.clone,  message.clone )
 			end
 		end
 	end
@@ -42,7 +42,7 @@ class IRCSubs
 	def join( nick, user, host, channel )
 		@status.plugins.each_key do |key|
 			if( @status.getplugin( key ).respond_to?( "joined" ) )
-				@status.getplugin( key ).joined( nick, user, host, channel )
+				@status.getplugin( key ).joined( nick.clone, user.clone, host.clone, channel.clone )
 			end
 		end
 	end
@@ -50,7 +50,7 @@ class IRCSubs
 	def part( nick, user, host, channel )
 		@status.plugins.each_key do |key|
 			if( @status.getplugin( key ).respond_to?( "parted" ) )
-				@status.getplugin( key ).parted( nick, user, host, channel )
+				@status.getplugin( key ).parted( nick.clone, user.clone, host.clone, channel.clone )
 			end
 		end
 	end
@@ -58,7 +58,7 @@ class IRCSubs
 	def quit( nick, user, host, message )
 		@status.plugins.each_key do |key|
 			if( @status.getplugin( key ).respond_to?( "quited" ) )
-				@status.getplugin( key ).quited( nick, user, host, message )
+				@status.getplugin( key ).quited( nick.clone, user.clone, host.clone, message.clone )
 			end
 		end
 	end
@@ -74,7 +74,7 @@ class IRCSubs
 			# If not a command, check for plugins with message hook
 			@status.plugins.each_key do |key|
 				if( @status.getplugin( key ).respond_to?( "messaged" ) )
-					@status.getplugin( key ).messaged( nick, user, host, from, message )
+					@status.getplugin( key ).messaged( nick.clone, user.clone, host.clone, from.clone, message.clone )
 				end
 			end
 		end

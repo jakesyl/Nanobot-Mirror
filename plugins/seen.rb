@@ -140,18 +140,56 @@ class Seen
 				# Write last active lines
 				lines[0] = "#{arguments} last seen"
 
+				last  = true
+				blast = true
+				ntext = true
+
 				# Check for nil fields
+				if( data[ :last ].nil? )
+					last = false
+				end
+
+				if( data[ :blast ].nil? )
+					blast = false
+				end
+
+				if( data[ :lastntext ].nil? )
+					ntext = false
+				end
+
+				# Check for empty strings
+				if( last )
+					if( data[ :last ].empty? )
+						last = false
+					end
+				end
+
+				if( blast )
+					if( data[ :blast ].empty? )
+						blast = false
+					end
+				end
+
+				if( ntext )
+					if( data[ :lastntext ].empty? )
+						ntext = false
+					end
+				end
+
+				puts "last: #{last}\nblast: #{blast}\nntext: #{ntext}"
+
 				# Only one item available
-				if( data[ :blast ].empty? && data[ :lastntext ].empty? )
+				if( last && !blast && !ntext )
 					item1  = data[ :last ]
 					item1d = data[ :lastdate ]
 
-				elsif( data[ :last ].empty? && data[ :blast ].empty? )
+				elsif( ntext && !last && !blast )
 					item1  = data[ :lastntext ]
 					item1d = data[ :lastntextdate ]
 
 				# No Only two available
-				elsif( data[ :blast ].empty? )
+				elsif( last && ntext && !blast )
+
 					# Order last & lastntext
 					if( data[ :lastntextdate ].to_i > data[ :lastdate ].to_i )
 						item1  = data[ :last ]
@@ -164,28 +202,33 @@ class Seen
 						item2  = data[ :last ]
 						item2d = data[ :lastdate ]
 					end
-				elsif( data[ :lastntext ].empty? )
+
+				elsif( last && blast && !ntext )
 					item1  = data[ :blast ]
 					item1d = data[ :blastdate ]
 					item2  = data[ :last ]
 					item2d = data[ :lastdate ]
 				
-				# Check normal odering
-				elsif( data[ :lastntextdate ].to_i > data[ :lastdate ].to_i )
-					item1  = data[ :last ]
-					item1d = data[ :lastdate ]
-					item2  = data[ :lastntext ]
-					item2d = data[ :lastntextdate ]
-				elsif( data[ :lastntextdate ].to_i > data[ :blastdate ].to_i )
-					item1  = data[ :lastntext ]
-					item1d = data[ :lastntextdate ]
-					item2  = data[ :last ]
-					item2d = data[ :lastdate ]
-				else
-					item1  = data[ :blast ]
-					item1d = data[ :blastdate ]
-					item2  = data[ :last ]
-					item2d = data[ :lastdate ]
+				# All available
+				elsif( last && blast && ntext )
+
+					# Check odering
+					if( data[ :lastntextdate ].to_i > data[ :lastdate ].to_i )
+						item1  = data[ :last ]
+						item1d = data[ :lastdate ]
+						item2  = data[ :lastntext ]
+						item2d = data[ :lastntextdate ]
+					elsif( data[ :lastntextdate ].to_i > data[ :blastdate ].to_i )
+						item1  = data[ :lastntext ]
+						item1d = data[ :lastntextdate ]
+						item2  = data[ :last ]
+						item2d = data[ :lastdate ]
+					else
+						item1  = data[ :blast ]
+						item1d = data[ :blastdate ]
+						item2  = data[ :last ]
+						item2d = data[ :lastdate ]
+					end
 				end
 				
 				# Construct messages
