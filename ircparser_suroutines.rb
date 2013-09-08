@@ -64,18 +64,23 @@ class IRCSubs
 	end
 
 	def privmsg( nick, user, host, from, message )
+		cmd = @config.command
+
+		# Fall-through for !# 'do not handle' prefix
+		if( message =~ /^#{cmd}#/ )
+			return
+		end
 
 		# Check if the received message is a bot command
-		cmd = @config.command
 		if( message =~ /^#{cmd}/ )
 			@cmd.process( nick, user, host, from, message.gsub( /^#{cmd}/, "" ) )
-		else
+		end
 
-			# If not a command, check for plugins with message hook
-			@status.plugins.each_key do |key|
-				if( @status.getplugin( key ).respond_to?( "messaged" ) )
-					@status.getplugin( key ).messaged( nick.clone, user.clone, host.clone, from.clone, message.clone )
-				end
+		# Check for plugins with message hook
+		message.gsub!( /^#{cmd}/, "" )
+		@status.plugins.each_key do |key|
+			if( @status.getplugin( key ).respond_to?( "messaged" ) )
+				@status.getplugin( key ).messaged( nick.clone, user.clone, host.clone, from.clone, message.clone )
 			end
 		end
 	end

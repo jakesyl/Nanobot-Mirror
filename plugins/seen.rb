@@ -373,7 +373,11 @@ class Seen
 	# Data gathering functions
 	def messaged( nick, user, host, from, message )
 		@output.debug("messaged\n")
-		update_data( Datastore.new( nick, nil, "(#{from}) #{message}", Time.now.to_i, nil, nil, nil, nil ) )
+
+		# Check if it's not a private message to the bot.
+		if( from != @config.nick() )
+			update_data( Datastore.new( nick, nil, "(#{from}) #{message}", Time.now.to_i, nil, nil, nil, nil ) )
+		end
 	end
 
 	def joined( nick, user, host, channel )
