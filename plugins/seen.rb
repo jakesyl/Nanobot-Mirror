@@ -176,8 +176,6 @@ class Seen
 					end
 				end
 
-				puts "last: #{last}\nblast: #{blast}\nntext: #{ntext}"
-
 				# Only one item available
 				if( last && !blast && !ntext )
 					item1  = data[ :last ]
