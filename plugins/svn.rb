@@ -22,7 +22,8 @@ class Svn
 		help = [
 			"This plugin allows you to pull updates from the svn repo.",
 			"Will only work if you checked the bot out from svn.",
-			"  svn update               - Get updates."
+			"  svn update               - Get updates.",
+			"  svn version              - Check current SVN revision."
 		]
 
 		# Print out help
@@ -41,5 +42,11 @@ class Svn
 			res = %x( svn up ).gsub!( "\n", " " )
 			@irc.notice( nick, "#{res}" )
 		end
+	end
+
+	# Function to check revision
+	def update( nick, user, host, from, msg, arguments, con )
+		res = %x( svnversion ).gsub!( "\n", " " )
+		@irc.notice( nick, "#{res}" )
 	end
 end
