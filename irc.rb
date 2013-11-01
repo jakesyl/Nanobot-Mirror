@@ -55,11 +55,6 @@ class IRC
 	# Reply to PINGs
 	def pong( line )
 		raw( "PONG " + line, true )
-
-		if( @config.waitforping && !@status.login )
-			login
-			@status.login( 1 )
-		end
 	end
 
 	# Send standard message

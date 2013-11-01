@@ -160,8 +160,8 @@ class IRCParser
 
 			# Send login stuff if we need to wait for a ping on this server
 			if( @config.waitforping && !@status.login )
-				@irc.login
 				autoload
+				@irc.login
 				@status.login( 1 )
 			end
 
