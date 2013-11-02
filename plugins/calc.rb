@@ -52,7 +52,7 @@ class Calc
 			begin
 				result = eval( arguments )
 			rescue Exception => e
-				@irc.message( from, "Does not seem to be a valid expression." )
+				@irc.message( from, "Does not seem to be a valid expression. (#{e.message})" )
 				return
 			end
 
