@@ -45,7 +45,7 @@ class Svn
 	end
 
 	# Function to check revision
-	def update( nick, user, host, from, msg, arguments, con )
+	def version( nick, user, host, from, msg, arguments, con )
 		res = %x( svnversion ).gsub!( "\n", " " )
 		@irc.notice( nick, "#{res}" )
 	end
