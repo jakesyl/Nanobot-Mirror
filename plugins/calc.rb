@@ -48,7 +48,6 @@ class Calc
 			arguments.gsub!(/tan\(/i,       "Math.tan(")
 			arguments.gsub!(/tanh\(/i,      "Math.tanh(")
 
-			puts arguments
 			# Try the calculation
 			begin
 				result = eval( arguments )
@@ -59,9 +58,8 @@ class Calc
 					return
 				end
 			rescue Exception => e
-				puts e.backtrace.join("\n\t")
-				puts e.to_s
-				@irc.message( from, "Does not seem to be a valid expression. (#{e.message.gsub!(/\n/, '')})" )
+				e = e.to_s.split("\n")
+				@irc.message( from, "Does not seem to be a valid expression. (#{e[0]})" )
 				return
 			end
 
