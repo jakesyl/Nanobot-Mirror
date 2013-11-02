@@ -10,6 +10,8 @@ class Calc
 		@output  = output
 		@irc     = irc
 		@timer   = timer
+
+		@timeout = 5
 	end
 
 	# Default method, called when no argument is given (optional, but highly recomended)
@@ -51,7 +53,13 @@ class Calc
 			# Try the calculation
 			begin
 				result = eval( arguments )
+
+				if( result.to_s.length > 360 )
+					@irc.message( from, "Error: Result is too long to display in IRC." )
+					return
+				end
 			rescue Exception => e
+				puts e.backtrace.join("\n\t")
 				@irc.message( from, "Does not seem to be a valid expression. (#{e.message.gsub!(/\n/, '')})" )
 				return
 			end
