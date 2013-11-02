@@ -10,8 +10,6 @@ class Calc
 		@output  = output
 		@irc     = irc
 		@timer   = timer
-
-		@timeout = 5
 	end
 
 	# Default method, called when no argument is given (optional, but highly recomended)
@@ -21,45 +19,48 @@ class Calc
 		if( arguments =~ /^([0-9]|\.|,|\+|-|\*|\/|%|\(|\)|e|pi|acos|acosh|asin|asinh|atan|atanh|cbrt|cos|cosh|erf|erfc|exp|frexp|gamma|hypot|ldexp|lgamma|log|sin|sinh|sqrt|tan|tanh| )+$/i )
 
 			# Check for stuff from the Math package
-			arguments.gsub!(/e/i,        "Math::E")
-			arguments.gsub!(/pi/i,       "Math::PI")
-			arguments.gsub!(/acos\(/i,   "Math.acos(")
-			arguments.gsub!(/acosh\(/i,  "Math.acosh(")
-			arguments.gsub!(/asin\(/i,   "Math.asin(")
-			arguments.gsub!(/asinh\(/i,  "Math.asinh(")
-			arguments.gsub!(/atan\(/i,   "Math.atan(")
-			arguments.gsub!(/atan2\(/i,  "Math.atan2(")
-			arguments.gsub!(/atanh\(/i,  "Math.atanh(")
-			arguments.gsub!(/cbrt\(/i,   "Math.cbrt(")
-			arguments.gsub!(/cos\(/i,    "Math.cos(")
-			arguments.gsub!(/cosh\(/i,   "Math.cosh(")
-			arguments.gsub!(/erfc\(/i,   "Math.erfc(")
-			arguments.gsub!(/erf\(/i,    "Math.erf(")
-			arguments.gsub!(/frexp\(/i,  "Math.frexp(")
-			arguments.gsub!(/exp\(/i,    "Math.exp(")
-			arguments.gsub!(/gamma\(/i,  "Math.gamma(")
-			arguments.gsub!(/hypot\(/i,  "Math.hypot(")
-			arguments.gsub!(/ldexp\(/i,  "Math.ldexp(")
-			arguments.gsub!(/lgamma\(/i, "Math.lgamma(")
-			arguments.gsub!(/log\(/i,    "Math.log(")
-			arguments.gsub!(/log10\(/i,  "Math.log10(")
-			arguments.gsub!(/log2\(/i,   "Math.log2(")
-			arguments.gsub!(/sin\(/i,    "Math.sin(")
-			arguments.gsub!(/sinh\(/i,   "Math.sinh(")
-			arguments.gsub!(/sqrt\(/i,   "Math.sqrt(")
-			arguments.gsub!(/tan\(/i,    "Math.tan(")
-			arguments.gsub!(/tanh\(/i,   "Math.tanh(")
+			arguments.gsub!(/e/i,           "Math::E")
+			arguments.gsub!(/pi/i,          "Math::PI")
+			arguments.gsub!(/acos\(/i,      "Math.acos(")
+			arguments.gsub!(/acosh\(/i,     "Math.acosh(")
+			arguments.gsub!(/asin\(/i,      "Math.asin(")
+			arguments.gsub!(/asinh\(/i,     "Math.asinh(")
+			arguments.gsub!(/atan\(/i,      "Math.atan(")
+			arguments.gsub!(/atan2\(/i,     "Math.atan2(")
+			arguments.gsub!(/atanh\(/i,     "Math.atanh(")
+			arguments.gsub!(/cbrt\(/i,      "Math.cbrt(")
+			arguments.gsub!(/cos\(/i,       "Math.cos(")
+			arguments.gsub!(/cosh\(/i,      "Math.cosh(")
+			arguments.gsub!(/erfc\(/i,      "Math.erfc(")
+			arguments.gsub!(/erf\(/i,       "Math.erf(")
+			arguments.gsub!(/frexp\(/i,     "Math.frexp(")
+			arguments.gsub!(/exp\(/i,       "Math.exp(")
+			arguments.gsub!(/[^l]gamma\(/i, "Math.gamma(")
+			arguments.gsub!(/lgamma\(/i,    "Math.lgamma(")
+			arguments.gsub!(/hypot\(/i,     "Math.hypot(")
+			arguments.gsub!(/ldexp\(/i,     "Math.ldexp(")
+			arguments.gsub!(/log\(/i,       "Math.log(")
+			arguments.gsub!(/log10\(/i,     "Math.log10(")
+			arguments.gsub!(/log2\(/i,      "Math.log2(")
+			arguments.gsub!(/sin\(/i,       "Math.sin(")
+			arguments.gsub!(/sinh\(/i,      "Math.sinh(")
+			arguments.gsub!(/sqrt\(/i,      "Math.sqrt(")
+			arguments.gsub!(/tan\(/i,       "Math.tan(")
+			arguments.gsub!(/tanh\(/i,      "Math.tanh(")
 
+			puts arguments
 			# Try the calculation
 			begin
 				result = eval( arguments )
+				result = result.to_s
 
-				if( result.to_s.length > 360 )
+				if( result.length > 360 )
 					@irc.message( from, "Error: Result is too long to display in IRC." )
 					return
 				end
 			rescue Exception => e
 				puts e.backtrace.join("\n\t")
+				puts e.to_s
 				@irc.message( from, "Does not seem to be a valid expression. (#{e.message.gsub!(/\n/, '')})" )
 				return
 			end
