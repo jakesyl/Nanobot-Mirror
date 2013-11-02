@@ -16,9 +16,10 @@ class Calc
 	def main( nick, user, host, from, msg, arguments, con )
 
 		# Check for invalid input
-		if( arguments =~ /^([0-9]|\.|,|\+|-|\*|\/|%|\(|\)|e|pi|acos|acosh|asin|asinh|atan|atanh|cbrt|cos|cosh|erf|erfc|exp|frexp|gamma|hypot|ldexp|lgamma|log|sin|sinh|sqrt|tan|tanh| )+$/i )
+		if( arguments =~ /^([0-9]|\.|,|\+|-|\*|\^|\/|%|\(|\)|e|pi|acos|acosh|asin|asinh|atan|atanh|cbrt|cos|cosh|erf|erfc|exp|frexp|gamma|hypot|ldexp|lgamma|log|sin|sinh|sqrt|tan|tanh| )+$/i )
 
 			# Check for stuff from the Math package
+			arguments.gsub!(/\^/,           "**")
 			arguments.gsub!(/e/i,           "Math::E")
 			arguments.gsub!(/pi/i,          "Math::PI")
 			arguments.gsub!(/acos\(/i,      "Math.acos(")
@@ -84,7 +85,7 @@ class Calc
 			"  *                 multiply",
 			"  /                 divide",
 			"  %                 Modulo",
-			"  **                Exponent",
+			"  ** or ^           Exponent",
 			"  ()                parentheses",
 			"  E                 e (constant)",
 			"  PI                pi (constant)",
