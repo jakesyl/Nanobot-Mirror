@@ -108,28 +108,6 @@ class Core
 		end
 	end
 
-	# Topic command
-	def topic( nick, user, host, from, msg, arguments, con )
-		if( @config.auth( host, con ) )
-			if( !arguments.nil? && !arguments.empty? )
-				chan, topic = arguments.split( ' ', 2 )
-				if( chan !~ /^#/ && !con )
-					topic = arguments
-					chan = from
-				end
-				if( !chan.nil? && !chan.empty? )
-					@irc.topic( chan, topic )
-				end
-			else
-				if( con )
-					@output.cinfo( "Usage: topic #channel new topic" )
-				else
-					@irc.notice( nick, "Usage: " + @config.command + "topic #channel new topic" )
-				end
-			end
-		end
-	end
-
 	# Mode command
 	def mode( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )

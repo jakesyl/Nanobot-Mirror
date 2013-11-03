@@ -18,7 +18,8 @@ class Aliases
 			"nslookup" => "toolbox dig",
 			"ping"     => "toolbox ping",
 			"nmap"     => "toolbox nmap",
-			"isbn"     => "search isbn"
+			"isbn"     => "search isbn",
+			"tappend"  => "topic append"
 		}
 	end
 
