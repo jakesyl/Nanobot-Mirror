@@ -11,9 +11,14 @@ class Topic
 		@irc     = irc
 		@timer   = timer
 
+		@mode      = 0       # 0: Nothing to do. 1: Append. 2: Search/replace
 		@separator = " || "
-		@addition  = ""
 		@channel   = ""
+
+		@addition  = ""
+
+		@search    = ""
+		@replace   = ""
 	end
 
 	# Default method, called when no argument is given (optional, but highly recomended)
@@ -53,6 +58,7 @@ class Topic
 					chan = from
 				end
 				if( !chan.nil? && !chan.empty? )
+					@mode     = 1
 					@addition = topic
 					@channel  = chan
 					gettopic
@@ -67,12 +73,67 @@ class Topic
 		end
 	end
 
+	# Set search query
+	def search( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( !arguments.nil? && !arguments.empty? )
+				chan, search = arguments.split( ' ', 2 )
+				if( chan !~ /^#/ && !con )
+					search = arguments
+					chan   = from
+				end
+				if( !chan.nil? && !chan.empty? )
+					@search   = search
+					@channel  = chan
+				end
+			else
+				if( con )
+					@output.cinfo( "Usage: topic search #channel search string" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "topic search #channel search string" )
+				end
+			end
+		end
+	end
+
+	# Do search/replace on topic
+	def replace( nick, user, host, from, msg, arguments, con )
+		if( @config.auth( host, con ) )
+			if( !arguments.nil? && !arguments.empty? )
+				chan, replace = arguments.split( ' ', 2 )
+				if( chan !~ /^#/ && !con )
+					replace = arguments
+					chan    = from
+				end
+				if( !chan.nil? && !chan.empty? )
+					@mode = 2
+					@replace  = replace
+					@channel  = chan
+					gettopic
+				end
+			else
+				if( con )
+					@output.cinfo( "Usage: topic replace #channel replace string" )
+				else
+					@irc.notice( nick, "Usage: " + @config.command + "topic replace #channel replace string" )
+				end
+			end
+		end
+	end
+
 	# Method that receives numbered server messages like MOTD, rules, names etc. (optional)
 	def servermsg( servername, messagenumber, message )
 		# Topic reply
 		if( messagenumber == "332" )
 			if( message =~ /^#{@config.nick} #{@channel} :(.+)$/ )
-				@irc.topic( @channel, "#{$1}#{@separator}#{@addition}" )
+				topic = $1
+				if( @mode == 1 )
+					@irc.topic( @channel, "#{topic}#{@separator}#{@addition}" )
+				elsif( @mode == 2 )
+					topic.gsub!(@search, @replace)
+					@irc.topic( @channel, topic )
+				end
+				@mode = 0
 			end
 		end
 	end
@@ -82,7 +143,9 @@ class Topic
 		help = [
 			"Plugin to handle topics.",
 			"  topic [#chan] New topic              - Set completely new topic.",
-			"  topic append [#chan] updated topic   - Append something to current topic."
+			"  topic append [#chan] updated topic   - Append something to current topic.",
+			"  topic search [#chan] search string   - Set string to search for. Used along with 'replace'.",
+			"  topic replace [#chan] new string     - Replace the part of the topic set by 'search'."
 		]
 
 		# Print out help
