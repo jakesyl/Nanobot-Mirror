@@ -47,8 +47,6 @@ class Calc
 			arguments.gsub!(/tan\(/i,       "Math.tan(")
 			arguments.gsub!(/tanh\(/i,      "Math.tanh(")
 
-			puts arguments
-
 			# Try the calculation
 			begin
 				result = eval( arguments )
