@@ -70,8 +70,6 @@ class Help
 					"  help plugins                - Call 'plugins' function from 'help' plugin.",
 					"  plugin func [args]          - Call 'func' from 'plugin' with 'args' as input."
 				]
-			when "topic"
-				tmp = [ "Don't be a smartass." ]
 			else
 				# Check for aliases
 				if( @status.checkplugin( "aliases" ) )
