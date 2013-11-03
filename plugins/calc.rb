@@ -16,11 +16,11 @@ class Calc
 	def main( nick, user, host, from, msg, arguments, con )
 
 		# Check for invalid input
-		if( arguments =~ /^([0-9]|\.|,|\+|-|\*|\^|\/|%|\(|\)|e|pi|acos|acosh|asin|asinh|atan|atanh|cbrt|cos|cosh|erf|erfc|exp|frexp|gamma|hypot|ldexp|lgamma|log|sin|sinh|sqrt|tan|tanh| )+$/i )
+		if( arguments =~ /^([0-9]|\.|,|\+|-|\*|\^|\/|%|\(|\)|E|pi|acos|acosh|asin|asinh|atan|atanh|cbrt|cos|cosh|erf|erfc|exp|frexp|gamma|hypot|ldexp|lgamma|log|sin|sinh|sqrt|tan|tanh| )+$/i )
 
 			# Check for stuff from the Math package
 			arguments.gsub!(/\^/,           "**")
-			arguments.gsub!(/e/i,           "Math::E")
+			arguments.gsub!(/E/,            "Math::E") # lowercase e clashes with function names
 			arguments.gsub!(/pi/i,          "Math::PI")
 			arguments.gsub!(/acos\(/i,      "Math.acos(")
 			arguments.gsub!(/acosh\(/i,     "Math.acosh(")
@@ -34,10 +34,8 @@ class Calc
 			arguments.gsub!(/cosh\(/i,      "Math.cosh(")
 			arguments.gsub!(/erfc\(/i,      "Math.erfc(")
 			arguments.gsub!(/erf\(/i,       "Math.erf(")
-			arguments.gsub!(/frexp\(/i,     "Math.frexp(")
-			arguments.gsub!(/exp\(/i,       "Math.exp(")
-			arguments.gsub!(/[^l]gamma\(/i, "Math.gamma(")
-			arguments.gsub!(/lgamma\(/i,    "Math.lgamma(")
+			arguments.gsub!(/(exp|frexp)\(/i,    'exp(' => "Math.exp(", 'frexp(' => "Math.frexp(")
+			arguments.gsub!(/(gamma|lgamma)\(/i, 'gamma(' => "Math.gamma(", 'lgamma(' => "Math.lgamma(")
 			arguments.gsub!(/hypot\(/i,     "Math.hypot(")
 			arguments.gsub!(/ldexp\(/i,     "Math.ldexp(")
 			arguments.gsub!(/log\(/i,       "Math.log(")
@@ -48,6 +46,8 @@ class Calc
 			arguments.gsub!(/sqrt\(/i,      "Math.sqrt(")
 			arguments.gsub!(/tan\(/i,       "Math.tan(")
 			arguments.gsub!(/tanh\(/i,      "Math.tanh(")
+
+			puts arguments
 
 			# Try the calculation
 			begin
