@@ -54,7 +54,7 @@ class Btc
 		end
 		@bits_last = result[ 'ask' ].to_f
 		
-		line = "Bitstamp rate: #{result[ 'ask' ]} #{diff.to_s} (#{ldiff} since last !btc)"
+		line = "Bitstamp rate: $#{result[ 'ask' ]} #{diff.to_s} (#{ldiff} since last !btc)"
 
 		if( con )
 			@output.c( line + "\n" )
