@@ -39,20 +39,19 @@ class Help
 			when "core"
 				tmp = [
 					"Available commands:",
-					"  message [to] [message]              - Send regulare message",
+					"  message [to] [message]              - Send regular message",
 					"  action [to] [action]                - Send action",
 					"  notice [to] [message]               - Send notice",
 					"  raw [command]                       - Send raw command",
 					"  join [channel]                      - Make bot join channel",
 					"  part [channel]                      - Make bot part channel",
-					"  topic [channe] [topic]              - Set topic for channel",
 					"  mode [to] [mode] [subject]          - Set modes",
 					"  op/deop [channel] [nick]            - Give/take chan op",
 					"  hop/dehop [channel] [nick]          - Give/take chan half-op",
 					"  voice/devoice [channel] [nick]      - Give/take voice",
 					"  kick [channel] [nick] [reason]      - Kick user from channel",
 					"  ban/unban [channel] [host]          - Ban/unban host",
-					"  timeban [channel] [host] [seconds]  - Set ban that's automatically removed",
+					"  timeban [channel] [host] [seconds]  - Set ban that is automatically removed",
 					"  version                             - Check bot version (public command)",
 					"  uptime                              - Check bot uptime (public command)",
 					"  nick [nickname]                     - Change bot nickname"

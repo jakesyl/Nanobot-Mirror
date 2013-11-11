@@ -19,11 +19,12 @@ class Aliases
 			"ping"     => "toolbox ping",
 			"nmap"     => "toolbox nmap",
 			"isbn"     => "search isbn",
+			"google"   => "search google",
 			"tappend"  => "topic append"
 		}
 	end
 
-	# Grab aliasses
+	# Grab aliases
 	def alias( current )
 		@alias.each do |key, value| 
 			current.gsub!( /^#{key}/, value)

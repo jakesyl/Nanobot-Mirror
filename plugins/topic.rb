@@ -12,9 +12,9 @@ class Topic
 		@timer   = timer
 
 		@mode      = 0       # 0: Nothing to do. 1: Append. 2: Search/replace
-		@separator = " || "
 		@channel   = ""
 
+		@separator = " || "
 		@addition  = ""
 
 		@search    = ""
