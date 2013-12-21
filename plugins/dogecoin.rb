@@ -34,7 +34,7 @@ class Dogecoin
 
 		# Calculate delta from last !btc
 		ldiff = result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ].to_f - @last
-		ldiff = ( ldiff * 1000 ).round / 1000.0
+		
 		if( ldiff > 0 )
 			ldiff = "+#{ldiff.to_s}"
 		else
@@ -44,7 +44,7 @@ class Dogecoin
 		
 		rounded = "#{( result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ].to_f * 100 ).round / 100.0}"
 		
-		line = "Cryptsy DOGE/BTC rate: #{rounded} (#{result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ]}) (#{ldiff} since last !dogecoin)"
+		line = "Cryptsy DOGE/BTC rate: #{rounded} (#{result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ]}) (#{ldiff} since last !doge)"
 		
 		if( con )
 			@output.c( line + "\n" )
