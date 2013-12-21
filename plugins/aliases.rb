@@ -14,6 +14,7 @@ class Aliases
 		@alias   = {
 			"twitter"  => "twit",
 			"coins"    => "btc ltc",
+			"doge"     => "dogecoin",
 			"dig"      => "toolbox dig",
 			"nslookup" => "toolbox dig",
 			"ping"     => "toolbox ping",
