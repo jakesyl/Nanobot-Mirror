@@ -42,7 +42,7 @@ class Dogecoin
 		end
 		@last = result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ].to_f
 		
-		rounded = "$#{( result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ].to_f * 100 ).round / 100.0}"
+		rounded = "#{( result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ].to_f * 100 ).round / 100.0}"
 		
 		line = "Cryptsy DOGE/BTC rate: #{rounded} (#{result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ]}) (#{ldiff} since last !dogecoin)"
 		
