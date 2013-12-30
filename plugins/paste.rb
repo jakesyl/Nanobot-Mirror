@@ -56,6 +56,9 @@ end
 #        $type = $_POST['type'];
 #        $content = $_POST['content'];
 #
+#        $type = preg_replace('/[^a-zA-Z0-9]/',"", $type);
+#
+#
 #        if(empty($type) || empty($content))
 #                die("Error: Both 'type' and 'content' need to be set.");
 #

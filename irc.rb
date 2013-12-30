@@ -25,6 +25,10 @@ class IRC
 
 	# Send raw data to IRC
 	def raw( line, high = false )
+
+		# Final check on output before sending data
+		line = check( line )
+
 		if( usequeue )
 			enqueue( line, high )
 		else
@@ -182,7 +186,6 @@ class IRC
 				sleep( 1 )
 			end
 		end
-		
 	end
 	
 	# Function to add stuff to queues ( Low priority unless specified otherwise. )
@@ -196,5 +199,18 @@ class IRC
 		# Tell the processing thread data is ready.
 		@signal.push( "" )
 	end
+
+	# Check if output is acceptable for IRC.
+	def check( line )
+
+		# Must not contain any line breaks
+		line.gsub!( /[\r\n]/, "" )
+
+		# Max length for IRC message is 512 (including CR-LF)
+		if( line.length > 510 )
+			line = line[ 0 .. 510 ]
+		end
+
+		return line
+	end
 end
-		

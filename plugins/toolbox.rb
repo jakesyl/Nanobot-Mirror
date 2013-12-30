@@ -312,6 +312,8 @@ class Toolbox
 			output = "Expecting 3 arguments."
 		end
 
+		output = npc( output )
+
 		# Show output
 		if( con )
 			@output.c( output + "\n" )
@@ -350,6 +352,8 @@ class Toolbox
 		else
 			output = "Please provide string to convert."
 		end
+
+		output = npc( output )
 
 		# Show output
 		if( con )
@@ -393,6 +397,8 @@ class Toolbox
 		else
 			output = "Please provide string to convert."
 		end
+
+		output = npc( output )
 
 		# Show output
 		if( con )
@@ -449,5 +455,51 @@ class Toolbox
 		else
 			return 0
 		end
+	end
+
+	# Replace any non-printable characters
+	def npc( line )
+
+		chars = {
+			"\x00" => "[NUL]",
+			"\x01" => "[SOH]",
+			"\x02" => "[STX]",
+			"\x03" => "[ETX]",
+			"\x04" => "[EOT]",
+			"\x05" => "[ENQ]",
+			"\x06" => "[ACK]",
+			"\x07" => "[BEL]",
+			"\x08" => "[BS]",
+			"\x09" => "[HT]",
+			"\x0A" => "[LF]",
+			"\x0B" => "[VT]",
+			"\x0C" => "[FF]",
+			"\x0D" => "[CR]",
+			"\x0E" => "[SO]",
+			"\x0F" => "[SI]",
+			"\x10" => "[DLE]",
+			"\x11" => "[DC1]",
+			"\x12" => "[DC2]",
+			"\x13" => "[DC3]",
+			"\x14" => "[DC4]",
+			"\x15" => "[NAK]",
+			"\x16" => "[SYN]",
+			"\x17" => "[ETB]",
+			"\x18" => "[CAN]",
+			"\x19" => "[EM]",
+			"\x1A" => "[SUB]",
+			"\x1B" => "[ESC]",
+			"\x1C" => "[FS]",
+			"\x1D" => "[GS]",
+			"\x1E" => "[RS]",
+			"\x1F" => "[US]"
+		}
+
+		chars.each do |key, value| 
+			puts value
+			line.gsub!( /#{key}/, value)
+		end
+
+		return line
 	end
 end
