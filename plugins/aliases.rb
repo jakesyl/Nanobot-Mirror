@@ -28,7 +28,7 @@ class Aliases
 	# Grab aliases
 	def alias( current )
 		@alias.each do |key, value| 
-			current.gsub!( /^#{key}/, value)
+			current.gsub!( /^#{key}/, value )
 		end
 		return ( current )
 	end

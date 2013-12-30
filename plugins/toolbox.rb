@@ -497,7 +497,7 @@ class Toolbox
 
 		chars.each do |key, value| 
 			puts value
-			line.gsub!( /#{key}/, value)
+			line.gsub!( /#{key}/, value )
 		end
 
 		return line
