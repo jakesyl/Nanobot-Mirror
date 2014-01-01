@@ -6,6 +6,7 @@ class Toolbox
 	require 'digest/sha1'
 	require 'net/http'
 	require 'uri'
+	require 'ipaddr'
 
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
@@ -180,9 +181,7 @@ class Toolbox
 
 			# Check for valid host types
 			case type( arguments )
-			when 1
-				cmd = "ping -c1 " + arguments
-			when 4
+			when 1..4
 				cmd = "ping -c1 " + arguments
 			when 6
 				cmd = "ping6 -c1 " + arguments
@@ -224,8 +223,10 @@ class Toolbox
 
 				# Check for valid host types
 				case type( arguments )
-				when 1..6
+				when 1..4
 					cmd = "nmap -sV -PN " + arguments
+				when 6
+					cmd = "nmap -sV -PN -6 " + arguments
 				else
 					output = [ "" ,"Invalid host." ]
 				end
@@ -446,14 +447,23 @@ class Toolbox
 
 	# Function to parse address type
 	def type( host )
-		if ( host =~ /^([[:alnum:]]+[.-]{0,1})+\.[[:alpha:]]{1,4}$/ )
-			return 1
-		elsif ( host =~ /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/ )
-			return 4
-		elsif ( host =~ /^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/)
-			return 6
-		else
-			return 0
+
+		# Test for valid IP address
+		begin
+			ip = IPAddr.new host
+			if( ip.ipv4? )
+				return 4
+			elsif( ip.ipv6? )
+				return 6
+			end
+
+		rescue Exception => e
+			# Check if hostname
+			if( host =~ /^([[:alnum:]]+[.-]{0,1})+\.[[:alpha:]]{1,6}$/ )
+				return 1
+			else
+				return 0
+			end
 		end
 	end
 
