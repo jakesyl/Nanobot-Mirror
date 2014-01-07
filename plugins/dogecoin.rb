@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 
-# Plugin to get litecoin value
+# Plugin to get dogecoin value
 class Dogecoin
 
 	require 'rubygems'
 	require 'json'
-	
+	require 'bigdecimal'
+
 	# This method is called when the plugin is first loaded
 	def initialize( status, config, output, irc, timer )
 		@status   = status
@@ -17,32 +18,32 @@ class Dogecoin
 		@api_host = 'pubapi.cryptsy.com'
 		@api_path = '/api.php?method=singlemarketdata&marketid=132'
 		
-		@last     = 0.0
+		@last     = BigDecimal.new( "0.0" )
 	end
 
 	# Alias for last
 	def main( nick, user, host, from, msg, arguments, con )
 		uri = URI.parse( "http://#{@api_host}#{@api_path}" )
 		
-		http = Net::HTTP.new(uri.host, uri.port)
+		http = Net::HTTP.new( uri.host, uri.port )
 		
-		request = Net::HTTP::Get.new(uri.request_uri)
-		response = http.request(request)
+		request = Net::HTTP::Get.new( uri.request_uri )
+		response = http.request( request )
 		
 		result = JSON.parse( response.body )
 		
 
 		# Calculate delta from last !btc
-		ldiff = result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ].to_f - @last
+		ldiff = BigDecimal.new( result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ] ) - @last
 		
 		if( ldiff > 0 )
 			ldiff = "+#{ldiff.to_s}"
 		else
 			ldiff = "#{ldiff.to_s}"
 		end
-		@last = result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ].to_f
+		@last = BigDecimal.new( result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ] )
 		
-		rounded = "#{( result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ].to_f * 100 ).round / 100.0}"
+		rounded = "#{( BigDecimal.new( result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ] ) * 100 ).round / 100.0}"
 		
 		line = "Cryptsy DOGE/BTC rate: #{rounded} (#{result[ 'return' ][ 'markets' ][ 'DOGE' ][ 'lasttradeprice' ]}) (#{ldiff} since last !doge)"
 		
