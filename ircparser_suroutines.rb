@@ -71,6 +71,11 @@ class IRCSubs
 			return
 		end
 
+		# Automatically rectify 'from' field for private messages
+		if( from == @config.nick )
+			from = nick
+		end
+
 		# Check if the received message is a bot command
 		if( message =~ /^#{cmd}/ )
 			@cmd.process( nick, user, host, from, message.gsub( /^#{cmd}/, "" ) )
