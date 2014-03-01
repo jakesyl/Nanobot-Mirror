@@ -28,11 +28,11 @@ class Twit
 
 		load_tokens
 
-		Twitter.configure do |config|
-			config.consumer_key       = @consumer_key
-			config.consumer_secret    = @consumer_secret
-			config.oauth_token        = @oauth_token
-			config.oauth_token_secret = @oauth_token_secret
+		@client = Twitter::REST::Client.new do |config|
+			config.consumer_key        = @consumer_key
+			config.consumer_secret     = @consumer_secret
+			config.access_token        = @oauth_token
+			config.access_token_secret = @oauth_token_secret
 		end
 
 		# Start thread to retreive new tweets
@@ -91,7 +91,7 @@ class Twit
 		if( !arguments.nil? && !arguments.empty? )
 			arguments.gsub!( /&/, "" ) # Sanitize GET variables
 
-			result = Twitter.user_timeline( arguments ).first.text
+			result = @client.user_timeline( arguments ).first.text
 			
 			if( result.empty? )
 				result = "Error: No result."
@@ -116,7 +116,7 @@ class Twit
 				if( !arguments.nil? && !arguments.empty? )
 					arguments.gsub!( /&/, "" ) # Sanitize GET variables
 				
-					line = Twitter.user_timeline( arguments ).first.text
+					line = @client.user_timeline( arguments ).first.text
 					
 					if( !line.empty? )
 						@follow[ arguments ] = line
@@ -206,7 +206,7 @@ class Twit
 	def tweet( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
 			
-			Twitter.update( arguments )
+			@client.update( arguments )
 			line = "Tweet sent."
 
 			# Show output
@@ -332,7 +332,7 @@ class Twit
 			# Loop trough users
 			@follow.each do |user, last|
 				begin
-					line = Twitter.user_timeline( user ).first.text
+					line = @client.user_timeline( user ).first.text
 					
 					# Check for failure to fetch feed data.
 					if( !line.empty? )
