@@ -49,12 +49,19 @@ class Calc
 
 			# Try the calculation
 			begin
+				# Drop thread priority in case the calculation takes really long
+				if( @status.threads && @config.threads )
+					Thread.current.priority = -2
+				end
+
+				# Do the actual calculation
 				result = eval( arguments )
 				result = result.to_s
 
+				# Truncate results too long for IRC
 				if( result.length > 360 )
-					@irc.message( from, "Error: Result is too long to display in IRC." )
-					return
+					result = result[0,360]
+					result[360] = "..."
 				end
 			rescue Exception => e
 				e = e.to_s.split("\n")
