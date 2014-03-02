@@ -290,7 +290,12 @@ class Seen
 			@cache_rate = "N/A"
 		end
 
-		line = "Mem: #{@list.size}/#{@inrammax} | Events logged: #{@events} | Total records: #{@records} | Db writes: #{@writes} | Cache hit rate: #{@cache_rate}%"
+		# Calculate cache warmup percentage
+		warmup = ( @list.size.to_f / @inrammax.to_f ) * 100
+		warmup = ( warmup * 10 ).round / 10.0
+
+		line = "Cache warmup: #{warmup}% | Cache hit rate: #{@cache_rate}% | Events: #{@events} | Records: #{@records} | Db writes: #{@writes}"
+		warmup = nil
 
 		if( con )
 			@output.cinfo( line )
