@@ -1,0 +1,5 @@
+{ "hub_address":"hub.network.tld",
+  "connect_pass":"PrettySecurePassword",
+  "oper_user":"The_Boss",
+  "oper_pass":"SuperSecurePassword"
+}
