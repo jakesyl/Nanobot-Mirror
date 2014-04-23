@@ -15,6 +15,8 @@ class Configuration
 		@server6	= "irc6.insomnia247.nl"		# IPv6 address
 		@port		= 6667						# Normal port
 		@sslport	= 6697						# SSL port
+		@serverpass = ""						# Server connect password
+		@connectopt = ""						# Extra stuff to send on connect
 
 		@channels	= [ "#bot", "#test" ]
 												# Autojoin channel list
@@ -134,6 +136,20 @@ class Configuration
 			@use_ipv6 = ipv6
 		end
 		return @use_ipv6
+	end
+
+	def serverpass( pass = "" )
+		if( pass != "" )
+			@serverpass = pass
+		end
+		return @serverpass
+	end
+	
+	def connectoptions( opt = "" )
+		if( opt != "" )
+			@connectopt = opt
+		end
+		return @connectopt
 	end
 
 	def threads( threads = "" )

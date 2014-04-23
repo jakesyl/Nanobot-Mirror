@@ -39,8 +39,16 @@ class IRC
 
 	# Send initial connect data
 	def sendinit
-		raw( "NICK " + @config.nick )
-		raw( "USER " + @config.user + " 8 *  :" + @config.version )
+		if( @config.serverpass != "" )
+			raw( "PASS #{@config.serverpass}")
+		end
+
+		if( @config.connectoptions != "" )
+			raw( "#{@config.connectoptions}")
+		end
+
+		raw( "NICK #{@config.nick}" )
+		raw( "USER #{@config.user} 8 *  :#{@config.version}" )
 	end
 
 	# Send login info
