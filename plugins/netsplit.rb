@@ -34,12 +34,15 @@ class Netsplit
 		# Start periodic checking
 		if( @status.threads && @config.threads)
 			@pcheck	= Thread.new{ checker }
+			@mutex  = Mutex.new
 		end
 	end
 
 	# Stop checking thread when plugin is unloaded
 	def unload
-		@pcheck.exit
+		if( @status.threads && @config.threads)
+			@pcheck.exit
+		end
 		return true
 	end
 
@@ -55,14 +58,17 @@ class Netsplit
 		if( messagenumber == "006" )
 
 			#Check if this is the first response
-			if( @receiv == 0 )
-				# Start the timeout
-				@timer.action( @timeout, "@status.getplugin(\"netsplit\").timeout( nil, nil, nil, nil, nil, nil, nil )" )
-			end
+			@mutex.synchronize {
+				if( @receiv == 0 )
+					# Start the timeout
+					@timer.action( @timeout, "@status.getplugin(\"netsplit\").timeout( nil, nil, nil, nil, nil, nil, nil )" )
+				end
 
-			# Keep track of the total number received
-			@receiv += 1
-			@found = "#{@found} #{message}"
+
+				# Keep track of the total number received
+				@receiv += 1
+				@found = "#{@found} #{message}"
+			}
 		end
 	end
 
@@ -91,33 +97,35 @@ class Netsplit
 		else
 			
 			# Check if we have as many nodes as we expected
-			if( @receiv != @lines )
+			@mutex.synchronize {
+				if( @receiv != @lines )
 
-				if( @receiv == 1 )
-					# It is probably the node we're on that split off
+					if( @receiv == 1 )
+						# It is probably the node we're on that split off
 
-					@nodes.each do |node|
-						if( @found.include? node )
-							@output.debug( "#{node} has split.\n" )
-							@irc.message( "Cool_Fire", "#{node} has split." )
+						@nodes.each do |node|
+							if( @found.include? node )
+								@output.debug( "#{node} has split.\n" )
+								@irc.message( "Cool_Fire", "#{node} has split." )
+							end
+						end
+					else
+						# Some other node split off
+
+						@nodes.each do |node|
+							if( !@found.include? node )
+								@output.debug( "#{node} has split.\n" )
+								@irc.message( "Cool_Fire", "#{node} has split." )
+							end
 						end
 					end
 				else
-					# Some other node split off
-
-					@nodes.each do |node|
-						if( !@found.include? node )
-							@output.debug( "#{node} has split.\n" )
-							@irc.message( "Cool_Fire", "#{node} has split." )
-						end
-					end
+					@output.debug( "All nodes seem to be connected.\n" )
 				end
-			else
-				@output.debug( "All nodes seem to be connected.\n" )
-			end
 
-			@receiv = 0
-			@found  = ""
+				@receiv = 0
+				@found  = ""
+			}
 		end
 	end
 

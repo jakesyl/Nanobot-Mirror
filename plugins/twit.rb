@@ -79,6 +79,7 @@ class Twit
 		if( @status.threads && @config.threads)
 			@ftread.exit
 		end
+		return true
 	end
 
 	# Meta method for getlast

@@ -29,7 +29,9 @@ class Hackerthreads
 
 	# Method to be called when the plugin is unloaded
 	def unload
-		@ftread.exit
+		if( @status.threads && @config.threads)
+			@ftread.exit
+		end
 		return true
 	end
 
