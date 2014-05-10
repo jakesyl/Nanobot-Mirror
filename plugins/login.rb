@@ -34,7 +34,7 @@ class Login
 
 			# Check password
 			if( @password == arguments )
-				@config.opers( @config.opers.push( host) )
+				@config.opers( @config.opers.push( host ) )
 				returnval = "Login successful, added your host to admin list."
 			else
 				returnval = "Login unsuccessful, password did not match."

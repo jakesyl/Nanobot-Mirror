@@ -96,6 +96,7 @@ class Memo
 					"memo"      => msg.to_s.encode('utf-8')
 				)
 
+				@cache[ to ] = CacheItem.new( true, Time.now.to_i )
 				line = "Your memo has been recorded."
 			else
 				# Produce error for insufficient arguments.
@@ -263,7 +264,7 @@ class Memo
 					if( count > 0 )
 						@irc.message( nick, "You have unread memos (#{count}). '#{@config.command}memo help' for more info.")
 					end
-					
+
 					@cache[ nick ] = CacheItem.new( true, Time.now.to_i )
 				end
 			end
