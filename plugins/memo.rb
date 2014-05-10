@@ -90,10 +90,10 @@ class Memo
 
 				# Write memo to database
 				@insert.execute(
-					"sender"    => frm,
-					"receiver"  => to,
+					"sender"    => frm.to_s.encode('utf-8'),
+					"receiver"  => to.to_s.encode('utf-8'),
 					"timestamp" => Time.now.to_i,
-					"memo"      => msg
+					"memo"      => msg.to_s.encode('utf-8')
 				)
 			else
 				# Produce error for insufficient arguments.
