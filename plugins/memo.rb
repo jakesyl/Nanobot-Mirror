@@ -95,7 +95,7 @@ class Memo
 					"timestamp" => Time.now.to_i,
 					"memo"      => msg.to_s.encode('utf-8')
 				)
-				
+
 				line = "Your memo has been recorded."
 			else
 				# Produce error for insufficient arguments.
@@ -259,7 +259,11 @@ class Memo
 				# New messages exist, check if user needs reminding.
 				if( Time.now.to_i - ci[ :timestamp ] >= @reminders )
 					count = @recordcount.execute( :receiver => nick ).next[0]
-					@irc.message( nick, "You have unread memos (#{count}). '#{@config.command}memo help' for more info.")
+
+					if( count > 0 )
+						@irc.message( nick, "You have unread memos (#{count}). '#{@config.command}memo help' for more info.")
+					end
+					
 					@cache[ nick ] = CacheItem.new( true, Time.now.to_i )
 				end
 			end
