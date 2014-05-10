@@ -66,7 +66,7 @@ class Memo
 		@retreiven = @db.prepare( "SELECT * FROM memo WHERE receiver = :receiver ORDER BY timestamp ASC  LIMIT :count" )
 		
 		# Delete n memos
-		@deleten   = @db.prepare( "DELETE FROM memo WHERE receiver = :receiver ORDER BY timestamp ASC LIMIT :count" )
+		@deleten   = @db.prepare( "DELETE FROM memo WHERE receiver = :receiver AND timestamp = :timestamp" )
 	end
 
 	# Main function for plugin (alias to send)
@@ -110,7 +110,7 @@ class Memo
 	end
 
 	# Read memos
-	def read( nick, user, host, from, msg, arguments, con )
+	def read( nick, user, host, from, msg, arguments, con, print = true )
 		nick.downcase!
 		count = @recordcount.execute( :receiver => nick ).next[0]
 
@@ -141,20 +141,22 @@ class Memo
 
 				while ( row = rows.next )
 					# process row
-					line = "[#{Time.at(row[2]).to_datetime}] <#{row[0]}> #{row[3]}"
+					if( print )
+						line = "[#{Time.at(row[2]).to_datetime}] <#{row[0]}> #{row[3]}"
 
-					if( con )
-						@output.c( line + "\n" )
-					else
-						@irc.message( nick, line )
+						if( con )
+							@output.c( line + "\n" )
+						else
+							@irc.message( nick, line )
+						end
 					end
-				end
 
-				# Remove memos that have been read
-				@deleten.execute(
-					:receiver => nick,
-					:count    => n
-				)
+					# Remove memos that have been read
+					@deleten.execute(
+						:receiver  => nick,
+						:timestamp => row[2]
+					)
+				end
 
 				newcount = @recordcount.execute( :receiver => nick ).next[0]
 				line = ""
@@ -185,59 +187,7 @@ class Memo
 
 	# Delete memos without reading them
 	def delete( nick, user, host, from, msg, arguments, con )
-		nick.downcase!
-		count = @recordcount.execute( :receiver => nick ).next[0]
-
-		if ( count == 0 )
-			# Report error
-				line = "There are no memos for you."
-
-				if( con )
-					@output.c( line + "\n" )
-				else
-					@irc.message( nick, line )
-				end
-			@cache[ nick ] = CacheItem.new( false, Time.now.to_i )
-		else
-			if( !arguments.nil? )
-				n = arguments.to_i
-			else
-				n = count
-			end
-
-			# Sanity check count
-			if( n <= count )
-				# Remove memos
-				@deleten.execute(
-					:receiver => nick,
-					:count    => n
-				)
-
-				newcount = @recordcount.execute( :receiver => nick ).next[0]
-				line = ""
-				if( newcount != 0 )
-					line = "More memos remain. (#{newcount})"
-				else
-					line = "No more memos."
-				end
-
-				if( con )
-					@output.c( line + "\n" )
-				else
-					@irc.message( nick, line )
-				end
-
-			else
-				# Report error
-				line = "Cannot find #{n} memos. Only #{count} available."
-
-				if( con )
-					@output.c( line + "\n" )
-				else
-					@irc.message( nick, line )
-				end
-			end
-		end
+		read( nick, user, host, from, msg, arguments, con, false )
 	end
 
 	# Output some plugin state
