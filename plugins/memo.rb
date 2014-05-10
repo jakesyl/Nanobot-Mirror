@@ -84,16 +84,16 @@ class Memo
 			if( arguments.length >= 2)
 
 				# Split out variables
-				frm = nick.downcase
-				to  = arguments[0].downcase
-				msg = arguments[1..-1].join(' ')
+				frm = nick.downcase.to_s.encode('utf-8')
+				to  = arguments[0].downcase.to_s.encode('utf-8')
+				msg = arguments[1..-1].join(' ').to_s.encode('utf-8')
 
 				# Write memo to database
 				@insert.execute(
-					"sender"    => frm.to_s.encode('utf-8'),
-					"receiver"  => to.to_s.encode('utf-8'),
+					"sender"    => frm,
+					"receiver"  => to,
 					"timestamp" => Time.now.to_i,
-					"memo"      => msg.to_s.encode('utf-8')
+					"memo"      => msg
 				)
 
 				@cache[ to ] = CacheItem.new( true, Time.now.to_i )
