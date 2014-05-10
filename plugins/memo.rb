@@ -95,16 +95,16 @@ class Memo
 					"timestamp" => Time.now.to_i,
 					"memo"      => msg.to_s.encode('utf-8')
 				)
+				
+				line = "Your memo has been recorded."
 			else
 				# Produce error for insufficient arguments.
-
 				line = "Invalid syntax. Expecting 'memo send recipient message to send'."
-
-				if( con )
-					@output.c( line + "\n" )
-				else
-					@irc.notice( nick, line )
-				end
+			end
+			if( con )
+				@output.c( line + "\n" )
+			else
+				@irc.notice( nick, line )
 			end
 		end
 	end
