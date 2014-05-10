@@ -147,6 +147,25 @@ class Mibs
 		return true
 	end
 
+	# Function to send help about this plugin (Can also be called by the help plugin.)
+	def help( nick, user, host, from, msg, arguments, con )
+		help = [
+			"Keep track of mibbit users",
+			"  mibs getrecord [hexip]        - Get DB line.",
+			"  mibs searchnote [query]       - Search notes with sqlite LIKE syntax",
+			"  mibs writenote [hexip] [note] - Add a note."
+		]
+		
+		# Print out help
+		help.each do |line|
+			if( con )
+				@output.c( line + "\n" )
+			else
+				@irc.notice( nick, line )
+			end
+		end
+	end
+
 	private
 
 	# Create database table if needed.
