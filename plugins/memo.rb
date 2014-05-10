@@ -111,7 +111,7 @@ class Memo
 
 	# Read memos
 	def read( nick, user, host, from, msg, arguments, con, print = true )
-		nick.downcase!
+		nick = nick.downcase.to_s.encode('utf-8')
 		count = @recordcount.execute( :receiver => nick ).next[0]
 
 		if ( count == 0 )
@@ -238,7 +238,7 @@ class Memo
 	# Check if user is alive
 	def messaged( nick, user, host, from, message )
 		@output.debug("messaged\n")
-		nick.downcase!
+		nick = nick.downcase.to_s.encode('utf-8')
 
 		ci = nil
 
