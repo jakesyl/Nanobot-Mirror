@@ -63,10 +63,10 @@ class Memo
 		)
 		
 		# Retreive n memos
-		@retreiven = @db.prepare( "SELECT * FROM memo WHERE receiver = :receiver LIMIT :count" )
+		@retreiven = @db.prepare( "SELECT * FROM memo WHERE receiver = :receiver ORDER BY timestamp ASC  LIMIT :count" )
 		
 		# Delete n memos
-		@deleten   = @db.prepare( "DELETE FROM memo WHERE receiver = :receiver LIMIT :count" )
+		@deleten   = @db.prepare( "DELETE FROM memo WHERE receiver = :receiver ORDER BY timestamp ASC LIMIT :count" )
 	end
 
 	# Main function for plugin (alias to send)
