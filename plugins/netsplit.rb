@@ -13,6 +13,9 @@ class Netsplit
 
 		# User to notify
 		@nuser   = "Cool_Fire"
+		@rubyloc = "/usr/bin/env ruby"
+		@script  = "#{@config.datadir}/recoverybot.rb"
+
 		# Hub address
 		@hub     = "hub.tddirc.net"
 
@@ -21,6 +24,7 @@ class Netsplit
 		             "i247.us.tddirc.net",
 		             "i247.uk.tddirc.net",
 		             "i247.at.tddirc.net",
+		             "i247.hx.tddirc.net",
 		             "i247.nl.tddirc.net"
 		           ]
 		@found   = ""
@@ -109,6 +113,7 @@ class Netsplit
 							if( @found.include? node )
 								@output.debug( "#{node} has split.\n" )
 								@irc.message( @nuser, "#{node} has split." )
+								recover( node )
 							end
 						end
 					else
@@ -118,6 +123,7 @@ class Netsplit
 							if( !@found.include? node )
 								@output.debug( "#{node} has split.\n" )
 								@irc.message( @nuser, "#{node} has split." )
+								recover( node )
 							end
 						end
 					end
@@ -140,5 +146,18 @@ class Netsplit
 			@receiv = 0
 			@irc.raw( "MAP" )
 		end
+	end
+
+	# Fire off recovery attempt
+	def recover( node )
+		# Build command
+		cmd = "#{@rubyloc} #{@script} #{node}"
+
+		# Run shell command to attempt recovery
+		result = `#{cmd}`
+
+		# Check if successful
+		@output.debug( result )
+		
 	end
 end
