@@ -11,6 +11,8 @@ class Netsplit
 		@irc     = irc
 		@timer   = timer
 
+		# User to notify
+		@nuser   = "Cool_Fire"
 		# Hub address
 		@hub     = "hub.tddirc.net"
 
@@ -106,7 +108,7 @@ class Netsplit
 						@nodes.each do |node|
 							if( @found.include? node )
 								@output.debug( "#{node} has split.\n" )
-								@irc.message( "Cool_Fire", "#{node} has split." )
+								@irc.message( @nuser, "#{node} has split." )
 							end
 						end
 					else
@@ -115,7 +117,7 @@ class Netsplit
 						@nodes.each do |node|
 							if( !@found.include? node )
 								@output.debug( "#{node} has split.\n" )
-								@irc.message( "Cool_Fire", "#{node} has split." )
+								@irc.message( @nuser, "#{node} has split." )
 							end
 						end
 					end
