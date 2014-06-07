@@ -82,6 +82,10 @@ class Mibs
 				)
 
 				@irc.message( @owner, "#{nick} has been here #{record[1]} times before. (#{Time.at(record[2]).to_datetime}])" )
+
+				if( record[4] != "" )
+					@irc.message( @owner, "Notes: #{record[4]}" )
+				end
 			else
 				@writerecord.execute(
 					:hexip     => user,
