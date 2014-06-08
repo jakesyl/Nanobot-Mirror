@@ -58,7 +58,7 @@ sock.puts( "OPER #{oper_user} #{oper_pass}" )
 
 # Tell leaf to reconnect to hub
 sock.puts( "CONNECT #{hub_address}" )
-sock.puts( "PRIVMSG Cool_Fire :tits." )
+
 # Wait for any output
 sleep(4)
 
