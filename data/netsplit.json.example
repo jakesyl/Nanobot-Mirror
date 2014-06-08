@@ -1,5 +1,24 @@
-{ "hub_address":"hub.network.tld",
-  "connect_pass":"PrettySecurePassword",
-  "oper_user":"The_Boss",
-  "oper_pass":"SuperSecurePassword"
+{
+	"hub_address":"hub.network.tld",
+	
+	"nodes_comment":" Only add nodes to this array that the bot will have oper access to. ",
+	"nodes":[
+		{ "name":"node-01.network.tld", "ip":"12.34.56.1", "port":6669 },
+		{ "name":"node-02.network.tld", "ip":"12.34.56.1", "port":6669 },
+		{ "name":"node-03.network.tld", "ip":"12.34.56.1", "port":6697 },
+		{ "name":"node-04.network.tld", "ip":"12.34.56.1", "port":6697 }
+	],
+
+	"total_nodes_comment":" This should the the total number of nodes in the network that /MAP shows. ",
+	"total_nodes":7,
+	
+	"notify_user":"Some_netadmin",
+	
+	"ruby_location":"/usr/bin/env ruby",
+	"connect_pass":"PrettySecurePassword",
+	"oper_user":"The_Boss",
+	"oper_pass":"SuperSecurePassword",
+	
+	"check_freqency":60,
+	"map_reply_timeout":5
 }

@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
-
 # Plugin to keep track of and recover from netsplits
+
+require 'rubygems'
+require 'json'
+
 class Netsplit
 
 	# This method is called when the plugin is first loaded
@@ -12,30 +15,29 @@ class Netsplit
 		@timer   = timer
 
 		# User to notify
-		@nuser   = "Cool_Fire"
-		@rubyloc = "/usr/bin/env ruby"
+		@cnffile = "#{@config.datadir}/netsplit.json"
 		@script  = "#{@config.datadir}/recoverybot.rb"
+		@nuser   = ""
+		@rubyloc = ""
+
 
 		# Hub address
-		@hub     = "hub.tddirc.net"
+		@hub     = ""
 
 		# List of nodes we expect to be in the network and have oper permissions on
-		@nodes   = [
-		             "i247.us.tddirc.net",
-		             "i247.uk.tddirc.net",
-		             "i247.at.tddirc.net",
-		             "i247.hx.tddirc.net",
-		             "i247.nl.tddirc.net"
-		           ]
+		@nodes   = Array.new
 		@found   = ""
 
 		# Total number of lines expected and received from MAP command
-		@lines   = 7
+		@lines   = 0
 		@receiv  = 0
 
 		# Checking timing
 		@wait    = 60
 		@timeout = 5
+
+		# Load configuration
+		load_config
 
 		# Start periodic checking
 		if( @status.threads && @config.threads)
@@ -138,6 +140,31 @@ class Netsplit
 	end
 
 	private
+
+	# Load config from file
+	def load_config
+		if File.exists?( @cnffile )
+
+			jsonline = ""
+			File.open( @cnffile ) do |file|
+				file.each do |line|
+					jsonline << line
+				end
+			end
+			parsed = JSON.parse( jsonline )
+
+			@hub     = parsed[ 'hub_address' ]
+			@lines   = parsed[ 'total_nodes' ]
+			@nuser   = parsed[ 'notify_user' ]
+			@rubyloc = parsed[ 'ruby_location' ]
+			@wait    = parsed[ 'check_freqency' ]
+			@timeout = parsed[ 'map_reply_timeout' ]
+
+			parsed[ 'nodes' ].each do |node|
+				@nodes.push( node[ 'name' ] )
+			end
+		end
+	end
 
 	# Periodic checking function
 	def checker
