@@ -7,7 +7,7 @@ require 'openssl'
 configfile = "data/netsplit.json"
 
 target = ARGV.first
-port = 0
+port   = 0
 
 # Load config
 if File.exists?( configfile )
@@ -38,10 +38,10 @@ sock = TCPSocket
 sock = TCPSocket.open( target, port )
 
 # Start SSL
-ssl_context = OpenSSL::SSL::SSLContext.new
+ssl_context             = OpenSSL::SSL::SSLContext.new
 ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
-ssl_sock = OpenSSL::SSL::SSLSocket.new(sock, ssl_context)
-ssl_sock.sync_close = true
+ssl_sock                = OpenSSL::SSL::SSLSocket.new(sock, ssl_context)
+ssl_sock.sync_close     = true
 ssl_sock.connect
 
 sock = ssl_sock
