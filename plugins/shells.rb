@@ -43,7 +43,7 @@ class Shells
 	def joined( nick, user, host, channel )
 		if( channel == @chan )
 			@irc.notice( nick, "Hello #{nick}, welcome to #shells for Insomnia 24/7 shell support.");
-			@irc.notice( nick, "If no one is here to help you, please stick around or email your questions to cool_fire_666\@hotmail.com.");
+			@irc.notice( nick, "If no one is here to help you, please stick around or email your questions to coolfire\@insomnia247.nl.");
 
 			voice = Net::HTTP.get( 'www.insomnia247.nl', '/users.php?user=' + nick )
 			if( voice == "YES" )
