@@ -119,7 +119,7 @@ class Netsplit
 
 						@nodes.each do |node|
 							if( @found.include? node )
-								localstate = "#{node} has split."
+								localstate = "Attempting to reconnect #{node}."
 								missing = node
 							end
 						end
@@ -128,7 +128,7 @@ class Netsplit
 						puts "receiv == many"
 						@nodes.each do |node|
 							if( !@found.include? node )
-								localstate = "#{node} has split."
+								localstate = "Attempting to reconnect #{node}."
 								missing = node
 							end
 						end
