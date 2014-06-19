@@ -33,8 +33,11 @@ class Netsplit
 		@receiv  = 0
 
 		# Checking timing
-		@wait    = 60
-		@timeout = 5
+		@wait    = 0
+		@timeout = 0
+
+		# Store some state
+		@state   = ""
 
 		# Load configuration
 		load_config
@@ -106,31 +109,44 @@ class Netsplit
 			
 			# Check if we have as many nodes as we expected
 			@mutex.synchronize {
+				localstate = ""
+				missing = ""
 				if( @receiv != @lines )
 
 					if( @receiv == 1 )
+						puts "receiv == 1"
 						# It is probably the node we're on that split off
 
 						@nodes.each do |node|
 							if( @found.include? node )
-								@output.debug( "#{node} has split.\n" )
-								@irc.message( @nuser, "#{node} has split." )
-								recover( node )
+								localstate = "#{node} has split."
+								missing = node
 							end
 						end
 					else
 						# Some other node split off
-
+						puts "receiv == many"
 						@nodes.each do |node|
 							if( !@found.include? node )
-								@output.debug( "#{node} has split.\n" )
-								@irc.message( @nuser, "#{node} has split." )
-								recover( node )
+								localstate = "#{node} has split."
+								missing = node
 							end
 						end
 					end
 				else
-					@output.debug( "All nodes seem to be connected.\n" )
+					localstate = "All nodes seem to be connected."
+				end
+
+				# Tell admin about changes in state
+				@output.debug( "#{localstate}\n" )
+				if( localstate != @state )
+					@irc.message( @nuser, localstate )
+					@state = localstate
+				end
+
+				# Attempt recovery of missing node
+				if( missing != "" )
+					recover( missing )
 				end
 
 				@receiv = 0
