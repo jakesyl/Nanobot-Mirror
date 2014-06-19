@@ -114,7 +114,6 @@ class Netsplit
 				if( @receiv != @lines )
 
 					if( @receiv == 1 )
-						puts "receiv == 1"
 						# It is probably the node we're on that split off
 
 						@nodes.each do |node|
@@ -125,7 +124,6 @@ class Netsplit
 						end
 					else
 						# Some other node split off
-						puts "receiv == many"
 						@nodes.each do |node|
 							if( !@found.include? node )
 								localstate = "Attempting to reconnect #{node}."
