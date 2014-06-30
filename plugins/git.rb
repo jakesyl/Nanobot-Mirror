@@ -22,7 +22,8 @@ class Git
 		help = [
 			"This plugin allows you to pull updates from a git repo.",
 			"Will only work if you cloned the bot from git.",
-			"  git pull              - Pull updates."
+			"  git pull              - Pull updates.",
+			"  git status            - Show some info and state."
 		]
 
 		# Print out help
@@ -35,11 +36,23 @@ class Git
 		end
 	end
 	
-	# Generic function that can only be called by an admin
+	# Pull updates from server
 	def pull( nick, user, host, from, msg, arguments, con )
 		if( @config.auth( host, con ) )
 			res = %x( git pull ).gsub!( "\n", " " )
 			@irc.notice( nick, "#{res}" )
 		end
+	end
+
+	# Show some output and status
+	def status( nick, user, host, from, msg, arguments, con )
+		branch = %x( git branch | head -n 1 | awk '{print $2}' )
+		status = %x( git fetch -v --dry-run 2>&1 >/dev/null | grep #{branch} )
+		
+		if ( status == "" )
+			status = " (Local branch)"
+		end
+
+		@irc.notice( nick, "On branch #{branch}#{status}" )
 	end
 end
