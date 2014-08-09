@@ -124,16 +124,6 @@ class Shells
 		printhelp( from, con, info )
 	end
 
-	# Show information about Google Go.
-	def go( nick, user, host, from, msg, arguments, con )
-		info = [
-			"On our shells you can use the Google Go programming language.",
-			"If you want to use this feature, use the enable_go command from your shell, this will set up your environment correctly.",
-			"For further help on using Google Go visit: http://golang.org/doc/go_tutorial.html"
-		]
-		printhelp( from, con, info )
-	end
-	
 	# Show information about backups.
 	def backup( nick, user, host, from, msg, arguments, con )
 		backups( nick, user, host, from, msg, arguments, con )
