@@ -155,7 +155,6 @@ class Shells
 			"  shells link [topic]    - Show link to wiki.",
 			"  shells ports           - Show information about open ports.",
 			"  shells websites        - Show information about users websites.",
-			"  shells go              - Show information about Google Go.",
 			"  shells backups         - Show information about backups.",
 			"  shells znc             - Show information about ZNC.",
 			"  shells uptime          - Show uptime for shell hosts.",
