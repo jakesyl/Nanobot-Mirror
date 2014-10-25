@@ -36,6 +36,11 @@ class IRCParser
 						# Get a line from the socket
 						line = @irc.socket.gets
 
+						# Check for error conditions way outside the norm
+						if( line.nil? )
+							raise RuntimeError, 'Somehow received an empty line'
+						end
+
 						# Send line to the parser routine
 						if( @status.threads && @config.threads )
 							spawn_parser( line.chomp )
