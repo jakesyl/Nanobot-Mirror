@@ -283,6 +283,7 @@ class Seen
 
 	# Function that shows some statistics
 	def stats( nick, user, host, from, msg, arguments, con )
+		rows = ""
 		@mutex.synchronize {
 			rows = @db.execute( @recordcount )
 		}
@@ -427,12 +428,12 @@ class Seen
 
 			# Set metadata variables
 			rows = @db.execute( @getmeta )
-		}
 
-		@startdate = rows[0][0].to_i
-		@writes    = rows[0][1].to_i
-		@records   = rows[0][2].to_i
-		@events    = rows[0][3].to_i
+			@startdate = rows[0][0].to_i
+			@writes    = rows[0][1].to_i
+			@records   = rows[0][2].to_i
+			@events    = rows[0][3].to_i
+		}
 	end
 	
 	def db_write
@@ -472,6 +473,7 @@ class Seen
 	def db_retreive( nickname )
 		@output.debug("db_retreive\n")
 
+		result = ""
 		@mutex.synchronize {
 			result = @retreive.execute( "nickname" => nickname )
 		}
@@ -528,10 +530,11 @@ class Seen
 		search.gsub!( /\*/, "%" )
 		search.gsub!( /\./, "_" )
 
+		result = ""
 		@mutex.synchronize {
 			result = @search.execute( "search" => search )
 		}
-		
+
 		row = result.next
 		result = nil
 
