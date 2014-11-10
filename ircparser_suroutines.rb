@@ -79,13 +79,14 @@ class IRCSubs
 		# Check if the received message is a bot command
 		if( message =~ /^#{cmd}/ )
 			@cmd.process( nick, user, host, from, message.gsub( /^#{cmd}/, "" ) )
-		end
+		else
 
-		# Check for plugins with message hook
-		message.gsub!( /^#{cmd}/, "" )
-		@status.plugins.each_key do |key|
-			if( @status.getplugin( key ).respond_to?( "messaged" ) )
-				@status.getplugin( key ).messaged( nick.clone, user.clone, host.clone, from.clone, message.clone )
+			# Check for plugins with message hook
+			message.gsub!( /^#{cmd}/, "" )
+			@status.plugins.each_key do |key|
+				if( @status.getplugin( key ).respond_to?( "messaged" ) )
+					@status.getplugin( key ).messaged( nick.clone, user.clone, host.clone, from.clone, message.clone )
+				end
 			end
 		end
 	end
