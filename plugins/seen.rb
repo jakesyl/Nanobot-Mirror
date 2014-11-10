@@ -40,6 +40,9 @@ class Seen
 		@dbname     = "seen.db3"
 		@db         = SQLite3::Database.new( "data/#{@dbname}" )
 		
+		# Provide access synchronization
+		@mutex  = Mutex.new
+
 		# How often we should update the database
 		@writefreq  = 50
 		@writecnt   = 0
@@ -280,7 +283,10 @@ class Seen
 
 	# Function that shows some statistics
 	def stats( nick, user, host, from, msg, arguments, con )
-		rows = @db.execute( @recordcount )
+		rows = ""
+		@mutex.synchronize {
+			rows = @db.execute( @recordcount )
+		}
 		@records = rows[0][0].to_i + @list.size
 
 		if( @cache_req != 0 )
@@ -409,39 +415,45 @@ class Seen
 	# Database management functions
 	def db_init
 		@output.debug("db_init\n")
-		# Create tables
-		@db.execute( @createdatatable )
-		@db.execute( @createmetatable )
-		
-		# Check if start date is set in meta data
-		if( @db.execute( @checkstart )[0][0] == 0 )
-			@db.execute( @setstart )
-		end
 
-		# Set metadata variables
-		rows = @db.execute( @getmeta )
-		@startdate = rows[0][0].to_i
-		@writes    = rows[0][1].to_i
-		@records   = rows[0][2].to_i
-		@events    = rows[0][3].to_i
+		@mutex.synchronize {
+			# Create tables
+			@db.execute( @createdatatable )
+			@db.execute( @createmetatable )
+		
+			# Check if start date is set in meta data
+			if( @db.execute( @checkstart )[0][0] == 0 )
+				@db.execute( @setstart )
+			end
+
+			# Set metadata variables
+			rows = @db.execute( @getmeta )
+
+			@startdate = rows[0][0].to_i
+			@writes    = rows[0][1].to_i
+			@records   = rows[0][2].to_i
+			@events    = rows[0][3].to_i
+		}
 	end
 	
 	def db_write
 		# Write everything to db
 		@output.debug("db_write\n")
 		
-		@list.each do |nick, i|
-			@insert.execute( 
-				"nickname"      => i[ :nickname ].to_s.encode('utf-8'),
-				"timestamp"     => i[ :timestamp ].to_i,
-				"last"          => i[ :last ].to_s,
-				"lastdate"      => i[ :lastdate ].to_i,
-				"blast"         => i[ :blast ].to_s,
-				"blastdate"     => i[ :blastdate ].to_i,
-				"lastntext"     => i[ :lastntext ].to_s,
-				"lastntextdate" => i[ :lastntextdate ].to_i
-			)
-		end
+		@mutex.synchronize {
+			@list.each do |nick, i|
+				@insert.execute( 
+					"nickname"      => i[ :nickname ].to_s.encode('utf-8'),
+					"timestamp"     => i[ :timestamp ].to_i,
+					"last"          => i[ :last ].to_s,
+					"lastdate"      => i[ :lastdate ].to_i,
+					"blast"         => i[ :blast ].to_s,
+					"blastdate"     => i[ :blastdate ].to_i,
+					"lastntext"     => i[ :lastntext ].to_s,
+					"lastntextdate" => i[ :lastntextdate ].to_i
+				)
+			end
+		}
 		
 		db_write_meta
 		@writes += 1
@@ -449,17 +461,22 @@ class Seen
 	
 	def db_write_meta
 		@output.debug("db_write_meta\n")
-		@setmeta.execute(
-			"writes"  => @writes,
-			"records" => @records,
-			"events"  => @events
-		)
+		@mutex.synchronize {
+			@setmeta.execute(
+				"writes"  => @writes,
+				"records" => @records,
+				"events"  => @events
+			)
+		}
 	end
 
 	def db_retreive( nickname )
 		@output.debug("db_retreive\n")
 
-		result = @retreive.execute( "nickname" => nickname )
+		result = ""
+		@mutex.synchronize {
+			result = @retreive.execute( "nickname" => nickname )
+		}
 
 		row = result.next
 		result = nil
@@ -491,16 +508,18 @@ class Seen
 		@output.debug("db_update\n")
 		@writes += 1
 
-		@insert.execute( 
-			"nickname"      => data[ :nickname ].to_s.encode('utf-8'),
-			"timestamp"     => data[ :timestamp ].to_i,
-			"last"          => data[ :last ].to_s,
-			"lastdate"      => data[ :lastdate ].to_i,
-			"blast"         => data[ :blast ].to_s,
-			"blastdate"     => data[ :blastdate ].to_i,
-			"lastntext"     => data[ :lastntext ].to_s,
-			"lastntextdate" => data[ :lastntextdate ].to_i
-		)
+		@mutex.synchronize {
+			@insert.execute( 
+				"nickname"      => data[ :nickname ].to_s.encode('utf-8'),
+				"timestamp"     => data[ :timestamp ].to_i,
+				"last"          => data[ :last ].to_s,
+				"lastdate"      => data[ :lastdate ].to_i,
+				"blast"         => data[ :blast ].to_s,
+				"blastdate"     => data[ :blastdate ].to_i,
+				"lastntext"     => data[ :lastntext ].to_s,
+				"lastntextdate" => data[ :lastntextdate ].to_i
+			)
+		}
 
 		data = nil
 	end
@@ -511,7 +530,11 @@ class Seen
 		search.gsub!( /\*/, "%" )
 		search.gsub!( /\./, "_" )
 
-		result = @search.execute( "search" => search )
+		result = ""
+		@mutex.synchronize {
+			result = @search.execute( "search" => search )
+		}
+
 		row = result.next
 		result = nil
 
