@@ -30,7 +30,7 @@ class Configuration
 		@autoload	= [ "core", "toolbox" ]
 												# Plugin autoload list
 
-		@antiflood	= true						# Attempt to mitigate people flooding bot with command
+		@antiflood	= true						# Attempt to mitigate people flooding bot with commands
 		@floodtime	= 5							# Seconds withing which the flood limit is triggered
 		@floodcut	= 30						# Limit on the number of seconds delay before starting to drop
 
