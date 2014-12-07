@@ -209,7 +209,6 @@ class Shells
 	def servermsg( servername, messagenumber, message )
 		if( messagenumber == '353' )
 			parts = message.split(':')
-			puts parts[0]
 			if(parts[0] == "#{@config.nick} = #{@chan} ")
 				nicks = parts[1].split(' ')
 				nicks.each do |n|
