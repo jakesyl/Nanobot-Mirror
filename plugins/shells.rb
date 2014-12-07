@@ -200,6 +200,28 @@ class Shells
 		getstat( from, "kernel" )
 	end
 
+	# Command to check if there are unvoiced users that should have voice
+	def voice( nick, user, host, from, msg, arguments, con )
+		@irc.raw("NAMES #{@chan}")
+	end
+
+	# Capture names results
+	def servermsg( servername, messagenumber, message )
+		if( messagenumber == '353' )
+			parts = message.split(':')
+			puts parts[0]
+			if(parts[0] == "#{@config.nick} = #{@chan} ")
+				nicks = parts[1].split(' ')
+				nicks.each do |n|
+					voice = Net::HTTP.get( 'www.insomnia247.nl', '/users.php?user=' + n )
+					if( voice == "YES" )
+						@irc.mode( @chan, "+v" , n, true )
+					end
+				end
+			end
+		end
+	end
+
 	private
 
 	# Function to grab statistics from shell hosts.
